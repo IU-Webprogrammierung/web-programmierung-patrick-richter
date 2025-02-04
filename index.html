@@ -7,41 +7,44 @@
   </head>
   <body>
     <nav class="navbar">
-      <button class="nav-home">BB</button>
-      <span class="nav-title">[Projekttitel]</span>
-      <button class="nav-about">About</button>
+      <button class="nav-home" aria-label="Go to top">BB</button>
+      <!-- Projektitel soll sich zukünftig mit JS dynamisch ändern -->
+      <span class="nav-title" aria-live="polite">[Projekttitel]</span>
+      <button class="nav-about" aria-label="Open about overlay">About</button>
     </nav>
     <main>
+      <!-- Darstellung der Projekte -->
       <section class="projects">
-        <article class="project">
+        <article class="project" aria-labelledby="project1-title"></article>>
             <img src="images/project1.jpeg" alt="A description of project 1">
-            <div class="description">Text</div>
+            <div class="description" id="project1-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project2-title">
             <img src="images/project2.jpeg" alt="A description of project 2">
-            <div class="description">Text</div>
+            <div class="description" id="project2-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project3-title">
             <img src="images/project3.jpeg" alt="A description of project 3">
-            <div class="description">Text</div>
+            <div class="description" id="project3-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project4-title">
             <img src="images/project4.jpeg" alt="A description of project 4">
-            <div class="description">Text</div>
+            <div class="description" id="project4-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project5-title">
             <img src="images/project5.jpeg" alt="A description of project 5">
-            <div class="description">Text</div>
+            <div class="description" id="project5-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project6-title">
             <img src="images/project6.jpeg" alt="A description of project 6">
-            <div class="description">Text</div>
+            <div class="description" id="project6-title">Text</div>
         </article>
-        <article class="project">
+        <article class="project" aria-labelledby="project7-title">
             <img src="images/project7.jpeg" alt="A description of project 7">
-            <div class="description">Text</div>
+            <div class="description" id="project7-title">Text</div>
         </article>
-        <article class="project footer">Footer</article>
+        <!-- Footer als "letztes Projekt" -->
+        <article class="project footer" role="contentinfo" aria-label="Footer with Email Link">Footer</article>
       </section>
     </main>
   </body>
