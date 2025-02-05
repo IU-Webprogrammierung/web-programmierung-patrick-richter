@@ -48,7 +48,8 @@
       </section>
     </main>
     <!-- Overlay der About Seite -->
-    <div class="about-overlay">
+    <div class="about-overlay" role="dialog" aria-label="Overlay with about information" aria-hidden="true">
+      <button class="close-overlay" aria-label="Close about overlay">✕</button>
       <div class="about-intro">
         <p>BB is a graphic designer and art director based in Hamburg with a focus on editorial design, corporate identity and UX/design.</p> 
         Her work is characterised by a clear and visually reduced design language, which is defined by the targeted use of colours and fonts. </p>
@@ -56,8 +57,8 @@
           <p>For the realisation of more extensive projects, I work together with my freelance network of designers in Berlin and Hamburg.</p>
       </div>
       <div class="about-clients"></div>
-        <ul>
-          <li>CLIENTS:</li>
+        <h2 id="clients-title">CLIENTS:</h2>
+        <ul aria-labelledby="clients-title">
           <li>Anne Fischer</li>
           <li>David Dott</li>
           <li>DUMMY Magazine</li>
@@ -68,8 +69,10 @@
           <li>WORKING WOMEN Magazine</li>
         </ul>
       <nav class="about-navigation">
-        <button class="nav-insta">Instagram</button>
-        <button class="nav-imprint">Imprint & Privacy Policy</button>
+        <button class="nav-insta" aria-label="Open Instagram profile">Instagram</button>
+        <button class="nav-imprint" aria-label="View imprint and privacy policy">
+          Imprint & Privacy Policy
+        </button>
       </nav>
     </div>
 
