@@ -15,67 +15,104 @@
     <main>
       <!-- Darstellung der Projekte -->
       <section class="projects">
-        <article class="project" aria-labelledby="project1-title"></article>>
-            <img src="images/project1.jpeg" alt="A description of project 1">
-            <div class="description" id="project1-title">Text</div>
+        <article class="project" aria-labelledby="project1-title">
+          <img src="images/project1.jpeg" alt="A description of project 1" />
+          <div class="description" id="project1-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project2-title">
-            <img src="images/project2.jpeg" alt="A description of project 2">
-            <div class="description" id="project2-title">Text</div>
+          <img src="images/project2.jpeg" alt="A description of project 2" />
+          <div class="description" id="project2-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project3-title">
-            <img src="images/project3.jpeg" alt="A description of project 3">
-            <div class="description" id="project3-title">Text</div>
+          <img src="images/project3.jpeg" alt="A description of project 3" />
+          <div class="description" id="project3-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project4-title">
-            <img src="images/project4.jpeg" alt="A description of project 4">
-            <div class="description" id="project4-title">Text</div>
+          <img src="images/project4.jpeg" alt="A description of project 4" />
+          <div class="description" id="project4-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project5-title">
-            <img src="images/project5.jpeg" alt="A description of project 5">
-            <div class="description" id="project5-title">Text</div>
+          <img src="images/project5.jpeg" alt="A description of project 5" />
+          <div class="description" id="project5-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project6-title">
-            <img src="images/project6.jpeg" alt="A description of project 6">
-            <div class="description" id="project6-title">Text</div>
+          <img src="images/project6.jpeg" alt="A description of project 6" />
+          <div class="description" id="project6-title">Text</div>
         </article>
         <article class="project" aria-labelledby="project7-title">
-            <img src="images/project7.jpeg" alt="A description of project 7">
-            <div class="description" id="project7-title">Text</div>
+          <img src="images/project7.jpeg" alt="A description of project 7" />
+          <div class="description" id="project7-title">Text</div>
         </article>
         <!-- Footer als "letztes Projekt" -->
-        <footer class="project footer" aria-label="Footer with Email Link">Footer</footer>
+        <footer class="project footer" aria-label="Footer with Email Link">
+          Footer
+        </footer>
       </section>
     </main>
-    <!-- Overlay der About Seite -->
-    <div class="about-overlay" role="dialog" aria-label="Overlay with about information" aria-hidden="true">
+    <!-- Overlay der About und Imprint Seite -->
+    <div
+      class="about-imprint-container"
+      role="dialog"
+      aria-label="Overlay with about and imprint information"
+      aria-hidden="true"
+    >
       <button class="close-overlay" aria-label="Close about overlay">✕</button>
-      <div class="about-intro">
-        <p>BB is a graphic designer and art director based in Hamburg with a focus on editorial design, corporate identity and UX/design.</p> 
-        Her work is characterised by a clear and visually reduced design language, which is defined by the targeted use of colours and fonts. </p>
-        <p>Taking into account concept and content, based on the client‘s values and wishes. With a deep understanding of a holistic design approach that seamlessly integrates analogue and digital media to create a consistent look and feel. 
-          <p>For the realisation of more extensive projects, I work together with my freelance network of designers in Berlin and Hamburg.</p>
-      </div>
-      <div class="about-clients"></div>
-        <h2 id="clients-title">CLIENTS:</h2>
-        <ul aria-labelledby="clients-title">
-          <li>Anne Fischer</li>
-          <li>David Dott</li>
-          <li>DUMMY Magazine</li>
-          <li>EMOTION Magazin</li>
-          <li>Illustrative Berlin</li>
-          <li>Martha Herford Museum </li>
-          <li>Nicole Reese Yoga Studio</li>
-          <li>WORKING WOMEN Magazine</li>
-        </ul>
-      <nav class="about-navigation">
-        <button class="nav-insta" aria-label="Open Instagram profile">Instagram</button>
-        <button class="nav-imprint" aria-label="View imprint and privacy policy">
-          Imprint & Privacy Policy
-        </button>
-      </nav>
-    </div>
+      <div class="about-container">
+        <div class="about-content">
+          <p>
+            BB is a graphic designer and art director based in Hamburg with a
+            focus on editorial design, corporate identity and UX/design.
+          </p>
+          <p>
+            Her work is characterised by a clear and visually reduced design
+            language, which is defined by the targeted use of colours and fonts.
+          </p>
+          <p>
+            Taking into account concept and content, based on the client‘s
+            values and wishes. With a deep understanding of a holistic design
+            approach that seamlessly integrates analogue and digital media to
+            create a consistent look and feel.
+          </p>
+          <p>
+            For the realisation of more extensive projects, I work together with
+            my freelance network of designers in Berlin and Hamburg.
+          </p>
+          <a href="contact.html" class="btn-contact">Contact</a>
 
+        </div>
+        <div class="about-clients">
+          <h2 id="clients-title">CLIENTS:</h2>
+          <ul aria-labelledby="clients-title">
+            <li>Anne Fischer</li>
+            <li>David Dott</li>
+            <li>DUMMY Magazine</li>
+            <li>EMOTION Magazin</li>
+            <li>Illustrative Berlin</li>
+            <li>Martha Herford Museum</li>
+            <li>Nicole Reese Yoga Studio</li>
+            <li>WORKING WOMEN Magazine</li>
+          </ul>
+        </div>
+        <nav class="overlay-navigation">
+          <button class="btn-insta" aria-label="Open Instagram profile">
+            Instagram
+          </button>
+          <button
+            class="btn-imprint"
+            aria-label="View imprint and privacy policy"
+          >
+            Imprint &amp; Privacy Policy
+          </button>
+        </nav>
+      </div>
+      <div class="imprint-container">
+        <div class="imprint-content">
+          <p>imprint text</p>
+        </div>
+        <nav class="overlay-navigation">
+          <button class="btn-about">Back to about</button>
+        </nav>
+      </div>
+    </div>
   </body>
-  
 </html>
