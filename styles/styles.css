@@ -12,6 +12,11 @@ button {
   appearance: none;
 }
 
+button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 @font-face {
   /* Thin */
   font-family: Neue Montreal;
