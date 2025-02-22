@@ -49,6 +49,8 @@ html {
   font-size: clamp(1rem, 1.2vw, 2rem);
   scroll-behavior: smooth;
   overflow: hidden; 
+  overflow-x: hidden;
+
 }
 
 body {
@@ -102,6 +104,7 @@ header > * {
   scroll-snap-type: y mandatory;
   overflow-y: auto;
   height: 100vh;
+  width: 100vw;
  }
 
  .project {
@@ -111,6 +114,7 @@ header > * {
   top: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always; 
+
  }
 
 
@@ -118,12 +122,16 @@ header > * {
   scroll-snap-type: x mandatory;
   overflow-x: auto;
   display: flex;
+  overflow-y: hidden; 
 }
 
 .slide {
   scroll-snap-align: start;
   scroll-snap-stop: always; 
   width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  flex-shrink: 0; 
 }
 
 .description {
@@ -147,6 +155,8 @@ header > * {
 }
 .footer-top {
   height: 50vh;
+  pointer-events: none; 
+
 }
 .footer {
   height: 50vh;
@@ -155,6 +165,8 @@ header > * {
   font-size: 1.5rem;
   text-align: center;
   padding-top: 2rem;
+  pointer-events: auto; /* Erlaubt Interaktionen im Footer-Content wieder */
+
 }
 
 @media screen and (max-width: 800px) {
@@ -173,6 +185,9 @@ header > * {
     top: auto;
     bottom: 0px;
     font-size: 1.5rem;
-
+  }
+  .project-container {
+    height: 100vh;
+    width: 100vw;
   }
 }
