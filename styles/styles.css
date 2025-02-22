@@ -46,6 +46,7 @@ button {
 
 html {
   font-size: 16px;
+  font-size: clamp(1rem, 1.2vw, 2rem);
 }
 
 body {
@@ -98,6 +99,7 @@ header > * {
     position: fixed;
     top: auto;
     bottom: 0px;
+    font-size: 1.5rem;
   }
 }
 
@@ -107,5 +109,7 @@ header > * {
     position: fixed;
     top: auto;
     bottom: 0px;
+    font-size: 1.5rem;
+
   }
 }
