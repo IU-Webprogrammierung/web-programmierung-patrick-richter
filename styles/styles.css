@@ -65,7 +65,7 @@ header {
   mix-blend-mode: difference;
   width: 100vw;
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   height: 200px;
 }
 
@@ -137,6 +137,24 @@ header > * {
   transform: translate(-50%);
   text-align: center;
   padding-bottom: 2rem;
+}
+
+.footer-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-stop: normal; 
+}
+.footer-top {
+  height: 50vh;
+}
+.footer {
+  height: 50vh;
+  background-color: white;
+  font-family: Neue Montreal;
+  font-size: 1.5rem;
+  text-align: center;
+  padding-top: 2rem;
 }
 
 @media screen and (max-width: 800px) {
