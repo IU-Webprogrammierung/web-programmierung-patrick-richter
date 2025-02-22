@@ -49,8 +49,6 @@ html {
   font-size: clamp(1rem, 1.2vw, 2rem);
   scroll-behavior: smooth;
   overflow: hidden; 
-  overflow-x: hidden;
-
 }
 
 body {
@@ -60,7 +58,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 header {
-  font-family: Neue Montreal, Arial, Sans Serif;
+  font-family: Neue Montreal, Arial, sans-serif;
   font-weight: 400;
   font-size: 2rem;
   color: white;
@@ -68,7 +66,6 @@ header {
   width: 100vw;
   position: fixed;
   z-index: 10;
-  height: 200px;
 }
 
 header > * {
@@ -91,9 +88,10 @@ header > * {
 }
 
 .navbar button {
-
-  transition: ease-in 200ms;
+  transition: transform 200ms ease-in;
+  transform-origin: center center;
 }
+
 .navbar button:hover {
   transform: skewX(-12deg);
  }
@@ -176,5 +174,14 @@ header > * {
     top: auto;
     bottom: 0px;
     font-size: 1.5rem;
+  }
+  .description {
+    display:none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
