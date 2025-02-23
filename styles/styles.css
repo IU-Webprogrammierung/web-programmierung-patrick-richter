@@ -84,12 +84,16 @@ header > * {
   padding-left: 1.2rem;
   padding-right: 1.2rem;
 }
+
+.mobile-only {
+  display: none;
+}
 .project-title {
+  font-style: italic;
   position: absolute;
   top: 0px;
   left: 50%;
   transform: translateX(-50%);
-  font-style: italic;
 }
 
 .navbar button {
@@ -174,14 +178,37 @@ header > * {
 
 @media screen and (max-width: 800px),
        screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+
+  .desktop-only {
+    display: none;
+  }      
   .project-title {
-    position: fixed;
     top: auto;
-    bottom: 0px;
-    font-size: 1.5rem;
+    position: relative;
+
   }
   .description {
     display:none;
+  }
+  .title-description-container-mobile {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0px;
+    font-size: 1.5rem;
+    left:50%;
+    transform: translateX(-50%);
+    font-family: Neue Montreal;
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+
+  .project-title-container {
+    position:relative;
+  }
+  
+  .description-mobile {
+    
   }
 }
 
