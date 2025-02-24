@@ -1,20 +1,19 @@
 button {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  font: inherit;
-  line-height: normal;
+  all: unset;  
   cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+
 }
 
 button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 @font-face {
@@ -61,6 +60,7 @@ body {
   padding: 0px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: Neue Montreal;
 }
 header {
   font-family: Neue Montreal, Arial, sans-serif;
@@ -71,6 +71,10 @@ header {
   width: 100vw;
   position: fixed;
   z-index: 10;
+}
+
+h1 {
+  all: unset;  
 }
 
 header > * {
@@ -88,6 +92,7 @@ header > * {
 .mobile-only {
   display: none;
 }
+
 .project-title {
   font-style: italic;
   position: absolute;
@@ -121,7 +126,6 @@ header > * {
   top: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always; 
-
  }
 
 
@@ -182,33 +186,52 @@ header > * {
   .desktop-only {
     display: none;
   }      
-  .project-title {
-    top: auto;
-    position: relative;
 
-  }
-  .description {
-    display:none;
-  }
-  .title-description-container-mobile {
+
+  .title-description-container {
     display: flex;
     flex-direction: column;
     position: fixed;
-    bottom: 0px;
-    font-size: 1.5rem;
-    left:50%;
-    transform: translateX(-50%);
+    bottom: 0px; 
+    transform: translateY(calc(100% - 4rem)); /* Höhe title container */
     font-family: Neue Montreal;
     align-items: center;
-    padding-bottom: 1rem;
+    padding: 0 1rem 1rem 1rem;
+    width:100%;
+    background-color: rgba(255,255,255,0.2);
+  }
+
+  .title-description-container.active {
+    background-color: white;
+    transform: translateY(0);
+  }
+
+  .title-description-container.active .title-arrow {
+    transform: rotate(180deg);
   }
 
   .project-title-container {
-    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4rem;
+    cursor: pointer;
+  }
+
+  .project-title-mobile {
+    font-size: 1.5rem;
+    font-style: italic;
+  }
+
+  .title-arrow {
+    position:absolute;
+    right:1rem;
+    transition: transform 0.3s ease-out;
   }
   
   .description-mobile {
-    
+    font-size: small;
   }
 }
 
