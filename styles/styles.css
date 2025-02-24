@@ -1,3 +1,17 @@
+/* Allgemeine Variablen */
+:root {
+  --color-bg-light: 0, 0%, 100%;
+  --font-primary: "Neue Montreal", sans-serif;
+  --font-size-desktop-title: 1.6rem;
+  --font-size-desktop-text: 1rem;
+  --font-size-mobile-title: 1.5rem;
+  --font-size-mobile-text: 1rem;
+  --transition-speed: 0.3s;
+}
+
+/* Basis-Styles */
+
+
 button {
   all: unset;  
   cursor: pointer;
@@ -50,9 +64,10 @@ button:focus-visible {
 
 html {
   font-size: 16px;
-  font-size: clamp(1rem, 1.2vw, 2rem);
+  font-size: clamp(1rem, 1.1vw, 2rem);
   scroll-behavior: smooth;
   overflow: hidden; 
+  font-family: var(--font-primary);
 }
 
 body {
@@ -60,12 +75,13 @@ body {
   padding: 0px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: Neue Montreal;
+
 }
 header {
   font-family: Neue Montreal, Arial, sans-serif;
   font-weight: 400;
-  font-size: 2rem;
+  font-size: var(--font-size-desktop-title);
+  line-height: var(--font-size-desktop-title);
   color: white;
   mix-blend-mode: difference;
   width: 100vw;
@@ -148,7 +164,7 @@ header > * {
 .description {
   position: absolute;
   bottom: 0;
-  font-family: Neue Montreal;
+  font-size: var(--font-size-desktop-text);
   color: white;
   mix-blend-mode: difference;
   width: 80%;
@@ -173,7 +189,7 @@ header > * {
   height: 50vh;
   background-color: white;
   font-family: Neue Montreal;
-  font-size: 1.5rem;
+  font-size: var(--font-size-desktop-title);
   text-align: center;
   padding-top: 2rem;
   pointer-events: auto; 
@@ -196,22 +212,19 @@ header > * {
     transform: translateY(calc(100% - 4rem)); /* Höhe title container */
     font-family: Neue Montreal;
     align-items: center;
-    padding: 0 1rem 1rem 1rem;
+    padding: 0 1rem 2rem 1rem;
     width:100%;
-    /*background-color: hsla(var(--background-color), 0.2);*/
-    background-color: hsla(0, 0%, 100%, 0.2);
-    transition: transform 0.3s ease-out background-color 0.3s ease-out;
+    background-color: hsla(var(--color-bg-light), 0.2);
+    
+    transition: transform var(--transition-speed) ease-out, background-color var(--transition-speed) ease-out;
   }
 
   .title-description-container.active {
-    /*background-color: hsla(var(--background-color), 0.9);*/
-    background-color: hsla(0, 0%, 100%, 0.9);
+    background-color: hsla(var(--color-bg-light), 0.9);
     transform: translateY(0);
   }
 
-  .title-description-container.active .title-arrow {
-    transform: rotate(180deg);
-  }
+
 
   .project-title-container {
     display: flex;
@@ -223,19 +236,27 @@ header > * {
   }
 
   .project-title-mobile {
-    font-size: 1.5rem;
+    font-size: var(--font-size-mobile-title);
     font-style: italic;
   }
 
   .title-arrow {
     position:absolute;
     right:1rem;
-    transition: transform 0.3s ease-out;
+    transition: transform var(--transition-speed) ease-out;
     transform-origin: center;
+  }
+
+  .title-description-container.active .title-arrow {
+    transform: rotate(180deg);
   }
   
   .description-mobile {
-    font-size: small;
+    font-size: var(--font-size-mobile-text);
+    text-align: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    
   }
 }
 
