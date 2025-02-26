@@ -181,15 +181,96 @@
       </section>
       <div class="title-description-container active mobile-only">
         <div class="project-title-container">
-          <h1 class="project-title-mobile" aria-live="polite">Emotion Magazine</h1>
+          <h1 class="project-title-mobile" aria-live="polite">
+            Emotion Magazine
+          </h1>
           <div class="title-arrow">⌄</div>
         </div>
-        <div class="description-mobile">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam</div>
+        <div class="description-mobile">
+          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
       </div>
     </main>
     <!-- Overlay der About und Imprint Seite -->
     <div
-      class="about-imprint-container"
+      class="overlay"
+      role="dialog"
+      aria-label="Overlay with about and imprint information"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <button class="close-overlay" aria-label="Close about overlay">✕</button>
+      <div class="overlay-left">Bild</div>
+      <div class="overlay-right">
+        <div class="about-imprint-slider show-about">
+          <div class="about" id="about-section" aria-live="polite">
+            <div class="overlay-content">
+              <div class="about-intro">
+                <p>
+                  The graphic designer and art director is located in Hamburg
+                  with a focus on editorial design, corporate identity and
+                  UX/design.
+                </p>
+                <p>
+                  Taking into account concept and content, based on the client‘s
+                  values and wishes. With a deep understanding of a holistic
+                  design approach that seamlessly integrates analogue and
+                  digital media to create a consistent look and feel.
+                </p>
+                <p>
+                  For the realisation of more extensive projects, I work
+                  together with my freelance network of designers in Berlin and
+                  Hamburg.
+                </p>
+                <a href="contact.html" class="btn-contact">Contact</a>
+              </div>
+
+              <div class="about-clients">
+                <h2 id="clients-title">CLIENTS:</h2>
+                <ul aria-labelledby="clients-title">
+                  <li>Anne Fischer</li>
+                  <li>David Dott</li>
+                  <li>DUMMY Magazine</li>
+                  <li>EMOTION Magazin</li>
+                  <li>Illustrative Berlin</li>
+                  <li>Martha Herford Museum</li>
+                  <li>Nicole Reese Yoga Studio</li>
+                  <li>WORKING WOMEN Magazine</li>
+                </ul>
+              </div>
+            </div>
+            <nav class="overlay-navigation">
+              <button class="btn-insta" aria-label="Open Instagram profile">
+                Instagram
+              </button>
+              <button
+                class="btn-imprint"
+                aria-label="View imprint and privacy policy"
+              >
+                Imprint &amp; Privacy Policy
+              </button>
+            </nav>
+          </div>
+          <div class="imprint" id="imprint-section" aria-live="polite">
+            imprint
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--   <button class="switch-to-imprint" aria-controls="imprint-section">
+      Switch to Imprint
+    </button> 
+
+    document.querySelector(".overlay").focus();
+    
+    aria-hidden="false" -> mit javascript setzen
+    
+    <button class="close-overlay" aria-label="Close overlay">✕</button>-->
+
+    <div
+      class="about-imprint-container_2"
       role="dialog"
       aria-label="Overlay with about and imprint information"
       aria-hidden="true"

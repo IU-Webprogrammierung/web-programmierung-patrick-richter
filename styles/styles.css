@@ -2,11 +2,16 @@
 :root {
   --color-bg-light: 0, 0%, 100%;
   --font-primary: "Neue Montreal", sans-serif;
-  --font-size-desktop-title: 1.6rem;
-  --font-size-desktop-text: 1rem;
+  --font-size-desktop-l: 2rem;
+  --font-size-desktop-m: 1.5rem;
+  --font-size-desktop-s: 1rem;
   --font-size-mobile-title: 1.5rem;
   --font-size-mobile-text: 1rem;
   --transition-speed: 0.3s;
+  --overlay-width:50vw;
+  --spacing-top:1rem;
+  --spacing-bottom:1rem;
+  /*--overlay-width:min(50vw, 15rem + 30vw);*/
 }
 
 /* Basis-Styles */
@@ -21,6 +26,15 @@ button {
 
 }
 
+button {
+  transition: transform 200ms ease-in;
+  transform-origin: center center;
+}
+
+button:hover {
+  transform: skewX(-12deg);
+ }
+
 button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
@@ -28,6 +42,14 @@ button:focus-visible {
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+h1 {
+  all: unset;  
+}
+
+.mobile-only {
+  display: none;
 }
 
 @font-face {
@@ -64,7 +86,7 @@ button:focus-visible {
 
 html {
   font-size: 16px;
-  font-size: clamp(1rem, 1.1vw, 2rem);
+  /*font-size: clamp(1rem, 1.1vw, 2rem);*/
   scroll-behavior: smooth;
   overflow: hidden; 
   font-family: var(--font-primary);
@@ -77,11 +99,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
 }
+
+/* Header Styling */ 
+
 header {
   font-family: Neue Montreal, Arial, sans-serif;
   font-weight: 400;
-  font-size: var(--font-size-desktop-title);
-  line-height: var(--font-size-desktop-title);
+  font-size: var(--font-size-desktop-l);
+  line-height: var(--font-size-desktop-l);
   color: white;
   mix-blend-mode: difference;
   width: 100vw;
@@ -89,12 +114,9 @@ header {
   z-index: 10;
 }
 
-h1 {
-  all: unset;  
-}
 
 header > * {
-  padding-top: 1rem;
+  padding-top: var(--spacing-top);
   padding-bottom: 1rem;
 }
 .navbar {
@@ -105,9 +127,9 @@ header > * {
   padding-right: 1.2rem;
 }
 
-.mobile-only {
-  display: none;
-}
+
+
+/* Project Styling */
 
 .project-title {
   font-style: italic;
@@ -116,15 +138,6 @@ header > * {
   left: 50%;
   transform: translateX(-50%);
 }
-
-.navbar button {
-  transition: transform 200ms ease-in;
-  transform-origin: center center;
-}
-
-.navbar button:hover {
-  transform: skewX(-12deg);
- }
 
  .project-container {
   display: flex;
@@ -164,15 +177,18 @@ header > * {
 .description {
   position: absolute;
   bottom: 0;
-  font-size: var(--font-size-desktop-text);
+  font-size: var(--font-size-desktop-s);
   color: white;
   mix-blend-mode: difference;
   width: 80%;
   left:50%;
   transform: translate(-50%);
   text-align: center;
-  padding-bottom: 2rem;
+  padding-bottom: var(--spacing-bottom);
 }
+
+
+/* Footer Styling */
 
 .footer-container {
   height: 100vh;
@@ -189,12 +205,110 @@ header > * {
   height: 50vh;
   background-color: white;
   font-family: Neue Montreal;
-  font-size: var(--font-size-desktop-title);
+  font-size: var(--font-size-desktop-l);
   text-align: center;
   padding-top: 2rem;
   pointer-events: auto; 
 
 }
+
+/* About / Imprint Overlay Styling */
+
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top:0;
+  right:0;
+  z-index: 10;
+  display:flex;
+  
+}
+.overlay-left {
+  opacity: 50%;
+  width: calc(100vw - var(--overlay-width));
+
+}
+
+.overlay-right {
+  background-color: hsla(var(--color-bg-light));
+  width:var(--overlay-width); 
+  overflow-x: hidden;
+  
+}
+
+.about-imprint-slider {
+  width: calc(2 * var(--overlay-width));
+  height: 100%;
+  display: flex;
+  transform: translateX(50%);
+  will-change: transform;
+}
+
+.about, .imprint {
+  height:100%;
+  width: var(--overlay-width);
+  padding:calc(var(--spacing-top) + 0.2rem) 2.5rem 0 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay-content {
+  flex-grow: 1;
+  overflow-y: auto; 
+}
+
+.overlay-navigation {
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-desktop-m);
+  padding-top:1rem;
+  padding-bottom: var(--spacing-bottom);
+}
+
+.about-intro {
+  font-size: var(--font-size-desktop-m);
+}
+
+.about-clients {
+  font-size:var(--font-size-desktop-s);
+}
+
+.about p, .imprint p {
+  margin-top:0;
+}
+
+
+.about {
+
+}
+.imprint {
+
+}
+
+.about-imprint-slider.show-about {
+  transform: translateX(0);
+}
+
+.about-imprint-slider.show-imprint {
+  transform: translateX(-50%);
+}
+
+.close-overlay {
+  position:absolute;
+  top:0;
+  right:0;
+  margin-top:calc(var(--spacing-top) + 0.2rem);
+  margin-right: 1rem;
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  }
+
+
+
 
 @media screen and (max-width: 800px),
        screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
