@@ -9,10 +9,10 @@
   <body>
     <header>
       <nav class="navbar">
-        <button class="nav-home" aria-label="Go to top">Home</button>
+        <button class="nav-home button" aria-label="Go to top">Home</button>
         <!-- Projektitel soll sich zukünftig mit JS dynamisch ändern -->
 
-        <button class="nav-about" aria-label="Open about overlay">About</button>
+        <button class="nav-about button" aria-label="Open about overlay">About</button>
       </nav>
       <h1 class="project-title desktop-only" aria-live="polite">
         Emotion Magazine
@@ -192,23 +192,22 @@
         </div>
       </div>
     </main>
+
     <!-- Overlay der About und Imprint Seite -->
     <dialog
-      class="overlay"
+      class="overlay show-overlay"
       role="dialog"
       aria-label="Overlay with about and imprint information"
       aria-modal="true"
       aria-hidden="true"
       tabindex="-1"
-    >
-    <header>
-      <button class="close-overlay" aria-label="Close about overlay">
-        <img src="./images/icons/close.png" alt="close icon"/>
-      </button>
-    </header>
-      <div class="overlay-left">Bild</div>
+    >    
+      <div class="overlay-left"><img src="./images/bouncing.jpeg" class="bouncing-image" alt="Portrait of the designer"></div>
       <div class="overlay-right">
-        <div class="about-imprint-slider show-imprint">
+        <button class="close-overlay" aria-label="Close about overlay">
+          <img src="./images/icons/close.png" alt="close icon"/>
+        </button>
+        <div class="about-imprint-slider show-about">
           <section class="about" id="about-section" aria-live="polite">
             <div class="overlay-content">
               <div class="about-intro">
@@ -254,11 +253,11 @@
             </div>
             <footer>
             <nav class="overlay-navigation" aria-label="Social links and page navigation">
-              <a href="https://instagram.com/profile" class="btn-instsa button" aria-label="Open Instagram profile">
+              <a href="https://instagram.com/profile" class="btn-insta button" aria-label="Open Instagram profile">
                 Instagram
               </a>
               <button
-                class="btn-imprint"
+                class="btn-imprint button"
                 aria-label="View imprint and privacy policy"
               >
                 Imprint &amp; Privacy Policy
@@ -277,7 +276,7 @@
             </div>
             <footer>
             <nav class="overlay-navigation" aria-label="Page navigation">
-              <button class="btn-about">Back to about</button>
+              <button class="btn-about button">Back to about</button>
             </nav>
           </footer>
           </section>
