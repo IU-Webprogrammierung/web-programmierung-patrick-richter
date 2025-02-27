@@ -248,7 +248,7 @@ header > * {
 .about, .imprint {
   height:100%;
   width: var(--overlay-width);
-  padding:calc(var(--spacing-top) + 0.2rem) 2.5rem 0 2rem;
+  padding:calc(var(--spacing-top) + 0.2rem) 2rem 0 2rem;
   display: flex;
   flex-direction: column;
 }
@@ -256,6 +256,7 @@ header > * {
 .overlay-content {
   flex-grow: 1;
   overflow-y: auto; 
+  padding-right:2.5rem;
 }
 
 .overlay-navigation {
@@ -303,12 +304,13 @@ text-transform: uppercase;
   margin-top:0;
 }
 
-
-.about {
-
+.imprint-content {
+  font-size: var(--font-size-desktop-s);
 }
-.imprint {
 
+.imprint-title {
+text-transform: uppercase;
+font-size: var(--font-size-desktop-m);
 }
 
 .about-imprint-slider.show-about {
@@ -329,6 +331,11 @@ text-transform: uppercase;
   display: flex;
   align-items: center;
   }
+
+.close-overlay img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 
 
