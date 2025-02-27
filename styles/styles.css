@@ -26,16 +26,16 @@ button {
 
 }
 
-button {
+button, .button {
   transition: transform 200ms ease-in;
   transform-origin: center center;
 }
 
-button:hover {
+button:hover, .button:hover {
   transform: skewX(-12deg);
  }
 
-button:focus-visible {
+button:focus-visible, .button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
@@ -269,6 +269,10 @@ header > * {
   padding-bottom: var(--spacing-bottom);
 }
 
+.overlay-navigation:only-child { 
+  justify-content: end;
+}
+
 .about-intro {
   font-size: var(--font-size-desktop-m);
 }
@@ -308,9 +312,16 @@ text-transform: uppercase;
   font-size: var(--font-size-desktop-s);
 }
 
-.imprint-title {
+.imprint-content h2 {
 text-transform: uppercase;
 font-size: var(--font-size-desktop-m);
+font-weight: inherit;
+margin-top:2rem;
+margin-bottom:1rem;
+}
+
+.imprint-content h2:first-child {
+  margin-top:0;
 }
 
 .about-imprint-slider.show-about {

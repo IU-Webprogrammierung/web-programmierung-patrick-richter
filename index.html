@@ -193,18 +193,23 @@
       </div>
     </main>
     <!-- Overlay der About und Imprint Seite -->
-    <div
+    <dialog
       class="overlay"
       role="dialog"
       aria-label="Overlay with about and imprint information"
+      aria-modal="true"
       aria-hidden="true"
       tabindex="-1"
     >
-      <button class="close-overlay" aria-label="Close about overlay"><img src="./images/icons/close.png"></button>
+    <header>
+      <button class="close-overlay" aria-label="Close about overlay">
+        <img src="./images/icons/close.png" alt="close icon"/>
+      </button>
+    </header>
       <div class="overlay-left">Bild</div>
       <div class="overlay-right">
-        <div class="about-imprint-slider show-about">
-          <div class="about" id="about-section" aria-live="polite">
+        <div class="about-imprint-slider show-imprint">
+          <section class="about" id="about-section" aria-live="polite">
             <div class="overlay-content">
               <div class="about-intro">
                 <p>
@@ -228,7 +233,14 @@
 
               <div class="about-clients">
                 <ul aria-labelledby="clients-title">
-                  <li id="clients-title" class="clients-label" role="heading" aria-level="2">Clients</li>
+                  <li
+                    id="clients-title"
+                    class="clients-label"
+                    role="heading"
+                    aria-level="2"
+                  >
+                    Clients
+                  </li>
                   <li>Anne Fischer</li>
                   <li>David Dott</li>
                   <li>DUMMY Magazine</li>
@@ -240,10 +252,11 @@
                 </ul>
               </div>
             </div>
-            <nav class="overlay-navigation">
-              <button class="btn-insta" aria-label="Open Instagram profile">
+            <footer>
+            <nav class="overlay-navigation" aria-label="Social links and page navigation">
+              <a href="https://instagram.com/profile" class="btn-instsa button" aria-label="Open Instagram profile">
                 Instagram
-              </button>
+              </a>
               <button
                 class="btn-imprint"
                 aria-label="View imprint and privacy policy"
@@ -251,26 +264,26 @@
                 Imprint &amp; Privacy Policy
               </button>
             </nav>
-          </div>
-          <div class="imprint" id="imprint-section" aria-live="polite">
+          </footer>
+          </section>
+          <section class="imprint" id="imprint-section" aria-live="polite">
             <div class="overlay-content">
               <div class="imprint-content">
-                <p class="imprint-title">Imprint</p>
+                <h2>Imprint</h2>
                 <p>Information according to § 5 TMG (German Telemedia Act):</p>
-                <p class="imprint-title">Privacy Policy</p>
-                  <p>The entity responsible for data processing is:</p>
-              
-                
+                <h2>Privacy Policy</h2>
+                <p>The entity responsible for data processing is:</p>
               </div>
             </div>
-            <div class="overlay-navigation">
-              <button class="btn-about"></button>
-            <button class="btn-about">Back to about</button>
-          </div>
-          </div>
+            <footer>
+            <nav class="overlay-navigation" aria-label="Page navigation">
+              <button class="btn-about">Back to about</button>
+            </nav>
+          </footer>
+          </section>
         </div>
       </div>
-    </div>
+    </dialog>
 
     <!--   <button class="switch-to-imprint" aria-controls="imprint-section">
       Switch to Imprint
@@ -281,65 +294,5 @@
     aria-hidden="false" -> mit javascript setzen
     
     <button class="close-overlay" aria-label="Close overlay">✕</button>-->
-
-    <div
-      class="about-imprint-container_2"
-      role="dialog"
-      aria-label="Overlay with about and imprint information"
-      aria-hidden="true"
-    >
-      <button class="close-overlay" aria-label="Close about overlay">✕</button>
-      <div class="about-container">
-        <div class="about-content">
-          <p>
-            The graphic designer and art director is located in Hamburg with a
-            focus on editorial design, corporate identity and UX/design.
-          </p>
-          <p>
-            Taking into account concept and content, based on the client‘s
-            values and wishes. With a deep understanding of a holistic design
-            approach that seamlessly integrates analogue and digital media to
-            create a consistent look and feel.
-          </p>
-          <p>
-            For the realisation of more extensive projects, I work together with
-            my freelance network of designers in Berlin and Hamburg.
-          </p>
-          <a href="contact.html" class="btn-contact">Contact</a>
-        </div>
-        <div class="about-clients">
-          <h2 id="clients-title">CLIENTS:</h2>
-          <ul aria-labelledby="clients-title">
-            <li>Anne Fischer</li>
-            <li>David Dott</li>
-            <li>DUMMY Magazine</li>
-            <li>EMOTION Magazin</li>
-            <li>Illustrative Berlin</li>
-            <li>Martha Herford Museum</li>
-            <li>Nicole Reese Yoga Studio</li>
-            <li>WORKING WOMEN Magazine</li>
-          </ul>
-        </div>
-        <nav class="overlay-navigation">
-          <button class="btn-insta" aria-label="Open Instagram profile">
-            Instagram
-          </button>
-          <button
-            class="btn-imprint"
-            aria-label="View imprint and privacy policy"
-          >
-            Imprint &amp; Privacy Policy
-          </button>
-        </nav>
-      </div>
-      <div class="imprint-container">
-        <div class="imprint-content">
-          <p>imprint text</p>
-        </div>
-        <nav class="overlay-navigation">
-          <button class="btn-about">Back to about</button>
-        </nav>
-      </div>
-    </div>
   </body>
 </html>
