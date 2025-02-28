@@ -234,7 +234,6 @@ header > * {
   z-index: 10;
   display: flex;
 
-  transition: transform 0.5s ease-out;
 
 }
 
@@ -256,7 +255,6 @@ dialog::backdrop {
   position: relative;
   transform: translateX(100%);
   transition: transform 0.5s ease-out;
-
 }
 
 .about-imprint-slider {
@@ -391,12 +389,21 @@ dialog::backdrop {
   top: 0;
   left: 0;
   opacity: 0;
+  /*transition: opacity var(--transition-speed) ease-out;*/
   animation: none;
 }
 
 .overlay.show-overlay .overlay-right {
   transform: translateX(0);
 }
+
+.overlay.closing .overlay-right {
+  transform: translateX(100%);
+}
+.overlay.closing .bouncing-image {
+  opacity: 0;
+}
+
 
 .overlay.show-overlay .about-imprint-slider.show-about {
   transform: translateX(0);
@@ -407,8 +414,9 @@ dialog::backdrop {
 }
 
 .overlay.show-overlay .bouncing-image {
-  animation: appear 0s 500ms forwards,
-             slideVert 6s linear infinite alternate,
+  /*opacity: 1;*/
+  animation: appear var(--transition-speed) forwards,
+              slideVert 6s linear infinite alternate,
              slideHori 7s linear infinite alternate;
   animation-delay: 500ms;
 }

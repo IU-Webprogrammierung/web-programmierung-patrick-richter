@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/styles.css" />
     <title>BB</title>
+    <script src="script.js" defer></script>
+
   </head>
   <body>
     <header>
@@ -12,7 +14,7 @@
         <button class="nav-home button" aria-label="Go to top">Home</button>
         <!-- Projektitel soll sich zukünftig mit JS dynamisch ändern -->
 
-        <button class="nav-about button" aria-label="Open about overlay">About</button>
+        <button id="openOverlay" class="nav-about button" aria-label="Open about overlay">About</button>
       </nav>
       <h1 class="project-title desktop-only" aria-live="polite">
         Emotion Magazine
@@ -39,7 +41,7 @@
               class="slide"
             />
             <div class="description desktop-only" id="project1-title">
-              Description Project 1
+
             </div>
           </div>
         </article>
@@ -195,16 +197,16 @@
 
     <!-- Overlay der About und Imprint Seite -->
     <dialog
-      class="overlay show-overlay"
+      class="overlay"
       role="dialog"
       aria-label="Overlay with about and imprint information"
       aria-modal="true"
       aria-hidden="true"
       tabindex="-1"
     >    
-      <div class="overlay-left"><img src="./images/bouncing.jpeg" class="bouncing-image" alt="Portrait of the designer"></div>
+      <div class="overlay-left" id="overlayLeft"><img src="./images/bouncing.jpeg" class="bouncing-image" alt="Portrait of the designer"></div>
       <div class="overlay-right">
-        <button class="close-overlay" aria-label="Close about overlay">
+        <button id="closeOverlay" class="close-overlay" aria-label="Close about overlay">
           <img src="./images/icons/close.png" alt="close icon"/>
         </button>
         <div class="about-imprint-slider show-about">
@@ -293,5 +295,6 @@
     aria-hidden="false" -> mit javascript setzen
     
     <button class="close-overlay" aria-label="Close overlay">✕</button>-->
+
   </body>
 </html>
