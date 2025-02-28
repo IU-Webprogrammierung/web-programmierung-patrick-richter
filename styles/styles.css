@@ -197,6 +197,7 @@ header > * {
   display: flex;
   flex-direction: column;
   scroll-snap-stop: normal;
+  z-index: 20;
 }
 .footer-top {
   height: 50vh;
@@ -536,16 +537,6 @@ dialog::backdrop {
 
   .overlay.closing .overlay-right {
     transform: translateX(0) translateY(100%);
-  }
-
-
-
-
-
-
-
-  .about {
-    
   }
 }
 
