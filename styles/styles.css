@@ -468,7 +468,7 @@ dialog::backdrop {
       background-color var(--transition-speed) ease-out;
   }
 
-  .title-description-container.active {
+  .title-description-container.show-description {
     background-color: hsla(var(--color-bg-light), 0.9);
     transform: translateY(0);
   }
@@ -494,7 +494,11 @@ dialog::backdrop {
     transform-origin: center;
   }
 
-  .title-description-container.active .title-arrow {
+  .title-arrow img {
+    height:1rem;
+  }
+
+  .title-description-container.show-description .title-arrow {
     transform: rotate(180deg);
   }
 
