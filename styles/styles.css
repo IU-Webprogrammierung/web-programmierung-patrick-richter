@@ -376,9 +376,13 @@ dialog::backdrop {
 
 .overlay-left {
   width: calc(100vw - var(--overlay-width));
-  pointer-events: none;
   position: relative;
   overflow: hidden;
+  
+}
+
+.overlay.show-overlay .overlay-left {
+  cursor: pointer;
 }
 
 .bouncing-image {
