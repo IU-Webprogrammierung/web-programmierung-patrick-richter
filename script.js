@@ -7,6 +7,9 @@ addEventListener("keydown", function (event) {
   }
 });
 
+document.querySelector("#showImprint").addEventListener("click", ()=> toggleAboutImprint("show-imprint"));
+document.querySelector("#showAbout").addEventListener("click", ()=> toggleAboutImprint("show-about"));
+
 // Öffnet das Overlay und entfernt die Schließen-Animation
 
 function showOverlay() {
@@ -18,6 +21,7 @@ function showOverlay() {
     overlay.classList.add("show-overlay");
     overlay.setAttribute("aria-hidden", "false");
     console.log("Overlay visible");
+    document.querySelector("#closeOverlay").focus();
     console.log(document.activeElement);
   }
 }
@@ -41,10 +45,22 @@ function hideOverlay() {
         overlay.classList.remove("closing");
         overlay.setAttribute("aria-hidden", "true");
         document.querySelector("#openOverlay").focus();
+        showAbout();
         console.log("Overlay hidden");
         console.log(document.activeElement);
       },
       { once: true }
     );
   }
+}
+
+function toggleAboutImprint(targetClass) {
+    let aboutImprintSlider = document.querySelector(".about-imprint-slider");
+
+    if (targetClass === "show-about" && aboutImprintSlider.classList.contains("show-imprint")) {
+        aboutImprintSlider.classList.replace("show-imprint", targetClass);
+    }
+    else if (targetClass === "show-imprint" && aboutImprintSlider.classList.contains("show-about")) {
+        aboutImprintSlider.classList.replace("show-about", targetClass);
+    }
 }
