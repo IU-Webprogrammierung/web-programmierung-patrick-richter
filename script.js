@@ -45,7 +45,7 @@ function hideOverlay() {
         overlay.classList.remove("closing");
         overlay.setAttribute("aria-hidden", "true");
         document.querySelector("#openOverlay").focus();
-        showAbout();
+        toggleAboutImprint("show-about");
         console.log("Overlay hidden");
         console.log(document.activeElement);
       },
@@ -54,13 +54,19 @@ function hideOverlay() {
   }
 }
 
+// wechsele zwischen About und Imprint
+
 function toggleAboutImprint(targetClass) {
     let aboutImprintSlider = document.querySelector(".about-imprint-slider");
 
     if (targetClass === "show-about" && aboutImprintSlider.classList.contains("show-imprint")) {
         aboutImprintSlider.classList.replace("show-imprint", targetClass);
+        document.querySelector(".about").setAttribute("aria-hidden", "false");
+        document.querySelector(".imprint").setAttribute("aria-hidden", "true");
     }
     else if (targetClass === "show-imprint" && aboutImprintSlider.classList.contains("show-about")) {
         aboutImprintSlider.classList.replace("show-about", targetClass);
+        document.querySelector(".imprint").setAttribute("aria-hidden", "false");
+        document.querySelector(".about").setAttribute("aria-hidden", "true");
     }
 }

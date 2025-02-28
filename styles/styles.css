@@ -405,9 +405,6 @@ dialog::backdrop {
 .overlay.closing .overlay-right {
   transform: translateX(100%);
 }
-.overlay.closing .bouncing-image {
-  opacity: 0;
-}
 
 
 .overlay.show-overlay .about-imprint-slider.show-about {
@@ -526,7 +523,23 @@ dialog::backdrop {
   }
   .overlay-right {
     height: 60%;
+    transform: translateX(0) translateY(100%);
   }
+
+  .overlay.show-overlay .overlay-right {
+    transform: translateX(0) translateY(0);
+  }
+
+  .overlay.closing .overlay-right {
+    transform: translateX(0) translateY(100%);
+  }
+
+
+
+
+
+
+
   .about {
     
   }
