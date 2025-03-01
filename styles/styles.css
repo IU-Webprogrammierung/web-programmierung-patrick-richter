@@ -5,8 +5,9 @@
   --font-size-desktop-l: 2rem;
   --font-size-desktop-m: 1.5rem;
   --font-size-desktop-s: 1rem;
-  --font-size-mobile-title: 1.5rem;
-  --font-size-mobile-text: 1rem;
+  --font-size-mobile-l: 1.5rem;
+  --font-size-mobile-m: 1.25rem;
+  --font-size-mobile-s: 1rem;
   --transition-speed: 0.3s;
   --transition-speed-overlay:0.5s;
   --overlay-width: 50vw;
@@ -290,9 +291,7 @@ dialog::backdrop {
   justify-content: space-between;
   font-size: var(--font-size-desktop-m);
   padding-top: 1rem;
-  padding-bottom: var(--spacing-bottom);
-  margin-right: auto; 
-  
+  padding-bottom: var(--spacing-bottom);  
 }
 
 .overlay-navigation a.button {
@@ -484,15 +483,17 @@ dialog::backdrop {
   }
 
   .project-title-mobile {
-    font-size: var(--font-size-mobile-title);
+    font-size: var(--font-size-mobile-l);
     font-style: italic;
   }
 
   .title-arrow {
     position: absolute;
     right: 1rem;
+    display:flex;
     transition: transform var(--transition-speed) ease-out;
     transform-origin: center;
+
   }
 
   .title-arrow img {
@@ -504,7 +505,8 @@ dialog::backdrop {
   }
 
   .description-mobile {
-    font-size: var(--font-size-mobile-text);
+    font-size: var(--font-size-mobile-s);
+    line-height: normal;
     text-align: center;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -538,7 +540,83 @@ dialog::backdrop {
   .overlay.closing .overlay-right {
     transform: translateX(0) translateY(100%);
   }
-}
+
+  .about,
+  .imprint {
+    display: flex;
+    flex-direction: column;
+    padding:0;
+  }
+
+
+  .overlay-content {
+    padding: 1.2rem 3rem 0 1.5rem
+  }
+  .about-intro {
+    font-size: var(--font-size-mobile-m);
+  }
+  .close-overlay {
+
+    margin-top: 1.45rem;
+    margin-right: 1.5rem;
+  }
+
+  .close-overlay img {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .overlay-navigation {
+    font-size: var(--font-size-mobile-m);
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    height:4rem;
+    align-items: center;
+  }
+
+  .about-clients {
+    font-size: var(--font-size-mobile-s);
+    line-height: var(--font-size-mobile-s);
+  }
+
+  .imprint-content {
+    font-size: var(--font-size-mobile-s);
+  }
+
+  .imprint-content h2 {
+    font-size: var(--font-size-mobile-m);
+  }
+
+  .bouncing-image {
+    position: absolute;
+    will-change: transform;
+    width: 120px;
+    height: 180px;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    /*transition: opacity var(--transition-speed) ease-out;*/
+    animation: none;
+  }
+
+  @keyframes slideVert {
+    from {
+      top: 0;
+    }
+    to {
+      top: calc(100% - 180px);
+    }
+  }
+  
+  @keyframes slideHori {
+    from {
+      left: 0;
+    }
+    to {
+      left: calc(100% - 120px);
+    }
+  }
+  
 
 @media (prefers-reduced-motion: reduce) {
   html {
