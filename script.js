@@ -40,13 +40,21 @@ function handleKeyPress(event) {
 // Überprüft touchstart
 
 function handlePointerDown(event) {
-  startY = event.clientY || (event.touches && event.touches[0].clientY);
+  startY =
+    event.clientY ||
+    (event.touches && event.touches[0] && event.touches[0].clientY) ||
+    0;
 }
 
 // Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
 
 function handleTouchEnd(event) {
-  let endY = event.clientY || event.changedTouches?.[0]?.clientY;
+  const endY =
+    event.clientY ||
+    (event.changedTouches &&
+      event.changedTouches[0] &&
+      event.changedTouches[0].clientY) ||
+    0;
   console.log("Touch geendet bei:", endY);
   console.log("startY", startY);
   let deltaY = startY - endY;
