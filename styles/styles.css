@@ -616,7 +616,7 @@ dialog::backdrop {
       left: calc(100% - 120px);
     }
   }
-  
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {

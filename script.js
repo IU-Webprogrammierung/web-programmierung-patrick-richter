@@ -27,15 +27,16 @@ titleDescriptionContainer.addEventListener("click", toggleDescription);
 
 // Überprüft touchstart
 
-titleDescriptionContainer.addEventListener("touchstart", (event) => {
-  startY = event.touches[0].clientY;
+titleDescriptionContainer.addEventListener("pointerdown", (event) => {
+    startY = event.clientY || event.touches[0].clientY;
 });
 
-// Überprüft Swipe-Richtung unf öffnet ggf. Description Mobile
+// Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
 
 titleDescriptionContainer.addEventListener("touchend", (event) => {
-  let endY = event.changedTouches[0].clientY;
+    let endY = event.clientY || event.changedTouches?.[0]?.clientY;
   console.log("Touch geendet bei:", endY);
+  console.log("startY", startY);
   let deltaY = startY - endY;
 
   if (
