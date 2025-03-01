@@ -1,6 +1,12 @@
-/* Allgemeine Variablen */
+/* -----------------------------
+   1. VARIABLEN UND BASISWERTE
+   ----------------------------- */
+
 :root {
+  /* Farben */
   --color-bg-light: 0, 0%, 100%;
+
+  /* Typografie */
   --font-primary: "Neue Montreal", sans-serif;
   --font-size-desktop-l: 2rem;
   --font-size-desktop-m: 1.5rem;
@@ -8,16 +14,116 @@
   --font-size-mobile-l: 1.5rem;
   --font-size-mobile-m: 1.25rem;
   --font-size-mobile-s: 1rem;
-  --transition-speed: 0.3s;
-  --transition-speed-overlay:0.5s;
+
+  /* Animation */
+  --transition-fast: 0.2s ease-out;
+  --transition-default: 0.3s ease-out;
+  --transition-slow: 0.5s ease-out;
+
+  /* Layout */
   --overlay-width: 50vw;
   --overlay-width-mobile: 100vw;
-  --spacing-top: 1rem;
-  --spacing-bottom: 1rem;
+
+  /* Abstände */
+  --spacing-2xs: 0.25rem;
+  --spacing-xs: 0.5rem;
+  --spacing-s: 0.75rem;
+  --spacing-m: 1rem;
+  --spacing-l: 1.25rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 1.75rem;
+  --spacing-3xl: 2rem;
+  --spacing-4xl: 2.5rem;
+  --spacing-5xl: 3rem;
+
+  /* Spezifische Abstände */
+  --header-bottom-padding: var(--spacing-m);
+  --left-right-padding: var(--spacing-l);
+  --content-padding: var(--spacing-l);
+  --mobile-padding: var(--spacing-m);
+
   /*--overlay-width:min(50vw, 15rem + 30vw);*/
 }
 
-/* Basis-Styles */
+/* -----------------------------
+   2. RESET & BASISSTILE
+   ----------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 16px;
+  /*font-size: clamp(1rem, 1.1vw, 2rem);*/
+  scroll-behavior: smooth;
+  overflow: hidden;
+  font-family: var(--font-primary);
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  all: unset;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* -----------------------------
+   3. TYPOGRAFIE
+   ----------------------------- */
+
+/* Thin */
+
+@font-face {
+  font-family: Neue Montreal;
+  src: url("../fonts/PPNeueMontreal-Thin.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+/* Book - standard Schrift */
+
+@font-face {
+  font-family: Neue Montreal;
+  src: url("../fonts/PPNeueMontreal-Book.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Medium */
+
+@font-face {
+  font-family: Neue Montreal;
+  src: url("../fonts/PPNeueMontreal-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Semi-bold */
+
+@font-face {
+  font-family: Neue Montreal;
+  src: url("../fonts/PPNeueMontreal-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* -----------------------------
+   4. UI-KOMPONENTEN
+   ----------------------------- */
+
+/* Buttons und interaktive Elemente */
 
 button {
   all: unset;
@@ -27,8 +133,9 @@ button {
   appearance: none;
 }
 
-button.button, a.button {
-  transition: transform 200ms ease-in;
+button.button,
+a.button {
+  transition: var(--transition-fast);
   transform-origin: center center;
 }
 
@@ -43,72 +150,15 @@ button:focus-visible,
 }
 a.button {
   text-decoration: none;
-  color:inherit;
-  display:flex;
+  color: inherit;
+  display: flex;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* -----------------------------
+   5. LAYOUT-KOMPONENTEN
+   ----------------------------- */
 
-h1 {
-  all: unset;
-}
-
-.mobile-only {
-  display: none;
-}
-
-@font-face {
-  /* Thin */
-  font-family: Neue Montreal;
-  src: url("../fonts/PPNeueMontreal-Thin.otf") format("opentype");
-  font-weight: 100;
-  font-style: normal;
-}
-
-@font-face {
-  /* Book - standard Schrift */
-  font-family: Neue Montreal;
-  src: url("../fonts/PPNeueMontreal-Book.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  /* Medium */
-  font-family: Neue Montreal;
-  src: url("../fonts/PPNeueMontreal-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  /* Semi-bold */
-  font-family: Neue Montreal;
-  src: url("../fonts/PPNeueMontreal-SemiBold.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-}
-
-html {
-  font-size: 16px;
-  /*font-size: clamp(1rem, 1.1vw, 2rem);*/
-  scroll-behavior: smooth;
-  overflow: hidden;
-  font-family: var(--font-primary);
-}
-
-body {
-  margin: 0px;
-  padding: 0px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Header Styling */
+/* Header  */
 
 header {
   font-family: Neue Montreal, Arial, sans-serif;
@@ -123,23 +173,48 @@ header {
 }
 
 header > * {
-  padding-top: var(--spacing-top);
-  padding-bottom: 1rem;
+  padding-top: var(--header-bottom-padding);
+  padding-bottom: var(--header-bottom-padding);
 }
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
+  padding-left: var(--left-right-padding);
+  padding-right: var(--left-right-padding);
 }
 
-/* Project Styling */
+/* Footer */
+
+.footer-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-stop: normal;
+  z-index: 20;
+}
+.footer-top {
+  height: 50vh;
+  pointer-events: none;
+}
+.footer {
+  height: 50vh;
+  background-color: white;
+  font-family: Neue Montreal;
+  font-size: var(--font-size-desktop-l);
+  text-align: center;
+  padding-top: var(--spacing-3xl);
+  pointer-events: auto;
+}
+
+/* -----------------------------
+   6. PROJEKT-KOMPONENTEN
+   ----------------------------- */
 
 .project-title {
   font-style: italic;
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -188,39 +263,21 @@ header > * {
   left: 50%;
   transform: translate(-50%);
   text-align: center;
-  padding-bottom: var(--spacing-bottom);
+  padding-bottom: var(--header-bottom-padding);
 }
 
-/* Footer Styling */
+/* -----------------------------
+   7. OVERLAY-SYSTEM
+   ----------------------------- */
 
-.footer-container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  scroll-snap-stop: normal;
-  z-index: 20;
-}
-.footer-top {
-  height: 50vh;
-  pointer-events: none;
-}
-.footer {
-  height: 50vh;
-  background-color: white;
-  font-family: Neue Montreal;
-  font-size: var(--font-size-desktop-l);
-  text-align: center;
-  padding-top: 2rem;
-  pointer-events: auto;
-}
-
-/* About / Imprint Overlay Styling */
+/* Overlay Grundstruktur */
 
 .overlay {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  
+
+  position: fixed;
   margin: 0;
   padding: 0;
   border: none;
@@ -230,13 +287,10 @@ header > * {
 
   width: 100vw;
   height: 100vh;
-  position: fixed;
   top: 0;
   right: 0;
   z-index: 10;
   display: flex;
-
-
 }
 
 .overlay.show-overlay {
@@ -249,6 +303,7 @@ dialog::backdrop {
   background: transparent;
 }
 
+/* Overlay rechte Seite */
 
 .overlay-right {
   background-color: hsla(var(--color-bg-light));
@@ -256,8 +311,38 @@ dialog::backdrop {
   overflow-x: hidden;
   position: relative;
   transform: translateX(100%);
-  transition: transform var(--transition-speed-overlay) ease-out;
+  transition: transform var(--transition-slow);
 }
+
+.overlay.show-overlay .overlay-right {
+  transform: translateX(0);
+}
+
+.overlay.closing .overlay-right {
+  transform: translateX(100%);
+}
+
+/* Close Button */
+
+.close-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: calc(var(--header-bottom-padding) + var(--spacing-2xs));
+  margin-right: var(--spacing-m);
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.close-overlay img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* About/Imprint Slider */
 
 .about-imprint-slider {
   width: calc(2 * var(--overlay-width));
@@ -265,15 +350,25 @@ dialog::backdrop {
   display: flex;
   transform: translateX(0);
   will-change: transform;
-  transition: transform var(--transition-speed-overlay) ease-out;
-  
+  transition: transform var(--transition-slow);
 }
+
+.overlay.show-overlay .about-imprint-slider.show-about {
+  transform: translateX(0);
+}
+
+.overlay.show-overlay .about-imprint-slider.show-imprint {
+  transform: translateX(-50%);
+}
+
+/* About & Imprint Bereiche */
 
 .about,
 .imprint {
   height: 100%;
   width: var(--overlay-width);
-  padding: calc(var(--spacing-top) + 0.2rem) 2rem 0 2rem;
+  padding: calc(var(--header-bottom-padding) + var(--spacing-2xs))
+    var(--spacing-3xl) 0 var(--spacing-3xl);
   display: flex;
   flex-direction: column;
 }
@@ -281,7 +376,7 @@ dialog::backdrop {
 .overlay-content {
   flex-grow: 1;
   overflow-y: auto;
-  padding-right: 2.5rem;
+  padding-right: var(--spacing-4xl);
 }
 
 .overlay-navigation {
@@ -290,17 +385,26 @@ dialog::backdrop {
   display: flex;
   justify-content: space-between;
   font-size: var(--font-size-desktop-m);
-  padding-top: 1rem;
-  padding-bottom: var(--spacing-bottom);  
+  padding-top: var(--spacing-m);
+  padding-bottom: var(--spacing-m);
 }
 
 .overlay-navigation a.button {
-  margin-right: auto; 
+  margin-right: auto;
 }
 
 .imprint .overlay-navigation {
   justify-content: flex-end;
 }
+
+/* About / Imprint gemeinsames Styling */
+
+.about p,
+.imprint p {
+  margin-top: 0;
+}
+
+/* About Content Styling */
 
 .about-intro {
   font-size: var(--font-size-desktop-m);
@@ -315,7 +419,7 @@ dialog::backdrop {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
 }
 
 .about-clients .clients-label {
@@ -333,10 +437,7 @@ dialog::backdrop {
   content: "";
 }
 
-.about p,
-.imprint p {
-  margin-top: 0;
-}
+/* Imprint Content Styling */
 
 .imprint-content {
   font-size: var(--font-size-desktop-s);
@@ -346,40 +447,20 @@ dialog::backdrop {
   text-transform: uppercase;
   font-size: var(--font-size-desktop-m);
   font-weight: inherit;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: var(--spacing-3xl);
+  margin-bottom: var(--spacing-m);
 }
 
 .imprint-content h2:first-child {
   margin-top: 0;
 }
 
-
-
-.close-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-top: calc(var(--spacing-top) + 0.2rem);
-  margin-right: 1rem;
-  line-height: normal;
-  display: flex;
-  align-items: center;
-  cursor:pointer;
-  z-index: 100;
-  
-}
-
-.close-overlay img {
-  width: 1.5rem;
-  height: 1.5rem;
-}
+/* Overlay Linke Seite (Bild) */
 
 .overlay-left {
   width: calc(100vw - var(--overlay-width));
   position: relative;
   overflow: hidden;
-  
 }
 
 .overlay.show-overlay .overlay-left {
@@ -394,34 +475,19 @@ dialog::backdrop {
   top: 0;
   left: 0;
   opacity: 0;
-  /*transition: opacity var(--transition-speed) ease-out;*/
   animation: none;
 }
 
-.overlay.show-overlay .overlay-right {
-  transform: translateX(0);
-}
-
-.overlay.closing .overlay-right {
-  transform: translateX(100%);
-}
-
-
-.overlay.show-overlay .about-imprint-slider.show-about {
-  transform: translateX(0);
-}
-
-.overlay.show-overlay .about-imprint-slider.show-imprint {
-  transform: translateX(-50%);
-}
-
 .overlay.show-overlay .bouncing-image {
-  /*opacity: 1;*/
-  animation: appear var(--transition-speed) forwards,
-              slideVert 6s linear infinite alternate,
-             slideHori 7s linear infinite alternate;
-  animation-delay: 500ms;
+  animation: 
+    appear 0s 500ms forwards,
+    slideVert 6s linear infinite alternate 500ms,
+    slideHori 7s linear infinite alternate 500ms;
 }
+
+/* -----------------------------
+   8. ANIMATIONEN (KEYFRAMES)
+   ----------------------------- */
 
 @keyframes appear {
   to {
@@ -447,25 +513,33 @@ dialog::backdrop {
   }
 }
 
+/* -----------------------------
+   9. MEDIA QUERIES
+   ----------------------------- */
+
 @media screen and (max-width: 800px),
   screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+  /* Allgemeine mobile Anpassungen */
+
   .desktop-only {
     display: none;
   }
+
+  /* Mobile Title/Description Container */
 
   .title-description-container {
     display: flex;
     flex-direction: column;
     position: fixed;
-    bottom: 0px;
+    bottom: 0;
     transform: translateY(calc(100% - 4rem)); /* Höhe title container */
     font-family: Neue Montreal;
     align-items: center;
-    padding: 0 1rem 2rem 1rem;
+    padding: 0 var(--spacing-m) var(--spacing-3xl) var(--spacing-m);
     width: 100%;
     background-color: hsla(var(--color-bg-light), 0.2);
-    transition: transform var(--transition-speed) ease-out,
-      background-color var(--transition-speed) ease-out;
+    transition: transform var(--transition-slow),
+      background-color var(--transition-slow);
   }
 
   .title-description-container.show-description {
@@ -489,15 +563,14 @@ dialog::backdrop {
 
   .title-arrow {
     position: absolute;
-    right: 1rem;
-    display:flex;
-    transition: transform var(--transition-speed) ease-out;
+    right: var(--spacing-m);
+    display: flex;
+    transition: transform var(--transition-default);
     transform-origin: center;
-
   }
 
   .title-arrow img {
-    height:1rem;
+    height: 1rem;
   }
 
   .title-description-container.show-description .title-arrow {
@@ -508,16 +581,21 @@ dialog::backdrop {
     font-size: var(--font-size-mobile-s);
     line-height: normal;
     text-align: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: var(--spacing-m);
+    padding-right: var(--spacing-m);
   }
 
+  /* Overlay mobile Anpassungen */
+
   .overlay {
-    display:flex;
+    display: flex;
     flex-direction: column;
   }
-  
-  .overlay-left, .overlay-right, .about, .imprint {
+
+  .overlay-left,
+  .overlay-right,
+  .about,
+  .imprint {
     width: var(--overlay-width-mobile);
   }
 
@@ -526,8 +604,9 @@ dialog::backdrop {
   }
 
   .overlay-left {
-    height:40%;
+    height: 40%;
   }
+
   .overlay-right {
     height: 60%;
     transform: translateX(0) translateY(100%);
@@ -545,20 +624,20 @@ dialog::backdrop {
   .imprint {
     display: flex;
     flex-direction: column;
-    padding:0;
+    padding: 0;
   }
-
 
   .overlay-content {
-    padding: 1.2rem 3rem 0 1.5rem
+    padding: var(--spacing-l) var(--spacing-4xl) 0 var(--spacing-xl);
   }
+
   .about-intro {
     font-size: var(--font-size-mobile-m);
   }
-  .close-overlay {
 
-    margin-top: 1.45rem;
-    margin-right: 1.5rem;
+  .close-overlay {
+    margin-top: var(--spacing-xl);
+    margin-right: var(--spacing-xl);
   }
 
   .close-overlay img {
@@ -568,9 +647,9 @@ dialog::backdrop {
 
   .overlay-navigation {
     font-size: var(--font-size-mobile-m);
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    height:4rem;
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+    height: 4rem;
     align-items: center;
   }
 
@@ -587,16 +666,11 @@ dialog::backdrop {
     font-size: var(--font-size-mobile-m);
   }
 
+  /* Mobile Bouncing Image Anpassungen */
+
   .bouncing-image {
-    position: absolute;
-    will-change: transform;
     width: 120px;
     height: 180px;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    /*transition: opacity var(--transition-speed) ease-out;*/
-    animation: none;
   }
 
   @keyframes slideVert {
@@ -607,7 +681,7 @@ dialog::backdrop {
       top: calc(100% - 180px);
     }
   }
-  
+
   @keyframes slideHori {
     from {
       left: 0;
@@ -618,14 +692,18 @@ dialog::backdrop {
   }
 }
 
+/* Barrierefreiheit: Reduzierte Animation */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
+
   .overlay.show-overlay .bouncing-image {
     opacity: 1;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    animation: none;
   }
 }
