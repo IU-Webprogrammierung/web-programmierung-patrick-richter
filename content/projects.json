@@ -1,0 +1,204 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "name": "EMOTION Magazine",
+        "description": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "text": "EMOTION MAGAZIN published monthly — a small selection of double spreads, which I designed for the magazine issues between 2014 and 2023"
+              }
+            ]
+          }
+        ],
+        "rank": 1,
+        "project_images": [
+          {
+            "id": 1,
+            "textColor": "black",
+            "imageTitle": "Emotion1_1",
+            "image": [
+              {
+                "url": "images/project1-1.jpg",
+                "alt": "Emotion Magazine Image 1"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "textColor": "black",
+            "imageTitle": "Emotion1_2",
+            "image": [
+              {
+                "url": "images/project1-2.jpg",
+                "alt": "Emotion Magazine Image 2"
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "textColor": "black",
+            "imageTitle": "Emotion1_3",
+            "image": [
+              {
+                "url": "images/project1-3.jpg",
+                "alt": "Emotion Magazine Image 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "WORKING WOMEN Magazine",
+        "description": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "text": "WORKING WOMEN a Magazin with all topics relating to how we want to work in today's world"
+              }
+            ]
+          }
+        ],
+        "rank": 2,
+        "project_images": [
+          {
+            "id": 4,
+            "textColor": "black",
+            "imageTitle": "Working_Women1_1",
+            "image": [
+              {
+                "url": "images/project2-1.jpg",
+                "alt": "Working Women Magazine Image 1"
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "textColor": "black",
+            "imageTitle": "Working_Women1_2",
+            "image": [
+              {
+                "url": "images/project2-2.jpg",
+                "alt": "Working Women Magazine Image 2"
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "textColor": "black",
+            "imageTitle": "Working_Women1_3",
+            "image": [
+              {
+                "url": "images/project2-3.jpg",
+                "alt": "Working Women Magazine Image 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "DUMMY Magazine",
+        "description": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "text": "Art Direction for the 53. edition of the quarterly magazine DUMMY"
+              }
+            ]
+          }
+        ],
+        "rank": 3,
+        "project_images": [
+          {
+            "id": 7,
+            "textColor": "black",
+            "imageTitle": "Dummy_1",
+            "image": [
+              {
+                "url": "images/project3-1.jpg",
+                "alt": "Dummy Magazine Image 1"
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "textColor": "black",
+            "imageTitle": "Dummy_2",
+            "image": [
+              {
+                "url": "images/project3-2.jpg",
+                "alt": "Dummy Magazine Image 2"
+              }
+            ]
+          },
+          {
+            "id": 9,
+            "textColor": "black",
+            "imageTitle": "Dummy_3",
+            "image": [
+              {
+                "url": "images/project3-3.jpg",
+                "alt": "Dummy Magazine Image 3"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "ANNE FISCHER Brand Design",
+        "description": [
+          {
+            "type": "paragraph",
+            "children": [
+              {
+                "text": "ANNE FISCHER – Brand Design for the artist Anne Fischer working in the field of Silverschmith and Jewlery"
+              }
+            ]
+          }
+        ],
+        "rank": 4,
+        "project_images": [
+          {
+            "id": 10,
+            "textColor": "white",
+            "imageTitle": "Anne_Fischer_Brand_1",
+            "image": [
+              {
+                "url": "images/project4-1.jpg",
+                "alt": "Anne Fischer Brand Image 1"
+              }
+            ]
+          },
+          {
+            "id": 11,
+            "textColor": "white",
+            "imageTitle": "Anne_Fischer_Brand_2",
+            "image": [
+              {
+                "url": "images/project4-2.jpg",
+                "alt": "Anne Fischer Brand Image 2"
+              }
+            ]
+          },
+          {
+            "id": 12,
+            "textColor": "white",
+            "imageTitle": "Anne_Fischer_Brand_3",
+            "image": [
+              {
+                "url": "images/project4-3.jpg",
+                "alt": "Anne Fischer Brand Image 3"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }

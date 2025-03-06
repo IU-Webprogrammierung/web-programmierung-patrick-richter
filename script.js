@@ -1,7 +1,6 @@
 /* -----------------------------
    1. DOM-Selektoren und Variablen
    ----------------------------- */
-
 const overlay = document.querySelector(".overlay");
 const overlayRight = document.querySelector(".overlay-right");
 const titleDescriptionContainer = document.querySelector(
@@ -148,3 +147,45 @@ function toggleAboutImprint(targetClass) {
     document.querySelector(".about").setAttribute("aria-hidden", "true");
   }
 }
+
+
+/** Projekte Laden */
+
+
+/** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
+const dataStore = {
+    projectsData: null,
+    getProjects: function() {
+        return this.projectsData;
+    },
+    loadProjects: async function () {
+        try {
+            console.log("Test-Fetch beginnt...");
+            const response = await fetch('content/projects.json');
+            const data = await response.json();
+            console.log("Laden erfolgreich");
+            this.projectsData = data;
+            return data;
+        } catch (error) {
+            console.error(error);
+            console.log("Laden nicht erfolgreich")
+            return null;
+        } 
+    }
+} 
+
+async function initializeWebsite () {
+    console.log("Initialize Website gestartet");    
+    const projects = await dataStore.loadProjects();
+        console.log("Geladene Daten:", projects);   
+        if(projects) {
+            console.log("Loading of projects successful!");
+        } else {
+            console.log("Loading failed - no data returned");  
+        }
+} 
+
+
+document.addEventListener("DOMContentLoaded", initializeWebsite);
+
+
