@@ -190,7 +190,9 @@ function createProjectElements() {
     const projectsData = dataStore.getProjects();
     const container = document.querySelector(".project-container");
 
-
+        // Scroll-Snap temporär deaktivieren
+        const originalSnapType = container.style.scrollSnapType;
+        container.style.scrollSnapType = 'none';
     
     // Footer speichern und entfernen
     const footerElement = container.querySelector(".footer-container");
@@ -240,7 +242,13 @@ function createProjectElements() {
     if (footerElement) {
         container.appendChild(footerElement);
     }
-
+        // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
+        setTimeout(() => {
+            container.scrollTop = 0;
+            setTimeout(() => {
+                container.style.scrollSnapType = originalSnapType;
+            }, 50);
+        }, 50);
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
