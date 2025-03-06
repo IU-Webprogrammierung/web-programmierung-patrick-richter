@@ -180,11 +180,68 @@ async function initializeWebsite () {
         console.log("Geladene Daten:", projects);   
         if(projects) {
             console.log("Loading of projects successful!");
+            createProjectElements ();
         } else {
             console.log("Loading failed - no data returned");  
         }
 } 
 
+function createProjectElements() {
+    const projectsData = dataStore.getProjects();
+    const container = document.querySelector(".project-container");
+
+
+    
+    // Footer speichern und entfernen
+    const footerElement = container.querySelector(".footer-container");
+    if (footerElement) {
+        footerElement.remove();
+    }
+    
+    // Container komplett leeren
+    container.innerHTML = '';
+
+    if (projectsData && projectsData.data) {
+        projectsData.data.forEach((project) => {
+            // Bilder-HTML erstellen (falls vorhanden)
+            let imagesHTML = '';
+            if (project.project_images && project.project_images.length > 0) {
+                imagesHTML = project.project_images.map(img => `
+                    <img 
+                        src="${img.image[0].url}" 
+                        alt="${img.image[0].alt || project.name}" 
+                        data-id="${img.id}"
+                        data-text-color="${img.textColor}"
+                        data-image-title="${img.imageTitle}"
+                        class="slide"
+                    />
+                `).join('');
+            }
+            
+            // Eindeutige IDs für Accessibility
+            const projectTitleId = `project-title-${project.id}`;
+            
+            // Gesamtes Projekt-HTML
+            const projectHTML = `
+                <article class="project" aria-labelledby="${projectTitleId}">
+                    <div class="slider">
+                        ${imagesHTML}
+                    </div>
+                    <div class="description desktop-only" id="${projectTitleId}">
+                        ${project.description[0].children[0].text}
+                    </div>
+                </article>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', projectHTML);
+
+        });
+    }
+    if (footerElement) {
+        container.appendChild(footerElement);
+    }
+
+}
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
 
