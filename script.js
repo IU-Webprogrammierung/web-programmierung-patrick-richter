@@ -225,7 +225,12 @@ function createProjectElements() {
             
             // Gesamtes Projekt-HTML
             const projectHTML = `
-                <article class="project" aria-labelledby="${projectTitleId}">
+                    <article 
+        class="project" 
+        aria-labelledby="${projectTitleId}"
+        data-project-id="${project.id}"
+        data-project-name="${project.name}"
+    >
                     <div class="slider">
                         ${imagesHTML}
                     </div>
@@ -240,17 +245,61 @@ function createProjectElements() {
         });
     }
     if (footerElement) {
+        // Footer anhängen und "hidden" entfernen
         container.appendChild(footerElement);
+        footerElement.classList.remove('hidden-footer');
     }
         // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
         setTimeout(() => {
             container.scrollTop = 0;
             setTimeout(() => {
                 container.style.scrollSnapType = originalSnapType;
+                setupProjectTitle();
             }, 50);
         }, 50);
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
 
+// Funktion zum Aktualisieren des PRojekttitels beim Scrollen
+function updateProjectTitle() {
+    // DOM-Elemente
+    const container = document.querySelector('.project-container');
+    const projectTitle = document.querySelector('.project-title');
+    const mobileTitle = document.querySelector('.project-title-mobile');
+    const mobileDescription = document.querySelector('.description-mobile');
+    
+    // Funktion zum Aktualisieren der Titel
+    function updateTitles() {
+        // Index des aktuellen Projekts berechnen
+        const index = Math.round(container.scrollTop / window.innerHeight);
+        const projects = document.querySelectorAll('.project:not(.footer-container)');
+        
+        // Wenn ein gültiges Projekt gefunden wurde
+        if (projects[index]) {
+            const project = projects[index];
+            const name = project.getAttribute('data-project-name');
+            const description = project.querySelector('.description')?.textContent || '';
+            
+            // Titel aktualisieren
+            projectTitle.textContent = name;
+            if (mobileTitle) mobileTitle.textContent = name;
+            if (mobileDescription) mobileDescription.textContent = description;
+        }
+    }
+    
+    // Initial ausführen (ohne Animation)
+    updateTitles();
+    
+    // Für Scroll-Events mit Fade-Animation
+    container.addEventListener('scroll', function() {
+        projectTitle.classList.add('fade-out');
+        setTimeout(function() {
+            updateTitles();
+            projectTitle.classList.remove('fade-out');
+        }, 300);
+    });
+}
 
+// Beim Laden der Seite ausführen
+window.addEventListener('load', updateProjectTitle);
