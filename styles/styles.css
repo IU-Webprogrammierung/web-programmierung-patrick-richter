@@ -200,7 +200,7 @@ header > * {
 }
 .footer-top {
   height: 50vh;
-  pointer-events: none;
+  cursor: pointer;
 }
 .footer {
   height: 50vh;
@@ -238,9 +238,9 @@ header > * {
 .fade-out {
   opacity: 0;
 }
-/*.initial-appear {
+.initial-appear {
   animation: initialFadeIn var(--title-initial-duration) ease-out;
-}*/
+}
 
 .project-container {
   display: flex;
@@ -511,14 +511,14 @@ dialog::backdrop {
    8. ANIMATIONEN (KEYFRAMES)
    ----------------------------- */
 
-/*@keyframes initialFadeIn {
+@keyframes initialFadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
   }
-}*/
+}
 
 @keyframes appear {
   to {

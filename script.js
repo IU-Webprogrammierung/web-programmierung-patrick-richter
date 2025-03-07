@@ -25,6 +25,10 @@ document
 titleDescriptionContainer.addEventListener("click", toggleDescription);
 titleDescriptionContainer.addEventListener("pointerdown", handlePointerDown);
 titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
+document.querySelector("#scrollTop").addEventListener("click", ScrollToTop);
+document.querySelector("#footerTop").addEventListener("click", closeFooter);
+
+
 
 /* -----------------------------
    3. Event-Handler
@@ -75,7 +79,26 @@ function handleTouchEnd(event) {
    4. Funktionen
    ----------------------------- */
 
-// Öffnet und schließt Description Mobile
+// Scrollt nach oben
+
+function ScrollToTop () {
+    const container = document.querySelector('.project-container');
+    container.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Footer schließen
+
+function closeFooter () {
+    const container = document.querySelector('.project-container');
+    const currentScrollPos = container.scrollTop;
+    const viewportHeight = window.innerHeight;
+    container.scrollTo({ 
+        top: Math.max(0, currentScrollPos - viewportHeight),
+        behavior: 'smooth'
+    });
+}
+
+   // Öffnet und schließt Description Mobile
 
 function toggleDescription() {
   titleDescriptionContainer.classList.toggle("show-description");
@@ -261,7 +284,7 @@ function createProjectElements() {
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
 
-// Funktion zum Aktualisieren des PRojekttitels beim Scrollen
+// Funktion zum Aktualisieren des Projekttitels beim Scrollen
 function updateProjectTitle() {
     // DOM-Elemente
     const container = document.querySelector('.project-container');
