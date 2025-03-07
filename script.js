@@ -8,6 +8,77 @@ const titleDescriptionContainer = document.querySelector(
 );
 let startY = 0;
 
+/** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
+const dataStore = {
+    projectsData: null,
+    getProjects: function() {
+        return this.projectsData;
+    },
+    loadProjects: async function () {
+        try {
+            console.log("Test-Fetch beginnt...");
+            const response = await fetch('content/projects.json');
+            const data = await response.json();
+            console.log("Laden erfolgreich");
+            this.projectsData = data;
+            return data;
+        } catch (error) {
+            console.error(error);
+            console.log("Laden nicht erfolgreich")
+            return null;
+        } 
+    }
+} 
+
+/* ------------------------------------------------------------
+   1.1 Zentrale Statusverwaltung der Projekte / Bilder / Farben
+   ----------------------------------------------------------- */
+
+   const uiState = {
+    // Aktueller Zustand der Anwendung
+    activeProjectIndex: -1,
+    activeImageIndex: -1,
+    activeTextColor: 'black',
+    projects: [],
+
+    // Methode zum Aktualisieren der Projekte
+    updateProjects() {
+        this.projects = Array.from(document.querySelectorAll('.project:not(.footer-container)'));
+    },
+    
+    // Methode zum Setzen des aktiven Projekts
+    setActiveProject(index) {
+        if (index !== this.activeProjectIndex) {
+            this.activeProjectIndex = index;
+            document.dispatchEvent(new CustomEvent('activeProjectChanged', { 
+                detail: { projectIndex: index }
+            }));
+        }
+    },
+    
+    // Methode zum Setzen des aktiven Bildes
+    setActiveImage(projectIndex, imageIndex, textColor) {
+        const changed = projectIndex !== this.activeProjectIndex || 
+                       imageIndex !== this.activeImageIndex ||
+                       textColor !== this.activeTextColor;
+        
+        if (changed) {
+            this.activeProjectIndex = projectIndex;
+            this.activeImageIndex = imageIndex;
+            this.activeTextColor = textColor || 'black';
+            
+            document.dispatchEvent(new CustomEvent('activeImageChanged', { 
+                detail: { 
+                    projectIndex: projectIndex,
+                    imageIndex: imageIndex,
+                    textColor: this.activeTextColor
+                }
+            }));
+        }
+    }
+};
+
+
 /* -----------------------------
    2. Event-Listener-Registrierung
    ----------------------------- */
@@ -25,7 +96,7 @@ document
 titleDescriptionContainer.addEventListener("click", toggleDescription);
 titleDescriptionContainer.addEventListener("pointerdown", handlePointerDown);
 titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
-document.querySelector("#scrollTop").addEventListener("click", ScrollToTop);
+document.querySelector("#scrollTop").addEventListener("click", scrollToTop);
 document.querySelector("#footerTop").addEventListener("click", closeFooter);
 
 
@@ -79,9 +150,51 @@ function handleTouchEnd(event) {
    4. Funktionen
    ----------------------------- */
 
+
+   /* -----------------------------
+   4.1 Überwachung der Scrollposition
+   ----------------------------- */
+
+
+   function setupScrollHandler() {
+    const container = document.querySelector('.project-container');
+    
+    
+    // Aktuellen Projektindex berechnen (Scroll-Abstand nach oben / Fensterhöhe)
+    function calculateActiveProjectIndex() {
+        return Math.round(container.scrollTop / window.innerHeight);
+    }
+    
+    // Funktion zum Aktualisieren des aktiven Projekts
+    function updateActiveProject() {
+        const newIndex = calculateActiveProjectIndex();
+        
+        // Nur aktualisieren, wenn sich der Index geändert hat und gültig ist
+        if (newIndex !== uiState.activeProjectIndex && 
+            newIndex >= 0 && 
+            newIndex < uiState.projects.length) {
+            
+            console.log(`Aktives Projekt wechselt zu Index: ${newIndex}`);
+            uiState.setActiveProject(newIndex);
+        }
+    }
+    
+    // ScrollEvent-Handler wenn gescrollt wird
+    container.addEventListener('scroll', () => {
+        // requestAnimationFrame verhindert zu häufige Updates in kurzer Zeit
+        requestAnimationFrame(updateActiveProject);
+    });
+    
+    // Initialen Status setzen (basierend auf anfänglicher Scroll-Position)
+    const initialIndex = calculateActiveProjectIndex();
+    if (initialIndex >= 0 && initialIndex < uiState.projects.length) {
+        uiState.setActiveProject(initialIndex);
+    }
+}
+
 // Scrollt nach oben
 
-function ScrollToTop () {
+function scrollToTop () {
     const container = document.querySelector('.project-container');
     container.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -175,28 +288,6 @@ function toggleAboutImprint(targetClass) {
 /** Projekte Laden */
 
 
-/** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
-const dataStore = {
-    projectsData: null,
-    getProjects: function() {
-        return this.projectsData;
-    },
-    loadProjects: async function () {
-        try {
-            console.log("Test-Fetch beginnt...");
-            const response = await fetch('content/projects.json');
-            const data = await response.json();
-            console.log("Laden erfolgreich");
-            this.projectsData = data;
-            return data;
-        } catch (error) {
-            console.error(error);
-            console.log("Laden nicht erfolgreich")
-            return null;
-        } 
-    }
-} 
-
 async function initializeWebsite () {
     console.log("Initialize Website gestartet");    
     const projects = await dataStore.loadProjects();
@@ -277,52 +368,57 @@ function createProjectElements() {
             container.scrollTop = 0;
             setTimeout(() => {
                 container.style.scrollSnapType = originalSnapType;
+                uiState.updateProjects();
+
+                setupScrollHandler();
                 setupProjectTitle();
             }, 50);
         }, 50);
+        uiState.updateProjects();
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
 
-// Funktion zum Aktualisieren des Projekttitels beim Scrollen
-function updateProjectTitle() {
+// Dynamische Änderung der Projekttitel
+function setupProjectTitle() {
     // DOM-Elemente
-    const container = document.querySelector('.project-container');
     const projectTitle = document.querySelector('.project-title');
     const mobileTitle = document.querySelector('.project-title-mobile');
     const mobileDescription = document.querySelector('.description-mobile');
     
     // Funktion zum Aktualisieren der Titel
     function updateTitles() {
-        // Index des aktuellen Projekts berechnen
-        const index = Math.round(container.scrollTop / window.innerHeight);
-        const projects = document.querySelectorAll('.project:not(.footer-container)');
+        // Index aus dem zentralen State holen
+        const index = uiState.activeProjectIndex;
         
         // Wenn ein gültiges Projekt gefunden wurde
-        if (projects[index]) {
-            const project = projects[index];
+        if (index >= 0 && index < uiState.projects.length) {
+            const project = uiState.projects[index];
             const name = project.getAttribute('data-project-name');
             const description = project.querySelector('.description')?.textContent || '';
             
             // Titel aktualisieren
-            projectTitle.textContent = name;
+            if (projectTitle) projectTitle.textContent = name;
             if (mobileTitle) mobileTitle.textContent = name;
             if (mobileDescription) mobileDescription.textContent = description;
         }
     }
     
-    // Initial ausführen (ohne Animation)
-    updateTitles();
+    // Initial ausführen
+    setTimeout(updateTitles, 100); // Kurze Verzögerung für die Initialisierung
     
-    // Für Scroll-Events mit Fade-Animation
-    container.addEventListener('scroll', function() {
-        projectTitle.classList.add('fade-out');
+    // Auf Änderungen des aktiven Projekts reagieren
+    document.addEventListener('activeProjectChanged', function() {
+        if (projectTitle) projectTitle.classList.add('fade-out');
+        if (mobileTitle) mobileTitle.classList.add('fade-out');
+        if (mobileDescription) mobileDescription.classList.add('fade-out');
+        
         setTimeout(function() {
             updateTitles();
-            projectTitle.classList.remove('fade-out');
+            
+            if (projectTitle) projectTitle.classList.remove('fade-out');
+            if (mobileTitle) mobileTitle.classList.remove('fade-out');
+            if (mobileDescription) mobileDescription.classList.remove('fade-out');
         }, 300);
     });
 }
-
-// Beim Laden der Seite ausführen
-window.addEventListener('load', updateProjectTitle);
