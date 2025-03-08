@@ -1,3 +1,4 @@
+
 /* -----------------------------
    1. VARIABLEN UND BASISWERTE
    ----------------------------- */
@@ -170,8 +171,8 @@ header {
   font-weight: 400;
   font-size: var(--font-size-desktop-l);
   line-height: var(--font-size-desktop-l);
-  color: white;
-  mix-blend-mode: difference;
+  /* color: white;
+  mix-blend-mode: difference; */
   width: 100vw;
   position: fixed;
   z-index: 10;
@@ -232,7 +233,7 @@ header > * {
 .project-title-mobile,
 .description-mobile {
   opacity: 1;
-  transition: opacity var(--title-fade-duration) ease-out;
+  transition: opacity var(--title-fade-duration) ease-out, color 0.5s ease;
 }
 
 .fade-out {
@@ -280,8 +281,8 @@ header > * {
   position: absolute;
   bottom: 0;
   font-size: var(--font-size-desktop-s);
-  color: white;
-  mix-blend-mode: difference;
+  /*color: white; 
+  mix-blend-mode: difference;*/
   width: 80%;
   left: 50%;
   transform: translate(-50%);
@@ -601,7 +602,7 @@ dialog::backdrop {
     transform-origin: center;
   }
 
-  .title-arrow img {
+  .title-arrow svg {
     height: 1rem;
   }
 

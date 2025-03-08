@@ -16,15 +16,15 @@ const dataStore = {
     },
     loadProjects: async function () {
         try {
-            console.log("Test-Fetch beginnt...");
+            console.log("dataStore: Test-Fetch beginnt...");
             const response = await fetch('content/projects.json');
             const data = await response.json();
-            console.log("Laden erfolgreich");
+            console.log("dataStore: Laden erfolgreich");
             this.projectsData = data;
             return data;
         } catch (error) {
             console.error(error);
-            console.log("Laden nicht erfolgreich")
+            console.log("dataStore: Laden nicht erfolgreich")
             return null;
         } 
     }
@@ -53,6 +53,7 @@ const dataStore = {
             document.dispatchEvent(new CustomEvent('activeProjectChanged', { 
                 detail: { projectIndex: index }
             }));
+            console.log("uiState: Projekt geupdated - neues Projekt:", this.activeProjectIndex, index);
         }
     },
     
@@ -74,6 +75,7 @@ const dataStore = {
                     textColor: this.activeTextColor
                 }
             }));
+            console.log("uiState: Bild geupdated - neues Bild:", imageIndex, this.activeImageIndex, "projekt: ", projectIndex, "TextFarbe: ", textColor);
         }
     }
 };
@@ -129,8 +131,8 @@ function handleTouchEnd(event) {
       event.changedTouches[0] &&
       event.changedTouches[0].clientY) ||
     0;
-  console.log("Touch geendet bei:", endY);
-  console.log("startY", startY);
+  console.log("handleTouchEnd: Touch geendet bei:", endY);
+  console.log("handleTouchEnd: startY", startY);
   let deltaY = startY - endY;
 
   if (
@@ -174,7 +176,7 @@ function handleTouchEnd(event) {
             newIndex >= 0 && 
             newIndex < uiState.projects.length) {
             
-            console.log(`Aktives Projekt wechselt zu Index: ${newIndex}`);
+            console.log(`updateActiveProject: Aktives Projekt wechselt zu Index: ${newIndex}`);
             uiState.setActiveProject(newIndex);
         }
     }
@@ -289,14 +291,14 @@ function toggleAboutImprint(targetClass) {
 
 
 async function initializeWebsite () {
-    console.log("Initialize Website gestartet");    
+    console.log("initializeWebsite: Initialize Website gestartet");    
     const projects = await dataStore.loadProjects();
-        console.log("Geladene Daten:", projects);   
+        console.log("initializeWebsite: Geladene Daten:", projects);   
         if(projects) {
-            console.log("Loading of projects successful!");
+            console.log("initializeWebsite: Loading of projects successful!");
             createProjectElements ();
         } else {
-            console.log("Loading failed - no data returned");  
+            console.log("initializeWebsite: Loading failed - no data returned");  
         }
 } 
 
@@ -304,7 +306,7 @@ function createProjectElements() {
     const projectsData = dataStore.getProjects();
     const container = document.querySelector(".project-container");
 
-        // Scroll-Snap temporär deaktivieren
+        // Scroll-Snap temporär deaktivieren - vielleicht mit REACT entfernen?
         const originalSnapType = container.style.scrollSnapType;
         container.style.scrollSnapType = 'none';
     
@@ -372,6 +374,8 @@ function createProjectElements() {
 
                 setupScrollHandler();
                 setupProjectTitle();
+                setupImageColorHandler(); 
+
             }, 50);
         }, 50);
         uiState.updateProjects();
@@ -382,43 +386,125 @@ document.addEventListener("DOMContentLoaded", initializeWebsite);
 // Dynamische Änderung der Projekttitel
 function setupProjectTitle() {
     // DOM-Elemente
-    const projectTitle = document.querySelector('.project-title');
+    const headerTitle = document.querySelector('.project-title');
     const mobileTitle = document.querySelector('.project-title-mobile');
     const mobileDescription = document.querySelector('.description-mobile');
+
     
-    // Funktion zum Aktualisieren der Titel
-    function updateTitles() {
-        // Index aus dem zentralen State holen
-        const index = uiState.activeProjectIndex;
-        
-        // Wenn ein gültiges Projekt gefunden wurde
-        if (index >= 0 && index < uiState.projects.length) {
-            const project = uiState.projects[index];
-            const name = project.getAttribute('data-project-name');
-            const description = project.querySelector('.description')?.textContent || '';
+    // Animationsstatus
+    let isAnimating = false;
+    let transitionCompleted = false;
+    
+    // Hilfsfunktion für konsistentes Parsing von Zeitwerten
+    function parseTimeValue(timeStr, defaultValue) {
+        if (!timeStr) return defaultValue;
+        if (timeStr.endsWith('ms')) return parseFloat(timeStr);
+        if (timeStr.endsWith('s')) return parseFloat(timeStr) * 1000;
+        return parseFloat(timeStr);
+    }
+    
+    // CSS-Variablen auslesen mit einheitlichem Parsing
+    const style = getComputedStyle(document.documentElement);
+    const fadeDuration = parseTimeValue(style.getPropertyValue('--title-fade-duration').trim(), 300);
+    const betweenPauseMs = parseTimeValue(style.getPropertyValue('--title-between-pause').trim(), 200);
+    const initialDelayMs = parseTimeValue(style.getPropertyValue('--title-initial-delay').trim(), 200);
+    const initialDuration = parseTimeValue(style.getPropertyValue('--title-initial-duration').trim(), 800);
+    
+    // Gemeinsame Funktion zum Setzen der Titel
+    function setTitles(projectName, projectDesc) {
+        headerTitle.textContent = projectName;
+        if (mobileTitle) mobileTitle.textContent = projectName;
+        if (mobileDescription) mobileDescription.textContent = projectDesc;
+    }
+    
+    // Titelwechsel durchführen
+    function handleTitleChange() {
+        // Warte eine konfigurierbare Zeit bevor der neue Titel erscheint
+        setTimeout(() => {
+            // Inhalte aktualisieren
+            updateTitleContents();
             
-            // Titel aktualisieren
-            if (projectTitle) projectTitle.textContent = name;
-            if (mobileTitle) mobileTitle.textContent = name;
-            if (mobileDescription) mobileDescription.textContent = description;
+            // Alle Elemente wieder einblenden
+            headerTitle.classList.remove('fade-out');
+            if (mobileTitle) mobileTitle.classList.remove('fade-out');
+            if (mobileDescription) mobileDescription.classList.remove('fade-out');
+            
+            // Animation abschließen
+            setTimeout(() => {
+                isAnimating = false;
+                transitionCompleted = false;
+            }, 50);
+        }, betweenPauseMs);
+    }
+    
+    // Inhalte basierend auf dem aktuellen Status aktualisieren
+    function updateTitleContents() {
+        // Den Index aus dem zentralen Status abrufen
+        const activeIndex = uiState.activeProjectIndex;
+        
+        if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
+            const activeProject = uiState.projects[activeIndex];
+            console.log("setupProjectTitle: UpdateTitleContents hat aktives Projekt gesetzt: ",activeProject)
+            const projectName = activeProject.getAttribute('data-project-name');
+            const projectDesc = activeProject.querySelector('.description')?.textContent || '';
+            
+            console.log(`setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`);
+            setTitles(projectName, projectDesc);
         }
     }
     
-    // Initial ausführen
-    setTimeout(updateTitles, 100); // Kurze Verzögerung für die Initialisierung
-    
-    // Auf Änderungen des aktiven Projekts reagieren
-    document.addEventListener('activeProjectChanged', function() {
-        if (projectTitle) projectTitle.classList.add('fade-out');
-        if (mobileTitle) mobileTitle.classList.add('fade-out');
-        if (mobileDescription) mobileDescription.classList.add('fade-out');
-        
-        setTimeout(function() {
-            updateTitles();
-            
-            if (projectTitle) projectTitle.classList.remove('fade-out');
-            if (mobileTitle) mobileTitle.classList.remove('fade-out');
-            if (mobileDescription) mobileDescription.classList.remove('fade-out');
-        }, 300);
+    // Event-Listener für Transition-End
+    headerTitle.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'opacity' && headerTitle.classList.contains('fade-out')) {
+            transitionCompleted = true;
+            handleTitleChange();
+        }
     });
+    
+    // Auf Projektänderungen reagieren (Wichtig!)
+    document.addEventListener('activeProjectChanged', () => {
+        console.log('setupProjectTitle: Event activeProjectChanged empfangen');
+        
+        if (!isAnimating) {
+            isAnimating = true;
+            transitionCompleted = false;
+            
+            // Alle Elemente ausblenden
+            headerTitle.classList.add('fade-out');
+            if (mobileTitle) mobileTitle.classList.add('fade-out');
+            if (mobileDescription) mobileDescription.classList.add('fade-out');
+            
+            // Fallback-Timer für den Fall, dass transitionend nicht ausgelöst wird
+            setTimeout(() => {
+                if (!transitionCompleted && headerTitle.classList.contains('fade-out')) {
+                    handleTitleChange();
+                }
+            }, fadeDuration + 50);
+        }
+    });
+    
+    // Initialen Titel mit Animation einblenden
+    function setupInitialTitle() {
+        // Animation anwenden
+        headerTitle.classList.add('initial-appear');
+        if (mobileTitle) mobileTitle.classList.add('initial-appear');
+        if (mobileDescription) mobileDescription.classList.add('initial-appear');
+        
+        // Initiale Inhalte setzen
+        updateTitleContents();
+        
+        // Animation nach Ablauf entfernen
+        setTimeout(() => {
+            headerTitle.classList.remove('initial-appear');
+            if (mobileTitle) mobileTitle.classList.remove('initial-appear');
+            if (mobileDescription) mobileDescription.classList.remove('initial-appear');
+        }, initialDuration);
+    }
+    
+    // Initialen Titel mit optionaler Verzögerung anzeigen
+    if (initialDelayMs <= 0) {
+        setupInitialTitle();
+    } else {
+        setTimeout(setupInitialTitle, initialDelayMs);
+    }
 }
