@@ -508,3 +508,44 @@ function setupProjectTitle() {
         setTimeout(setupInitialTitle, initialDelayMs);
     }
 }
+
+// Steuerung der Bildfarberkennung
+function setupImageColorHandler() {
+    // Findet alle Slider in allen Projekten
+    const sliders = document.querySelectorAll('.slider');
+    
+    sliders.forEach(slider => {
+        // Alle Bilder im Slider finden
+        const slides = slider.querySelectorAll('.slide');
+        
+        // Einfacher Observer ohne komplexe Logik
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Bild ist sichtbar
+                    const slide = entry.target;
+                    const textColor = slide.getAttribute('data-text-color');
+                    
+                    // Textfarbe festlegen 
+                    document.documentElement.style.setProperty('--active-text-color', textColor);
+                    console.log("Bildfarbe erkannt:", textColor);
+                }
+            });
+        }, {
+            root: slider,
+            threshold: 0.5  
+        });
+        
+        // Alle Bilder beobachten
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+    });
+}
+
+// Hier wird der Farbwechsel durchgeführt
+function handleColorChange(event) {
+    const { textColor } = event.detail;
+    document.documentElement.style.setProperty('--active-text-color', textColor);
+    console.log("Farbwechsel:", textColor);
+}
