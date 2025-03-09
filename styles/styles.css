@@ -7,6 +7,7 @@
 /* Farbwechsel zentral eingestellt */
 .project-title, 
 .project-title-mobile, 
+.description,
 .navbar {
   color: var(--active-text-color);
   transition: color 0.3s ease;
