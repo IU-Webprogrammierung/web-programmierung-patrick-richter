@@ -1,8 +1,21 @@
-/* MUSS AKTUELL NOCH MANUELL GEMACHT WERDEN */
-
-:root {
-  --active-text-color: white
+.slider.cursor-left.black-cursor {
+  cursor: url('../images/icons/arrow-left-black.svg') 20 15, w-resize;
 }
+
+.slider.cursor-right.black-cursor {
+cursor: url('../images/icons/arrow-right-black.svg') 20 15, e-resize;
+}
+
+.slider.cursor-left.white-cursor {
+cursor: url('../images/icons/arrow-left-white.svg') 20 15, w-resize;
+} 
+
+.slider.cursor-right.white-cursor {
+  cursor: url('../images/icons/arrow-right-white.svg') 20 15, e-resize; 
+}
+
+
+
 
 /* Farbwechsel zentral eingestellt */
 .project-title, 
@@ -28,6 +41,7 @@
 
 :root {
   /* Farben */
+  --active-text-color: white;
   --color-bg-light: 0, 0%, 100%;
 
   /* Typografie */

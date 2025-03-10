@@ -375,6 +375,7 @@ function createProjectElements() {
                 setupScrollHandler();
                 setupProjectTitle();
                 setupImageColorHandler(); 
+                setupImageNavigation();
 
             }, 50);
         }, 50);
@@ -594,4 +595,34 @@ function handleColorChange(event) {
         document.documentElement.style.setProperty('--active-text-color', textColor);
         console.log(`Farbe geändert zu: ${textColor}${isProjectChange ? ' (verzögert nach Projektwechsel)' : ''}`);
     }, delay);
+} 
+
+function setupImageNavigation() {
+    console.log("SetupImageNavigation gestartet");
+    const sliders = document.querySelectorAll(".project .slider");
+    sliders.forEach((slider) =>  {
+    slider.addEventListener('mousemove', handleMouseMove);
+    slider.addEventListener('mouseleave', handleMouseLeave);
+});
+
+    function handleMouseMove(e) {
+        console.log("HandleMOusemove gestartet");
+        const slider = e.currentTarget;
+        const rect = slider.getBoundingClientRect();
+        const relativeX = (e.clientX - rect.left) / rect.width;
+
+        slider.classList.toggle("cursor-left", relativeX < 0.5);
+        slider.classList.toggle("cursor-right", relativeX >= 0.5);
+
+        slider.classList.toggle("white-cursor", uiState.activeTextColor === "white");
+        slider.classList.toggle("black-cursor", uiState.activeTextColor === "black");
+
+    }
+
+    function handleMouseLeave(e) {
+        console.log("HandleMOuseLeave gestartet");
+        const slider = e.currentTarget;
+        slider.classList.remove("cursor-left", "cursor-right", "white-cursor", "black-cursor");
+    }
+
 }
