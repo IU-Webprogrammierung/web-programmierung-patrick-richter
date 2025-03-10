@@ -593,36 +593,51 @@ function handleColorChange(event) {
     debounceColorTimer = setTimeout(() => {
         // Nur hier wird die Farbe tatsächlich geändert
         document.documentElement.style.setProperty('--active-text-color', textColor);
+        if (textColor === "white") { 
+            document.querySelector(".project-container").classList.add("white-cursor");
+        } else {
+            document.querySelector(".project-container").classList.remove("white-cursor");
+        }
         console.log(`Farbe geändert zu: ${textColor}${isProjectChange ? ' (verzögert nach Projektwechsel)' : ''}`);
     }, delay);
 } 
 
+
 function setupImageNavigation() {
+    const container = document.querySelector(".project-container");
+    
     console.log("SetupImageNavigation gestartet");
-    const sliders = document.querySelectorAll(".project .slider");
-    sliders.forEach((slider) =>  {
-    slider.addEventListener('mousemove', handleMouseMove);
-    slider.addEventListener('mouseleave', handleMouseLeave);
-});
-
-    function handleMouseMove(e) {
-        console.log("HandleMOusemove gestartet");
-        const slider = e.currentTarget;
-        const rect = slider.getBoundingClientRect();
+    
+    // Ein einziger Event-Listener für den Container
+    container.addEventListener('mousemove', function(e) {
+        // Prüfen, ob wir über dem Footer sind
+        if (e.target.closest('.footer-container')) {
+            // NUR Richtungsklassen entfernen, wenn über Footer
+            container.classList.remove("cursor-left", "cursor-right");
+            return;
+        }
+        
+        // Prüfen, ob wir über einem Slider sind
+        const slider = e.target.closest('.slider');
+        if (!slider) {
+            // NUR Richtungsklassen entfernen, wenn nicht über Slider
+            container.classList.remove("cursor-left", "cursor-right");
+            return;
+        }
+        
+        // Position im Container
+        const rect = container.getBoundingClientRect();
         const relativeX = (e.clientX - rect.left) / rect.width;
+        
+        // Richtungsklassen setzen
+        container.classList.toggle("cursor-left", relativeX < 0.5);
+        container.classList.toggle("cursor-right", relativeX >= 0.5);
+    });
 
-        slider.classList.toggle("cursor-left", relativeX < 0.5);
-        slider.classList.toggle("cursor-right", relativeX >= 0.5);
-
-        slider.classList.toggle("white-cursor", uiState.activeTextColor === "white");
-        slider.classList.toggle("black-cursor", uiState.activeTextColor === "black");
-
-    }
-
-    function handleMouseLeave(e) {
-        console.log("HandleMOuseLeave gestartet");
-        const slider = e.currentTarget;
-        slider.classList.remove("cursor-left", "cursor-right", "white-cursor", "black-cursor");
-    }
-
+    container.addEventListener('mouseleave', function(e) {
+        console.log("HandleMouseLeave gestartet");
+        const container = e.currentTarget;
+        // NUR Richtungsklassen entfernen, white-cursor bleibt erhalten
+        container.classList.remove("cursor-left", "cursor-right");
+    });
 }
