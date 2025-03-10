@@ -10,76 +10,94 @@ let startY = 0;
 
 /** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
 const dataStore = {
-    projectsData: null,
-    getProjects: function() {
-        return this.projectsData;
-    },
-    loadProjects: async function () {
-        try {
-            console.log("dataStore: Test-Fetch beginnt...");
-            const response = await fetch('content/projects.json');
-            const data = await response.json();
-            console.log("dataStore: Laden erfolgreich");
-            this.projectsData = data;
-            return data;
-        } catch (error) {
-            console.error(error);
-            console.log("dataStore: Laden nicht erfolgreich")
-            return null;
-        } 
+  projectsData: null,
+  getProjects: function () {
+    return this.projectsData;
+  },
+  loadProjects: async function () {
+    try {
+      console.log("dataStore: Test-Fetch beginnt...");
+      const response = await fetch("content/projects.json");
+      const data = await response.json();
+      console.log("dataStore: Laden erfolgreich");
+      this.projectsData = data;
+      return data;
+    } catch (error) {
+      console.error(error);
+      console.log("dataStore: Laden nicht erfolgreich");
+      return null;
     }
-} 
+  },
+};
 
 /* ------------------------------------------------------------
    1.1 Zentrale Statusverwaltung der Projekte / Bilder / Farben
    ----------------------------------------------------------- */
 
-   const uiState = {
-    // Aktueller Zustand der Anwendung
-    activeProjectIndex: -1,
-    activeImageIndex: -1,
-    activeTextColor: 'black',
-    projects: [],
+const uiState = {
+  // Aktueller Zustand der Anwendung
+  activeProjectIndex: -1,
+  activeImageIndex: -1,
+  activeTextColor: "black",
+  projects: [],
 
-    // Methode zum Aktualisieren der Projekte
-    updateProjects() {
-        this.projects = Array.from(document.querySelectorAll('.project:not(.footer-container)'));
-    },
-    
-    // Methode zum Setzen des aktiven Projekts
-    setActiveProject(index) {
-        if (index !== this.activeProjectIndex) {
-            this.activeProjectIndex = index;
-            document.dispatchEvent(new CustomEvent('activeProjectChanged', { 
-                detail: { projectIndex: index }
-            }));
-            console.log("uiState: Projekt geupdated - neues Projekt:", this.activeProjectIndex, index);
-        }
-    },
-    
-    // Methode zum Setzen des aktiven Bildes
-    setActiveImage(projectIndex, imageIndex, textColor) {
-        const changed = projectIndex !== this.activeProjectIndex || 
-                       imageIndex !== this.activeImageIndex ||
-                       textColor !== this.activeTextColor;
-        
-        if (changed) {
-            this.activeProjectIndex = projectIndex;
-            this.activeImageIndex = imageIndex;
-            this.activeTextColor = textColor || 'black';
-            
-            document.dispatchEvent(new CustomEvent('activeImageChanged', { 
-                detail: { 
-                    projectIndex: projectIndex,
-                    imageIndex: imageIndex,
-                    textColor: this.activeTextColor
-                }
-            }));
-            console.log("uiState: Bild geupdated - neues Bild:", imageIndex, this.activeImageIndex, "projekt: ", projectIndex, "TextFarbe: ", textColor);
-        }
+  // Methode zum Aktualisieren der Projekte
+  updateProjects() {
+    this.projects = Array.from(
+      document.querySelectorAll(".project:not(.footer-container)")
+    );
+  },
+
+  // Methode zum Setzen des aktiven Projekts
+  setActiveProject(index) {
+    if (index !== this.activeProjectIndex) {
+      this.activeProjectIndex = index;
+      document.dispatchEvent(
+        new CustomEvent("activeProjectChanged", {
+          detail: { projectIndex: index },
+        })
+      );
+      console.log(
+        "uiState: Projekt geupdated - neues Projekt:",
+        this.activeProjectIndex,
+        index
+      );
     }
-};
+  },
 
+  // Methode zum Setzen des aktiven Bildes
+  setActiveImage(projectIndex, imageIndex, textColor) {
+    const changed =
+      projectIndex !== this.activeProjectIndex ||
+      imageIndex !== this.activeImageIndex ||
+      textColor !== this.activeTextColor;
+
+    if (changed) {
+      this.activeProjectIndex = projectIndex;
+      this.activeImageIndex = imageIndex;
+      this.activeTextColor = textColor || "black";
+
+      document.dispatchEvent(
+        new CustomEvent("activeImageChanged", {
+          detail: {
+            projectIndex: projectIndex,
+            imageIndex: imageIndex,
+            textColor: this.activeTextColor,
+          },
+        })
+      );
+      console.log(
+        "uiState: Bild geupdated - neues Bild:",
+        imageIndex,
+        this.activeImageIndex,
+        "projekt: ",
+        projectIndex,
+        "TextFarbe: ",
+        textColor
+      );
+    }
+  },
+};
 
 /* -----------------------------
    2. Event-Listener-Registrierung
@@ -100,8 +118,6 @@ titleDescriptionContainer.addEventListener("pointerdown", handlePointerDown);
 titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
 document.querySelector("#scrollTop").addEventListener("click", scrollToTop);
 document.querySelector("#footerTop").addEventListener("click", closeFooter);
-
-
 
 /* -----------------------------
    3. Event-Handler
@@ -152,68 +168,68 @@ function handleTouchEnd(event) {
    4. Funktionen
    ----------------------------- */
 
-
-   /* -----------------------------
+/* -----------------------------
    4.1 Überwachung der Scrollposition
    ----------------------------- */
 
+function setupScrollHandler() {
+  const container = document.querySelector(".project-container");
 
-   function setupScrollHandler() {
-    const container = document.querySelector('.project-container');
-    
-    
-    // Aktuellen Projektindex berechnen (Scroll-Abstand nach oben / Fensterhöhe)
-    function calculateActiveProjectIndex() {
-        return Math.round(container.scrollTop / window.innerHeight);
+  // Aktuellen Projektindex berechnen (Scroll-Abstand nach oben / Fensterhöhe)
+  function calculateActiveProjectIndex() {
+    return Math.round(container.scrollTop / window.innerHeight);
+  }
+
+  // Funktion zum Aktualisieren des aktiven Projekts
+  function updateActiveProject() {
+    const newIndex = calculateActiveProjectIndex();
+
+    // Nur aktualisieren, wenn sich der Index geändert hat und gültig ist
+    if (
+      newIndex !== uiState.activeProjectIndex &&
+      newIndex >= 0 &&
+      newIndex < uiState.projects.length
+    ) {
+      console.log(
+        `updateActiveProject: Aktives Projekt wechselt zu Index: ${newIndex}`
+      );
+      uiState.setActiveProject(newIndex);
     }
-    
-    // Funktion zum Aktualisieren des aktiven Projekts
-    function updateActiveProject() {
-        const newIndex = calculateActiveProjectIndex();
-        
-        // Nur aktualisieren, wenn sich der Index geändert hat und gültig ist
-        if (newIndex !== uiState.activeProjectIndex && 
-            newIndex >= 0 && 
-            newIndex < uiState.projects.length) {
-            
-            console.log(`updateActiveProject: Aktives Projekt wechselt zu Index: ${newIndex}`);
-            uiState.setActiveProject(newIndex);
-        }
-    }
-    
-    // ScrollEvent-Handler wenn gescrollt wird
-    container.addEventListener('scroll', () => {
-        // requestAnimationFrame verhindert zu häufige Updates in kurzer Zeit
-        requestAnimationFrame(updateActiveProject);
-    });
-    
-    // Initialen Status setzen (basierend auf anfänglicher Scroll-Position)
-    const initialIndex = calculateActiveProjectIndex();
-    if (initialIndex >= 0 && initialIndex < uiState.projects.length) {
-        uiState.setActiveProject(initialIndex);
-    }
+  }
+
+  // ScrollEvent-Handler wenn gescrollt wird
+  container.addEventListener("scroll", () => {
+    // requestAnimationFrame verhindert zu häufige Updates in kurzer Zeit
+    requestAnimationFrame(updateActiveProject);
+  });
+
+  // Initialen Status setzen (basierend auf anfänglicher Scroll-Position)
+  const initialIndex = calculateActiveProjectIndex();
+  if (initialIndex >= 0 && initialIndex < uiState.projects.length) {
+    uiState.setActiveProject(initialIndex);
+  }
 }
 
 // Scrollt nach oben
 
-function scrollToTop () {
-    const container = document.querySelector('.project-container');
-    container.scrollTo({ top: 0, behavior: 'smooth' });
+function scrollToTop() {
+  const container = document.querySelector(".project-container");
+  container.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // Footer schließen
 
-function closeFooter () {
-    const container = document.querySelector('.project-container');
-    const currentScrollPos = container.scrollTop;
-    const viewportHeight = window.innerHeight;
-    container.scrollTo({ 
-        top: Math.max(0, currentScrollPos - viewportHeight),
-        behavior: 'smooth'
-    });
+function closeFooter() {
+  const container = document.querySelector(".project-container");
+  const currentScrollPos = container.scrollTop;
+  const viewportHeight = window.innerHeight;
+  container.scrollTo({
+    top: Math.max(0, currentScrollPos - viewportHeight),
+    behavior: "smooth",
+  });
 }
 
-   // Öffnet und schließt Description Mobile
+// Öffnet und schließt Description Mobile
 
 function toggleDescription() {
   titleDescriptionContainer.classList.toggle("show-description");
@@ -286,45 +302,45 @@ function toggleAboutImprint(targetClass) {
   }
 }
 
-
 /** Projekte Laden */
 
-
-async function initializeWebsite () {
-    console.log("initializeWebsite: Initialize Website gestartet");    
-    const projects = await dataStore.loadProjects();
-        console.log("initializeWebsite: Geladene Daten:", projects);   
-        if(projects) {
-            console.log("initializeWebsite: Loading of projects successful!");
-            createProjectElements ();
-        } else {
-            console.log("initializeWebsite: Loading failed - no data returned");  
-        }
-} 
+async function initializeWebsite() {
+  console.log("initializeWebsite: Initialize Website gestartet");
+  const projects = await dataStore.loadProjects();
+  console.log("initializeWebsite: Geladene Daten:", projects);
+  if (projects) {
+    console.log("initializeWebsite: Loading of projects successful!");
+    createProjectElements();
+  } else {
+    console.log("initializeWebsite: Loading failed - no data returned");
+  }
+}
 
 function createProjectElements() {
-    const projectsData = dataStore.getProjects();
-    const container = document.querySelector(".project-container");
+  const projectsData = dataStore.getProjects();
+  const container = document.querySelector(".project-container");
 
-        // Scroll-Snap temporär deaktivieren - vielleicht mit REACT entfernen?
-        const originalSnapType = container.style.scrollSnapType;
-        container.style.scrollSnapType = 'none';
-    
-    // Footer speichern und entfernen
-    const footerElement = container.querySelector(".footer-container");
-    if (footerElement) {
-        footerElement.remove();
-    }
-    
-    // Container komplett leeren
-    container.innerHTML = '';
+  // Scroll-Snap temporär deaktivieren - vielleicht mit REACT entfernen?
+  const originalSnapType = container.style.scrollSnapType;
+  container.style.scrollSnapType = "none";
 
-    if (projectsData && projectsData.data) {
-        projectsData.data.forEach((project) => {
-            // Bilder-HTML erstellen (falls vorhanden)
-            let imagesHTML = '';
-            if (project.project_images && project.project_images.length > 0) {
-                imagesHTML = project.project_images.map(img => `
+  // Footer speichern und entfernen
+  const footerElement = container.querySelector(".footer-container");
+  if (footerElement) {
+    footerElement.remove();
+  }
+
+  // Container komplett leeren
+  container.innerHTML = "";
+
+  if (projectsData && projectsData.data) {
+    projectsData.data.forEach((project) => {
+      // Bilder-HTML erstellen (falls vorhanden)
+      let imagesHTML = "";
+      if (project.project_images && project.project_images.length > 0) {
+        imagesHTML = project.project_images
+          .map(
+            (img) => `
                     <img 
                         src="${img.image[0].url}" 
                         alt="${img.image[0].alt || project.name}" 
@@ -333,14 +349,16 @@ function createProjectElements() {
                         data-image-title="${img.imageTitle}"
                         class="slide"
                     />
-                `).join('');
-            }
-            
-            // Eindeutige IDs für Accessibility
-            const projectTitleId = `project-title-${project.id}`;
-            
-            // Gesamtes Projekt-HTML
-            const projectHTML = `
+                `
+          )
+          .join("");
+      }
+
+      // Eindeutige IDs für Accessibility
+      const projectTitleId = `project-title-${project.id}`;
+
+      // Gesamtes Projekt-HTML
+      const projectHTML = `
                     <article 
         class="project" 
         aria-labelledby="${projectTitleId}"
@@ -355,289 +373,343 @@ function createProjectElements() {
                     </div>
                 </article>
             `;
-            
-            container.insertAdjacentHTML('beforeend', projectHTML);
 
-        });
-    }
-    if (footerElement) {
-        // Footer anhängen und "hidden" entfernen
-        container.appendChild(footerElement);
-        footerElement.classList.remove('hidden-footer');
-    }
-        // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
-        setTimeout(() => {
-            container.scrollTop = 0;
-            setTimeout(() => {
-                container.style.scrollSnapType = originalSnapType;
-                uiState.updateProjects();
+      container.insertAdjacentHTML("beforeend", projectHTML);
+    });
+  }
+  if (footerElement) {
+    // Footer anhängen und "hidden" entfernen
+    container.appendChild(footerElement);
+    footerElement.classList.remove("hidden-footer");
+  }
+  // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
+  setTimeout(() => {
+    container.scrollTop = 0;
+    setTimeout(() => {
+      container.style.scrollSnapType = originalSnapType;
+      uiState.updateProjects();
 
-                setupScrollHandler();
-                setupProjectTitle();
-                setupImageColorHandler(); 
-                setupImageNavigation();
-
-            }, 50);
-        }, 50);
-        uiState.updateProjects();
+      setupScrollHandler();
+      setupProjectTitle();
+      setupImageColorHandler();
+      setupImageNavigation();
+    }, 50);
+  }, 50);
+  uiState.updateProjects();
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
 
 // Dynamische Änderung der Projekttitel
 function setupProjectTitle() {
-    // DOM-Elemente
-    const headerTitle = document.querySelector('.project-title');
-    const mobileTitle = document.querySelector('.project-title-mobile');
-    const mobileDescription = document.querySelector('.description-mobile');
+  // DOM-Elemente
+  const headerTitle = document.querySelector(".project-title");
+  const mobileTitle = document.querySelector(".project-title-mobile");
+  const mobileDescription = document.querySelector(".description-mobile");
 
-    
-    // Animationsstatus
-    let isAnimating = false;
-    let transitionCompleted = false;
-    
-    // Hilfsfunktion für konsistentes Parsing von Zeitwerten
-    function parseTimeValue(timeStr, defaultValue) {
-        if (!timeStr) return defaultValue;
-        if (timeStr.endsWith('ms')) return parseFloat(timeStr);
-        if (timeStr.endsWith('s')) return parseFloat(timeStr) * 1000;
-        return parseFloat(timeStr);
+  // Animationsstatus
+  let isAnimating = false;
+  let transitionCompleted = false;
+
+  // Hilfsfunktion für konsistentes Parsing von Zeitwerten
+  function parseTimeValue(timeStr, defaultValue) {
+    if (!timeStr) return defaultValue;
+    if (timeStr.endsWith("ms")) return parseFloat(timeStr);
+    if (timeStr.endsWith("s")) return parseFloat(timeStr) * 1000;
+    return parseFloat(timeStr);
+  }
+
+  // CSS-Variablen auslesen mit einheitlichem Parsing
+  const style = getComputedStyle(document.documentElement);
+  const fadeDuration = parseTimeValue(
+    style.getPropertyValue("--title-fade-duration").trim(),
+    300
+  );
+  const betweenPauseMs = parseTimeValue(
+    style.getPropertyValue("--title-between-pause").trim(),
+    200
+  );
+  const initialDelayMs = parseTimeValue(
+    style.getPropertyValue("--title-initial-delay").trim(),
+    200
+  );
+  const initialDuration = parseTimeValue(
+    style.getPropertyValue("--title-initial-duration").trim(),
+    800
+  );
+
+  // Gemeinsame Funktion zum Setzen der Titel
+  function setTitles(projectName, projectDesc) {
+    headerTitle.textContent = projectName;
+    if (mobileTitle) mobileTitle.textContent = projectName;
+    if (mobileDescription) mobileDescription.textContent = projectDesc;
+  }
+
+  // Titelwechsel durchführen
+  function handleTitleChange() {
+    // Warte eine konfigurierbare Zeit bevor der neue Titel erscheint
+    setTimeout(() => {
+      // Inhalte aktualisieren
+      updateTitleContents();
+
+      // Alle Elemente wieder einblenden
+      headerTitle.classList.remove("fade-out");
+      if (mobileTitle) mobileTitle.classList.remove("fade-out");
+      if (mobileDescription) mobileDescription.classList.remove("fade-out");
+
+      // Animation abschließen
+      setTimeout(() => {
+        isAnimating = false;
+        transitionCompleted = false;
+      }, 50);
+    }, betweenPauseMs);
+  }
+
+  // Inhalte basierend auf dem aktuellen Status aktualisieren
+  function updateTitleContents() {
+    // Den Index aus dem zentralen Status abrufen
+    const activeIndex = uiState.activeProjectIndex;
+
+    if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
+      const activeProject = uiState.projects[activeIndex];
+      console.log(
+        "setupProjectTitle: UpdateTitleContents hat aktives Projekt gesetzt: ",
+        activeProject
+      );
+      const projectName = activeProject.getAttribute("data-project-name");
+      const projectDesc =
+        activeProject.querySelector(".description")?.textContent || "";
+
+      console.log(
+        `setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`
+      );
+      setTitles(projectName, projectDesc);
     }
-    
-    // CSS-Variablen auslesen mit einheitlichem Parsing
-    const style = getComputedStyle(document.documentElement);
-    const fadeDuration = parseTimeValue(style.getPropertyValue('--title-fade-duration').trim(), 300);
-    const betweenPauseMs = parseTimeValue(style.getPropertyValue('--title-between-pause').trim(), 200);
-    const initialDelayMs = parseTimeValue(style.getPropertyValue('--title-initial-delay').trim(), 200);
-    const initialDuration = parseTimeValue(style.getPropertyValue('--title-initial-duration').trim(), 800);
-    
-    // Gemeinsame Funktion zum Setzen der Titel
-    function setTitles(projectName, projectDesc) {
-        headerTitle.textContent = projectName;
-        if (mobileTitle) mobileTitle.textContent = projectName;
-        if (mobileDescription) mobileDescription.textContent = projectDesc;
+  }
+
+  // Event-Listener für Transition-End
+  headerTitle.addEventListener("transitionend", (e) => {
+    if (
+      e.propertyName === "opacity" &&
+      headerTitle.classList.contains("fade-out")
+    ) {
+      transitionCompleted = true;
+      handleTitleChange();
     }
-    
-    // Titelwechsel durchführen
-    function handleTitleChange() {
-        // Warte eine konfigurierbare Zeit bevor der neue Titel erscheint
-        setTimeout(() => {
-            // Inhalte aktualisieren
-            updateTitleContents();
-            
-            // Alle Elemente wieder einblenden
-            headerTitle.classList.remove('fade-out');
-            if (mobileTitle) mobileTitle.classList.remove('fade-out');
-            if (mobileDescription) mobileDescription.classList.remove('fade-out');
-            
-            // Animation abschließen
-            setTimeout(() => {
-                isAnimating = false;
-                transitionCompleted = false;
-            }, 50);
-        }, betweenPauseMs);
-    }
-    
-    // Inhalte basierend auf dem aktuellen Status aktualisieren
-    function updateTitleContents() {
-        // Den Index aus dem zentralen Status abrufen
-        const activeIndex = uiState.activeProjectIndex;
-        
-        if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
-            const activeProject = uiState.projects[activeIndex];
-            console.log("setupProjectTitle: UpdateTitleContents hat aktives Projekt gesetzt: ",activeProject)
-            const projectName = activeProject.getAttribute('data-project-name');
-            const projectDesc = activeProject.querySelector('.description')?.textContent || '';
-            
-            console.log(`setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`);
-            setTitles(projectName, projectDesc);
+  });
+
+  // Auf Projektänderungen reagieren (Wichtig!)
+  document.addEventListener("activeProjectChanged", () => {
+    console.log("setupProjectTitle: Event activeProjectChanged empfangen");
+
+    if (!isAnimating) {
+      isAnimating = true;
+      transitionCompleted = false;
+
+      // Alle Elemente ausblenden
+      headerTitle.classList.add("fade-out");
+      if (mobileTitle) mobileTitle.classList.add("fade-out");
+      if (mobileDescription) mobileDescription.classList.add("fade-out");
+
+      // Fallback-Timer für den Fall, dass transitionend nicht ausgelöst wird
+      setTimeout(() => {
+        if (
+          !transitionCompleted &&
+          headerTitle.classList.contains("fade-out")
+        ) {
+          handleTitleChange();
         }
+      }, fadeDuration + 50);
     }
-    
-    // Event-Listener für Transition-End
-    headerTitle.addEventListener('transitionend', (e) => {
-        if (e.propertyName === 'opacity' && headerTitle.classList.contains('fade-out')) {
-            transitionCompleted = true;
-            handleTitleChange();
-        }
-    });
-    
-    // Auf Projektänderungen reagieren (Wichtig!)
-    document.addEventListener('activeProjectChanged', () => {
-        console.log('setupProjectTitle: Event activeProjectChanged empfangen');
-        
-        if (!isAnimating) {
-            isAnimating = true;
-            transitionCompleted = false;
-            
-            // Alle Elemente ausblenden
-            headerTitle.classList.add('fade-out');
-            if (mobileTitle) mobileTitle.classList.add('fade-out');
-            if (mobileDescription) mobileDescription.classList.add('fade-out');
-            
-            // Fallback-Timer für den Fall, dass transitionend nicht ausgelöst wird
-            setTimeout(() => {
-                if (!transitionCompleted && headerTitle.classList.contains('fade-out')) {
-                    handleTitleChange();
-                }
-            }, fadeDuration + 50);
-        }
-    });
-    
-    // Initialen Titel mit Animation einblenden
-    function setupInitialTitle() {
-        // Animation anwenden
-        headerTitle.classList.add('initial-appear');
-        if (mobileTitle) mobileTitle.classList.add('initial-appear');
-        if (mobileDescription) mobileDescription.classList.add('initial-appear');
-        
-        // Initiale Inhalte setzen
-        updateTitleContents();
-        
-        // Animation nach Ablauf entfernen
-        setTimeout(() => {
-            headerTitle.classList.remove('initial-appear');
-            if (mobileTitle) mobileTitle.classList.remove('initial-appear');
-            if (mobileDescription) mobileDescription.classList.remove('initial-appear');
-        }, initialDuration);
-    }
-    
-    // Initialen Titel mit optionaler Verzögerung anzeigen
-    if (initialDelayMs <= 0) {
-        setupInitialTitle();
-    } else {
-        setTimeout(setupInitialTitle, initialDelayMs);
-    }
+  });
+
+  // Initialen Titel mit Animation einblenden
+  function setupInitialTitle() {
+    // Animation anwenden
+    headerTitle.classList.add("initial-appear");
+    if (mobileTitle) mobileTitle.classList.add("initial-appear");
+    if (mobileDescription) mobileDescription.classList.add("initial-appear");
+
+    // Initiale Inhalte setzen
+    updateTitleContents();
+
+    // Animation nach Ablauf entfernen
+    setTimeout(() => {
+      headerTitle.classList.remove("initial-appear");
+      if (mobileTitle) mobileTitle.classList.remove("initial-appear");
+      if (mobileDescription)
+        mobileDescription.classList.remove("initial-appear");
+    }, initialDuration);
+  }
+
+  // Initialen Titel mit optionaler Verzögerung anzeigen
+  if (initialDelayMs <= 0) {
+    setupInitialTitle();
+  } else {
+    setTimeout(setupInitialTitle, initialDelayMs);
+  }
 }
 
 function setupImageColorHandler() {
-    // Speichert aktive Observer, um sie später zu trennen
-    let currentObservers = [];
-    
-    // Funktion zum Einrichten der Observer für ein bestimmtes Projekt
-    function setupImageObserversForProject(projectIndex) {
-        // Bestehende Observer trennen
-        currentObservers.forEach(obs => obs.disconnect());
-        currentObservers = [];
-        
-        // Nur für gültige Projekte fortfahren
-        if (projectIndex >= 0 && projectIndex < uiState.projects.length) {
-            const project = uiState.projects[projectIndex];
-            const slider = project.querySelector('.slider');
-            
-            if (!slider) return;
-            
-            const slides = slider.querySelectorAll('.slide');
-            console.log(`Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`);
-                        
-            const options = {
-                root: slider,
-                threshold: 0.6,
-                rootMargin: "0px"
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const slide = entry.target;
-                        const imageId = parseInt(slide.getAttribute('data-id'));
-                        const textColor = slide.getAttribute('data-text-color');
-                        
-                        // Status aktualisieren (löst activeImageChanged aus)
-                        uiState.setActiveImage(projectIndex, imageId, textColor);
-                    }
-                });
-            }, options);
-            
-            // Alle Bilder im aktuellen Slider beobachten
-            slides.forEach(slide => {
-                observer.observe(slide);
-            });
-            
-            currentObservers.push(observer);
-        }
+  // Speichert aktive Observer, um sie später zu trennen
+  let currentObservers = [];
+
+  // Funktion zum Einrichten der Observer für ein bestimmtes Projekt
+  function setupImageObserversForProject(projectIndex) {
+    // Bestehende Observer trennen
+    currentObservers.forEach((obs) => obs.disconnect());
+    currentObservers = [];
+
+    // Nur für gültige Projekte fortfahren
+    if (projectIndex >= 0 && projectIndex < uiState.projects.length) {
+      const project = uiState.projects[projectIndex];
+      const slider = project.querySelector(".slider");
+
+      if (!slider) return;
+
+      const slides = slider.querySelectorAll(".slide");
+      console.log(
+        `Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`
+      );
+
+      const options = {
+        root: slider,
+        threshold: 0.6,
+        rootMargin: "0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const slide = entry.target;
+            const imageId = parseInt(slide.getAttribute("data-id"));
+            const textColor = slide.getAttribute("data-text-color");
+
+            // Status aktualisieren (löst activeImageChanged aus)
+            uiState.setActiveImage(projectIndex, imageId, textColor);
+          }
+        });
+      }, options);
+
+      // Alle Bilder im aktuellen Slider beobachten
+      slides.forEach((slide) => {
+        observer.observe(slide);
+      });
+
+      currentObservers.push(observer);
     }
-    
-    // Bei Projektwechsel neue Observer einrichten
-    document.addEventListener('activeProjectChanged', (event) => {
-        const { projectIndex } = event.detail;
-        setupImageObserversForProject(projectIndex);
-    });
-    
-    // Event-Listener für Farbänderungen
-    document.addEventListener('activeImageChanged', handleColorChange);
-    
-    // Initial für das aktive Projekt
-    setTimeout(() => {
-        setupImageObserversForProject(uiState.activeProjectIndex);
-    }, 100);
+  }
+
+  // Bei Projektwechsel neue Observer einrichten
+  document.addEventListener("activeProjectChanged", (event) => {
+    const { projectIndex } = event.detail;
+    setupImageObserversForProject(projectIndex);
+  });
+
+  // Event-Listener für Farbänderungen
+  document.addEventListener("activeImageChanged", handleColorChange);
+
+  // Initial für das aktive Projekt
+  setTimeout(() => {
+    setupImageObserversForProject(uiState.activeProjectIndex);
+  }, 100);
 }
 
 let debounceColorTimer = null;
 
 function handleColorChange(event) {
-    const textColor = event.detail.textColor;
-    const projectIndex = event.detail.projectIndex;
-        
-    // Prüfen, ob dies ein Farbwechsel durch Projektwechsel ist
-    const isProjectChange = event.detail.hasOwnProperty('projectIndex') && 
-                          projectIndex === uiState.activeProjectIndex &&
-                          document.querySelector('.project-title.fade-out');
-    
-    // Debouncing: Zu schnelle Farbwechsel vermeiden
-    clearTimeout(debounceColorTimer);
-    
-    // Bei Projektwechsel mit längerem Delay, sonst mit kürzerem
-    const delay = isProjectChange ? 350 : 50;
-    
-    debounceColorTimer = setTimeout(() => {
-        // Nur hier wird die Farbe tatsächlich geändert
-        document.documentElement.style.setProperty('--active-text-color', textColor);
-        if (textColor === "white") { 
-            document.querySelector(".project-container").classList.add("white-cursor");
-        } else {
-            document.querySelector(".project-container").classList.remove("white-cursor");
-        }
-        console.log(`Farbe geändert zu: ${textColor}${isProjectChange ? ' (verzögert nach Projektwechsel)' : ''}`);
-    }, delay);
-} 
+  const textColor = event.detail.textColor;
+  const projectIndex = event.detail.projectIndex;
 
+  // Prüfen, ob dies ein Farbwechsel durch Projektwechsel ist
+  const isProjectChange =
+    event.detail.hasOwnProperty("projectIndex") &&
+    projectIndex === uiState.activeProjectIndex &&
+    document.querySelector(".project-title.fade-out");
+
+  // Debouncing: Zu schnelle Farbwechsel vermeiden
+  clearTimeout(debounceColorTimer);
+
+  // Bei Projektwechsel mit längerem Delay, sonst mit kürzerem
+  const delay = isProjectChange ? 350 : 50;
+
+  debounceColorTimer = setTimeout(() => {
+    // Nur hier wird die Farbe tatsächlich geändert
+    document.documentElement.style.setProperty(
+      "--active-text-color",
+      textColor
+    );
+    if (textColor === "white") {
+      document
+        .querySelector(".project-container")
+        .classList.add("white-cursor");
+    } else {
+      document
+        .querySelector(".project-container")
+        .classList.remove("white-cursor");
+    }
+    console.log(
+      `Farbe geändert zu: ${textColor}${
+        isProjectChange ? " (verzögert nach Projektwechsel)" : ""
+      }`
+    );
+  }, delay);
+}
 
 function setupImageNavigation() {
-    const container = document.querySelector(".project-container");
-    
-    console.log("SetupImageNavigation gestartet");
-    
-    // Ein einziger Event-Listener für den Container
-    container.addEventListener('mousemove', function(e) {
-        // Prüfen, ob wir über dem Footer sind
-        if (e.target.closest('.footer-container')) {
-            // NUR Richtungsklassen entfernen, wenn über Footer
-            container.classList.remove("cursor-left", "cursor-right");
-            return;
-        }
-        
-        // Prüfen, ob wir über einem Slider sind
-        const slider = e.target.closest('.slider');
-        if (!slider) {
-            // NUR Richtungsklassen entfernen, wenn nicht über Slider
-            container.classList.remove("cursor-left", "cursor-right");
-            return;
-        }
-        
-        // Position im Container
-        const rect = container.getBoundingClientRect();
-        const relativeX = (e.clientX - rect.left) / rect.width;
-        
-        // Richtungsklassen setzen
-        container.classList.toggle("cursor-left", relativeX < 0.5);
-        container.classList.toggle("cursor-right", relativeX >= 0.5);
-    });
+  const container = document.querySelector(".project-container");
 
-    container.addEventListener('mouseleave', function(e) {
-        console.log("HandleMouseLeave gestartet");
-        const container = e.currentTarget;
-        // NUR Richtungsklassen entfernen, white-cursor bleibt erhalten
-        container.classList.remove("cursor-left", "cursor-right");
-    });
+  console.log("SetupImageNavigation gestartet");
+
+  // Variablen für die letzte Mausposition
+  let lastX = 0;
+  let lastY = 0;
+
+  // Eine gemeinsame Funktion für Cursor-Updates
+  function updateCursor(x, y) {
+    const elementAtPoint = document.elementFromPoint(x, y);
+    if (!elementAtPoint) return;
+
+    // Über Footer?
+    if (elementAtPoint.closest(".footer-container")) {
+      container.classList.remove("cursor-left", "cursor-right");
+      return;
+    }
+
+    // Über einem Slider?
+    const slider = elementAtPoint.closest(".slider");
+    if (!slider) {
+      container.classList.remove("cursor-left", "cursor-right");
+      return;
+    }
+
+    // Position im Slider
+    const rect = container.getBoundingClientRect();
+    const relativeX = (x - rect.left) / rect.width;
+
+    // Cursor-Klassen aktualisieren
+    container.classList.toggle("cursor-left", relativeX < 0.5);
+    container.classList.toggle("cursor-right", relativeX >= 0.5);
+  }
+
+  // Mausbewegung
+  container.addEventListener("mousemove", function (e) {
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateCursor(e.clientX, e.clientY);
+  });
+
+  // Maus verlässt Container
+  container.addEventListener("mouseleave", function () {
+    container.classList.remove("cursor-left", "cursor-right");
+  });
+
+  // Scroll-Event (z.b. bei Footer zu Slider)
+  container.addEventListener("scroll", function () {
+    if (lastX && lastY) {
+      // Minimales Timeout für DOM-Updates
+      setTimeout(() => updateCursor(lastX, lastY), 10);
+    }
+  });
+
 }
