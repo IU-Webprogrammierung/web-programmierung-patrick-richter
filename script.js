@@ -12,7 +12,7 @@ let startY = 0;
 const dataStore = {
     projectsData: null,
     aboutImprintData: null,
-    clientsData: null, // Neue Property für Clients
+    clientsData: null, 
     
     getProjects: function () {
       return this.projectsData;
@@ -22,7 +22,7 @@ const dataStore = {
       return this.aboutImprintData;
     },
     
-    getClients: function () { // Neue Getter-Methode
+    getClients: function () { 
       return this.clientsData;
     },
     
@@ -31,7 +31,7 @@ const dataStore = {
       try {
         console.log("dataStore: Daten-Fetch beginnt...");
         
-        // Clients.json hinzufügen zu den parallelen Requests
+        // Alle drei externen Inputs laden
         const [projectsResponse, aboutResponse, clientsResponse] = await Promise.all([
           fetch("content/projects.json"),
           fetch("content/aboutImprint.json"),
@@ -430,22 +430,19 @@ function createProjectElements() {
 
 function createAboutImprintSection() {
     const aboutImprintData = dataStore.getAboutImprint();
+    const clientsData = dataStore.getClients();
+    
     const aboutIntro = document.querySelector(".about-intro");
-    const clients = document.querySelector(".clients ul");
+    const clientsList = document.querySelector(".about-clients ul");
 
-    aboutIntro.innerHTML = "";
-
+    // About-Intro füllen
     if (aboutImprintData && aboutImprintData.data && aboutImprintData.data.intro) {
-
         const introParagraphs = aboutImprintData.data.intro
             .map(paragraph => {
-                // Verschachtelte Struktur
                 const content = paragraph.children.map(child => {
-                    // Wenn Link 
                     if (child.type === 'link') {
                         return `<a href="${child.url}">${child.children[0].text}</a>`;
                     }
-                    // FÜr normalen Text
                     return child.text;
                 }).join('');
                 
@@ -453,11 +450,41 @@ function createAboutImprintSection() {
             })
             .join("");
         
-        // Füge den HTML-String dem Container hinzu
         aboutIntro.innerHTML = introParagraphs;
     }
       
-
+    // Clients-Liste füllen
+    if (clientsData && clientsData.data) {
+        console.log("CLients-Daten gefunden:", clientsData.data);
+        
+        // Liste leeren und Titel-Element vorbereiten
+        clientsList.innerHTML = '';
+        
+        // Titel-Element erstellen
+        const titleLi = document.createElement('li');
+        titleLi.id = 'clients-title';
+        titleLi.className = 'clients-label';
+        titleLi.setAttribute('role', 'heading');
+        titleLi.setAttribute('aria-level', '2');
+        titleLi.textContent = 'Clients';
+        clientsList.appendChild(titleLi);
+        
+        // Alphabetisch nach Namen sortieren
+        const sortedClients = [...clientsData.data].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        );
+        
+        // Clients in die Liste einfügen
+        sortedClients.forEach(client => {
+            const li = document.createElement('li');
+            li.textContent = client.name;
+            clientsList.appendChild(li);
+        });
+        
+        console.log("Clients-Liste gefüllt");
+    } else {
+        console.warn("Keine CLients-Daten gefunden");
+    }
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
