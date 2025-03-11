@@ -10,25 +10,54 @@ let startY = 0;
 
 /** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
 const dataStore = {
-  projectsData: null,
-  getProjects: function () {
-    return this.projectsData;
-  },
-  loadProjects: async function () {
-    try {
-      console.log("dataStore: Test-Fetch beginnt...");
-      const response = await fetch("content/projects.json");
-      const data = await response.json();
-      console.log("dataStore: Laden erfolgreich");
-      this.projectsData = data;
-      return data;
-    } catch (error) {
-      console.error(error);
-      console.log("dataStore: Laden nicht erfolgreich");
-      return null;
+    projectsData: null,
+    aboutImprintData: null,
+    clientsData: null, // Neue Property für Clients
+    
+    getProjects: function () {
+      return this.projectsData;
+    },
+    
+    getAboutImprint: function () {
+      return this.aboutImprintData;
+    },
+    
+    getClients: function () { // Neue Getter-Methode
+      return this.clientsData;
+    },
+    
+    // Methode zum Laden aller Daten
+    loadData: async function () {
+      try {
+        console.log("dataStore: Daten-Fetch beginnt...");
+        
+        // Clients.json hinzufügen zu den parallelen Requests
+        const [projectsResponse, aboutResponse, clientsResponse] = await Promise.all([
+          fetch("content/projects.json"),
+          fetch("content/aboutImprint.json"),
+          fetch("content/clients.json")
+        ]);
+        
+        // Alle JSON-Responses verarbeiten
+        const projectsData = await projectsResponse.json();
+        const aboutData = await aboutResponse.json();
+        const clientsData = await clientsResponse.json(); 
+        
+        console.log("dataStore: Laden erfolgreich");
+        
+        // Daten im Store speichern
+        this.projectsData = projectsData;
+        this.aboutImprintData = aboutData;
+        this.clientsData = clientsData; 
+        
+        return true;
+      } catch (error) {
+        console.error(error);
+        console.log("dataStore: Laden nicht erfolgreich");
+        return false;
+      }
     }
-  },
-};
+  };
 
 /* ------------------------------------------------------------
    1.1 Zentrale Statusverwaltung der Projekte / Bilder / Farben
@@ -306,11 +335,12 @@ function toggleAboutImprint(targetClass) {
 
 async function initializeWebsite() {
   console.log("initializeWebsite: Initialize Website gestartet");
-  const projects = await dataStore.loadProjects();
-  console.log("initializeWebsite: Geladene Daten:", projects);
-  if (projects) {
-    console.log("initializeWebsite: Loading of projects successful!");
+  const success = await dataStore.loadData();
+  console.log("initializeWebsite: Geladene Daten:", success);
+  if (success) {
+    console.log("initializeWebsite: Loading of projects and about successful!");
     createProjectElements();
+    createAboutImprintSection();
   } else {
     console.log("initializeWebsite: Loading failed - no data returned");
   }
@@ -320,7 +350,7 @@ function createProjectElements() {
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
 
-  // Scroll-Snap temporär deaktivieren - vielleicht mit REACT entfernen?
+  // TODO Scroll-Snap temporär deaktivieren - vielleicht mit REACT entfernen?
   const originalSnapType = container.style.scrollSnapType;
   container.style.scrollSnapType = "none";
 
@@ -396,6 +426,38 @@ function createProjectElements() {
     }, 50);
   }, 50);
   uiState.updateProjects();
+}
+
+function createAboutImprintSection() {
+    const aboutImprintData = dataStore.getAboutImprint();
+    const aboutIntro = document.querySelector(".about-intro");
+    const clients = document.querySelector(".clients ul");
+
+    aboutIntro.innerHTML = "";
+
+    if (aboutImprintData && aboutImprintData.data && aboutImprintData.data.intro) {
+
+        const introParagraphs = aboutImprintData.data.intro
+            .map(paragraph => {
+                // Verschachtelte Struktur
+                const content = paragraph.children.map(child => {
+                    // Wenn Link 
+                    if (child.type === 'link') {
+                        return `<a href="${child.url}">${child.children[0].text}</a>`;
+                    }
+                    // FÜr normalen Text
+                    return child.text;
+                }).join('');
+                
+                return `<p>${content}</p>`;
+            })
+            .join("");
+        
+        // Füge den HTML-String dem Container hinzu
+        aboutIntro.innerHTML = introParagraphs;
+    }
+      
+
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
@@ -765,4 +827,9 @@ function setupImageNavigation() {
         behavior: 'smooth'
       });
     }
+
+    // TODO: Mobile Touch-Navigation 
+  // Für eine vollständige mobile Implementation wird in der nächsten Phase eine spezialisierte 
+  // Bibliothek wie SwiperJS integriert.
+
   }
