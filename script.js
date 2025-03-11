@@ -10,54 +10,55 @@ let startY = 0;
 
 /** Datenspeicher erstellen, in dem Projekte vorgehalten sind */
 const dataStore = {
-    projectsData: null,
-    aboutImprintData: null,
-    clientsData: null, 
-    
-    getProjects: function () {
-      return this.projectsData;
-    },
-    
-    getAboutImprint: function () {
-      return this.aboutImprintData;
-    },
-    
-    getClients: function () { 
-      return this.clientsData;
-    },
-    
-    // Methode zum Laden aller Daten
-    loadData: async function () {
-      try {
-        console.log("dataStore: Daten-Fetch beginnt...");
-        
-        // Alle drei externen Inputs laden
-        const [projectsResponse, aboutResponse, clientsResponse] = await Promise.all([
+  projectsData: null,
+  aboutImprintData: null,
+  clientsData: null,
+
+  getProjects: function () {
+    return this.projectsData;
+  },
+
+  getAboutImprint: function () {
+    return this.aboutImprintData;
+  },
+
+  getClients: function () {
+    return this.clientsData;
+  },
+
+  // Methode zum Laden aller Daten
+  loadData: async function () {
+    try {
+      console.log("dataStore: Daten-Fetch beginnt...");
+
+      // Alle drei externen Inputs laden
+      const [projectsResponse, aboutResponse, clientsResponse] =
+        await Promise.all([
           fetch("content/projects.json"),
           fetch("content/aboutImprint.json"),
-          fetch("content/clients.json")
+          fetch("content/clients.json"),
         ]);
-        
-        // Alle JSON-Responses verarbeiten
-        const projectsData = await projectsResponse.json();
-        const aboutData = await aboutResponse.json();
-        const clientsData = await clientsResponse.json(); 
-        
-        console.log("dataStore: Laden erfolgreich");
-        
-        // Daten im Store speichern
-        this.projectsData = projectsData;
-        this.aboutImprintData = aboutData;
-        this.clientsData = clientsData; 
-        
-        return true;
-      } catch (error) {
-        console.error(error);
-        console.log("dataStore: Laden nicht erfolgreich");
-        return false;
-      }
+
+      // Alle JSON-Responses verarbeiten
+      const projectsData = await projectsResponse.json();
+      const aboutData = await aboutResponse.json();
+      const clientsData = await clientsResponse.json();
+
+      console.log("dataStore: Laden erfolgreich");
+
+      // Daten im Store speichern
+      this.projectsData = projectsData;
+      this.aboutImprintData = aboutData;
+      this.clientsData = clientsData;
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      console.log("dataStore: Laden nicht erfolgreich");
+      return false;
     }
-  };
+  },
+};
 
 /* ------------------------------------------------------------
    1.1 Zentrale Statusverwaltung der Projekte / Bilder / Farben
@@ -429,62 +430,129 @@ function createProjectElements() {
 }
 
 function createAboutImprintSection() {
-    const aboutImprintData = dataStore.getAboutImprint();
-    const clientsData = dataStore.getClients();
-    
-    const aboutIntro = document.querySelector(".about-intro");
-    const clientsList = document.querySelector(".about-clients ul");
+  const aboutImprintData = dataStore.getAboutImprint();
+  const clientsData = dataStore.getClients();
 
-    // About-Intro füllen
-    if (aboutImprintData && aboutImprintData.data && aboutImprintData.data.intro) {
-        const introParagraphs = aboutImprintData.data.intro
-            .map(paragraph => {
-                const content = paragraph.children.map(child => {
-                    if (child.type === 'link') {
-                        return `<a href="${child.url}">${child.children[0].text}</a>`;
-                    }
-                    return child.text;
-                }).join('');
-                
-                return `<p>${content}</p>`;
-            })
-            .join("");
-        
-        aboutIntro.innerHTML = introParagraphs;
-    }
-      
-    // Clients-Liste füllen
-    if (clientsData && clientsData.data) {
-        console.log("CLients-Daten gefunden:", clientsData.data);
-        
-        // Liste leeren und Titel-Element vorbereiten
-        clientsList.innerHTML = '';
-        
-        // Titel-Element erstellen
-        const titleLi = document.createElement('li');
-        titleLi.id = 'clients-title';
-        titleLi.className = 'clients-label';
-        titleLi.setAttribute('role', 'heading');
-        titleLi.setAttribute('aria-level', '2');
-        titleLi.textContent = 'Clients';
-        clientsList.appendChild(titleLi);
-        
-        // Alphabetisch nach Namen sortieren
-        const sortedClients = [...clientsData.data].sort((a, b) => 
-            a.name.localeCompare(b.name)
-        );
-        
-        // Clients in die Liste einfügen
-        sortedClients.forEach(client => {
-            const li = document.createElement('li');
-            li.textContent = client.name;
-            clientsList.appendChild(li);
+  const aboutIntro = document.querySelector(".about-intro");
+  const clientsList = document.querySelector(".about-clients ul");
+
+  // About-Intro füllen
+  if (
+    aboutImprintData &&
+    aboutImprintData.data &&
+    aboutImprintData.data.intro
+  ) {
+    const introParagraphs = aboutImprintData.data.intro
+      .map((paragraph) => {
+        const content = paragraph.children
+          .map((child) => {
+            if (child.type === "link") {
+              return `<a href="${child.url}">${child.children[0].text}</a>`;
+            }
+            return child.text;
+          })
+          .join("");
+
+        return `<p>${content}</p>`;
+      })
+      .join("");
+
+    aboutIntro.innerHTML = introParagraphs;
+  }
+
+  // Clients-Liste füllen
+  if (clientsData && clientsData.data) {
+    console.log("Clients-Daten gefunden:", clientsData.data);
+
+    // Liste leeren und Titel-Element vorbereiten
+    clientsList.innerHTML = "";
+
+    // Titel-Element erstellen
+    const titleLi = document.createElement("li");
+    titleLi.id = "clients-title";
+    titleLi.className = "clients-label";
+    titleLi.setAttribute("role", "heading");
+    titleLi.setAttribute("aria-level", "2");
+    titleLi.textContent = "Clients";
+    clientsList.appendChild(titleLi);
+
+    // Alphabetisch nach Namen sortieren
+    const sortedClients = [...clientsData.data].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    // Clients in die Liste einfügen
+    sortedClients.forEach((client) => {
+      const li = document.createElement("li");
+
+      // Prüfen, ob Client Projekte hat
+      // TODO Hover images einfügen
+      if (client.projects && client.projects.length > 0) {
+        // Client mit Projekt(en) - als Link darstellen
+        const project = client.projects[0]; // Erstes Projekt nehmen
+
+        // Link-Element erstellen mit einfachem ARIA-Label
+        const link = document.createElement("a");
+        link.href = "#";
+        link.className = "about-clients-project-link";
+        link.setAttribute("data-project-id", project.id);
+        link.textContent = client.name;
+        link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
+
+        // Event-Listener für Klick hinzufügen
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          hideOverlay(); // Overlay schließen
+
+          // Zum Projekt scrollen (mit kurzer Verzögerung für Animation)
+          // TODO ggf zentrale Funktion scrollToTop umwandeln (brauche ich später noch für Index)
+          setTimeout(() => {
+            scrollToProject(project.id);
+          }, 300);
         });
-        
-        console.log("Clients-Liste gefüllt");
-    } else {
-        console.warn("Keine CLients-Daten gefunden");
+
+        li.appendChild(link);
+      } else {
+        // Client ohne Projekte - als normaler Text
+        li.textContent = client.name;
+      }
+
+      clientsList.appendChild(li);
+    });
+
+    console.log("Clients-Liste mit Links gefüllt");
+  } else {
+    console.warn("Keine Clients-Daten gefunden");
+  }
+}
+
+// Neue Funktion zum Scrollen zu einem Projekt
+function scrollToProject(projectId) {
+  const projects = document.querySelectorAll(".project:not(.footer-container)");
+
+  // Das Projekt mit der passenden ID finden
+  for (let i = 0; i < projects.length; i++) {
+    const project = projects[i];
+    const dataId = project.getAttribute("data-project-id");
+
+    if (dataId === projectId.toString()) {
+      console.log(`Scrolle zu Projekt ID: ${projectId}, Index: ${i}`);
+
+      // Zum Projekt scrollen
+      const container = document.querySelector(".project-container");
+      container.scrollTo({
+        top: i * window.innerHeight,
+        behavior: "smooth",
+      });
+
+      // uiState aktualisieren für Titelanzeige etc.
+      uiState.setActiveProject(i);
+
+      return;
     }
+  }
+
+  console.warn(`Projekt mit ID ${projectId} wurde nicht gefunden.`);
 }
 
 document.addEventListener("DOMContentLoaded", initializeWebsite);
@@ -746,117 +814,116 @@ function handleColorChange(event) {
 }
 
 function setupImageNavigation() {
-    const container = document.querySelector(".project-container");
-    
-    console.log("SetupImageNavigation gestartet");
-    
-    // Variablen für die letzte Mausposition
-    let lastX = 0;
-    let lastY = 0;
-    
-    // Hilfsfunktion zum Entfernen der Cursor-Klassen
-    function clearCursorClasses() {
-      container.classList.remove("cursor-left", "cursor-right");
-    }
-    
-    // Eine gemeinsame Funktion für Cursor-Updates
-    function updateCursor(x, y) {
-      const elementAtPoint = document.elementFromPoint(x, y);
-      if (!elementAtPoint) return;
-      
-      // Über Footer?
-      if (elementAtPoint.closest(".footer-container")) {
-        clearCursorClasses();
-        return;
-      }
-      
-      // Über einem Slider?
-      const slider = elementAtPoint.closest(".slider");
-      if (!slider) {
-        clearCursorClasses();
-        return;
-      }
-      
-      // Position im Container
-      const rect = container.getBoundingClientRect();
-      const relativeX = (x - rect.left) / rect.width;
-      
-      // Cursor-Klassen aktualisieren
-      container.classList.toggle("cursor-left", relativeX < 0.5);
-      container.classList.toggle("cursor-right", relativeX >= 0.5);
-    }
-    
-    // Mausbewegung
-    container.addEventListener("mousemove", function (e) {
-      lastX = e.clientX;
-      lastY = e.clientY;
-      updateCursor(e.clientX, e.clientY);
-    });
-    
-    // Maus verlässt Container
-    container.addEventListener("mouseleave", function () {
-      clearCursorClasses();
-    });
-    
-    // Scroll-Event (minimal)
-    container.addEventListener("scroll", function () {
-      if (lastX && lastY) {
-        // Minimales Timeout für DOM-Updates
-        setTimeout(() => updateCursor(lastX, lastY), 10);
-      }
-    });
-    
-    // Klick-Handler für Bildnavigation
-    container.addEventListener("click", function (e) {
-      // Element unter dem Klick ermitteln
-      const elementAtClick = document.elementFromPoint(e.clientX, e.clientY);
-      if (!elementAtClick) return;
-      
-      // Nicht navigieren, wenn über Footer geklickt
-      if (elementAtClick.closest(".footer-container")) return;
-      
-      // Slider finden
-      const slider = elementAtClick.closest(".slider");
-      if (!slider) return;
-      
-      // Position im Container
-      const rect = container.getBoundingClientRect();
-      const relativeX = (e.clientX - rect.left) / rect.width;
-      
-      // Navigation basierend auf Klickposition
-      navigateImage(slider, relativeX < 0.5 ? -1 : 1);
-    });
-    
-    // Vereinfachte Navigationsfunktion mit Richtungsparameter
-    function navigateImage(slider, direction) {
-      // Parameter: direction = -1 für links, +1 für rechts
-      const slideWidth = slider.clientWidth;
-      const currentPosition = slider.scrollLeft;
-      
-      // Aktueller Index (gerundet zum nächsten Bild)
-      let currentIndex = Math.round(currentPosition / slideWidth);
-      
-      // Neuer Index basierend auf Richtung
-      let newIndex = currentIndex + direction;
-      
-      // Infinite Scroll-Logik
-      const totalSlides = Math.round(slider.scrollWidth / slideWidth);
-      
-      if (newIndex < 0) {
-        newIndex = totalSlides - 1; // Zum letzten Bild
-      } else if (newIndex >= totalSlides) {
-        newIndex = 0; // Zum ersten Bild
-      }
-      
-      // Zum neuen Bild scrollen
-      slider.scrollTo({
-        left: newIndex * slideWidth,
-        behavior: 'smooth'
-      });
-    }
+  const container = document.querySelector(".project-container");
 
-    // TODO: Mobile Touch-Navigation 
-  // Für eine vollständige mobile Implementation wird in der nächsten Phase eine spezialisierte 
-  // Bibliothek wie SwiperJS integriert.
+  console.log("SetupImageNavigation gestartet");
 
+  // Variablen für die letzte Mausposition
+  let lastX = 0;
+  let lastY = 0;
+
+  // Hilfsfunktion zum Entfernen der Cursor-Klassen
+  function clearCursorClasses() {
+    container.classList.remove("cursor-left", "cursor-right");
   }
+
+  // Eine gemeinsame Funktion für Cursor-Updates
+  function updateCursor(x, y) {
+    const elementAtPoint = document.elementFromPoint(x, y);
+    if (!elementAtPoint) return;
+
+    // Über Footer?
+    if (elementAtPoint.closest(".footer-container")) {
+      clearCursorClasses();
+      return;
+    }
+
+    // Über einem Slider?
+    const slider = elementAtPoint.closest(".slider");
+    if (!slider) {
+      clearCursorClasses();
+      return;
+    }
+
+    // Position im Container
+    const rect = container.getBoundingClientRect();
+    const relativeX = (x - rect.left) / rect.width;
+
+    // Cursor-Klassen aktualisieren
+    container.classList.toggle("cursor-left", relativeX < 0.5);
+    container.classList.toggle("cursor-right", relativeX >= 0.5);
+  }
+
+  // Mausbewegung
+  container.addEventListener("mousemove", function (e) {
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateCursor(e.clientX, e.clientY);
+  });
+
+  // Maus verlässt Container
+  container.addEventListener("mouseleave", function () {
+    clearCursorClasses();
+  });
+
+  // Scroll-Event (minimal)
+  container.addEventListener("scroll", function () {
+    if (lastX && lastY) {
+      // Minimales Timeout für DOM-Updates
+      setTimeout(() => updateCursor(lastX, lastY), 10);
+    }
+  });
+
+  // Klick-Handler für Bildnavigation
+  container.addEventListener("click", function (e) {
+    // Element unter dem Klick ermitteln
+    const elementAtClick = document.elementFromPoint(e.clientX, e.clientY);
+    if (!elementAtClick) return;
+
+    // Nicht navigieren, wenn über Footer geklickt
+    if (elementAtClick.closest(".footer-container")) return;
+
+    // Slider finden
+    const slider = elementAtClick.closest(".slider");
+    if (!slider) return;
+
+    // Position im Container
+    const rect = container.getBoundingClientRect();
+    const relativeX = (e.clientX - rect.left) / rect.width;
+
+    // Navigation basierend auf Klickposition
+    navigateImage(slider, relativeX < 0.5 ? -1 : 1);
+  });
+
+  // Vereinfachte Navigationsfunktion mit Richtungsparameter
+  function navigateImage(slider, direction) {
+    // Parameter: direction = -1 für links, +1 für rechts
+    const slideWidth = slider.clientWidth;
+    const currentPosition = slider.scrollLeft;
+
+    // Aktueller Index (gerundet zum nächsten Bild)
+    let currentIndex = Math.round(currentPosition / slideWidth);
+
+    // Neuer Index basierend auf Richtung
+    let newIndex = currentIndex + direction;
+
+    // Infinite Scroll-Logik
+    const totalSlides = Math.round(slider.scrollWidth / slideWidth);
+
+    if (newIndex < 0) {
+      newIndex = totalSlides - 1; // Zum letzten Bild
+    } else if (newIndex >= totalSlides) {
+      newIndex = 0; // Zum ersten Bild
+    }
+
+    // Zum neuen Bild scrollen
+    slider.scrollTo({
+      left: newIndex * slideWidth,
+      behavior: "smooth",
+    });
+  }
+
+  // TODO: Mobile Touch-Navigation
+  // Für eine vollständige mobile Implementation wird in der nächsten Phase eine spezialisierte
+  // Bibliothek wie SwiperJS integriert.
+}

@@ -499,6 +499,11 @@ dialog::backdrop {
   content: "";
 }
 
+.about-clients-project-link {
+  color: black;
+  text-underline-offset: 0.25rem;
+}
+
 /* Imprint Content Styling */
 
 .imprint-content {
