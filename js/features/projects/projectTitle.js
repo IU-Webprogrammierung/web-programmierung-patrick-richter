@@ -1,7 +1,10 @@
 /**
  * @module projectTitle
- * @description Enthält alle Funktionen zur dynamischen Erstellung des Projekttitels:
- * setupProjectTitle()
+ * @description Steuert die dynamische Anzeige und Animation von Projekttiteln.
+ * Reagiert auf Projektwechsel durch sanfte Überblendungen und Aktualisiert Titel
+ * sowohl auf Desktop- als auch auf mobilen Ansichten mit synchronisierten Animations-Timings.
+ * 
+ * Funktionen: setupProjectTitle()
  */
 
 import uiState from '../../core/uiState.js';
@@ -13,6 +16,11 @@ export function setupProjectTitle() {
   const headerTitle = document.querySelector(".project-title");
   const mobileTitle = document.querySelector(".project-title-mobile");
   const mobileDescription = document.querySelector(".description-mobile");
+
+  if (!headerTitle) {
+    console.error("Fehler: Projekt-Titel-Element nicht gefunden");
+    return; // Frühe Rückgabe, wenn Hauptelement fehlt
+  }
 
   // Animationsstatus
   let isAnimating = false;

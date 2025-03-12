@@ -1,6 +1,11 @@
 /**
  * @module uiState
- * @description Zentrale Statusverwaltung für die UI-Komponenten
+ * @description Zentrale Statusverwaltung für die UI-Komponenten der Website.
+ * Verwaltet den aktiven Projektindex, das aktive Bild und dessen Textfarbe.
+ * Stellt sicher, dass UI-Änderungen konsistent über Custom Events kommuniziert werden
+ * und verhindert redundante Updates.
+ * 
+ * Funktionen: updateProjects(), setActiveProject(), setActiveImage()
  */
 
 // Event-Typen importieren

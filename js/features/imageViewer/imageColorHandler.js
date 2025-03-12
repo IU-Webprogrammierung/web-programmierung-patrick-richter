@@ -1,8 +1,10 @@
 /**
  * @module imageColorHandler
- * @description Enthält alle Inhalte zur Befüllung der Projekte und des weiteren Inhalts:
- * setupImageColorHandler(),
- * handleColorChange(event)
+ * @description Überwacht sichtbare Bilder und passt die Textfarbe der UI dynamisch an.
+ * Nutzt IntersectionObserver für effiziente Erkennung sichtbarer Bilder und
+ * implementiert Debouncing für flüssige Farbübergänge zwischen Bildern und Projekten.
+ * 
+ * Funktionen: setupImageColorHandler(), handleColorChange()
  */
 
 import uiState from '../../core/uiState.js';

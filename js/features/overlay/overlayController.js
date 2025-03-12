@@ -1,13 +1,14 @@
 /**
  * @module overlayController
- * @description Enthält alle Inhalte zum Handling des Overlays:
- * showOverlay(),
- * hideOverlay(),
- * toggleAboutImprint(targetClass),
- * handleKeyPress(event)
+ * @description Steuert das Overlay-System für About und Imprint-Inhalte.
+ * Verwaltet das Öffnen und Schließen des Overlays mit Animationen, sowie den
+ * Wechsel zwischen About- und Imprint-Ansichten. Berücksichtigt Barrierefreiheit
+ * durch ARIA-Attribute und Fokus-Management.
+ * 
+ * Funktionen: showOverlay(), hideOverlay(), toggleAboutImprint(), handleKeyPress()
  */
 
-import { toggleDescription } from '../mobile/mobileDescription.js';
+import { toggleDescription } from "../mobile/mobileDescription.js";
 
 // Overlay-DOM-Elemente
 const overlay = document.querySelector(".overlay");
@@ -16,8 +17,15 @@ const overlayRight = document.querySelector(".overlay-right");
 // Öffnet das Overlay und entfernt die Schließen-Animation
 
 export function showOverlay() {
+  if (!overlay || !overlayRight) {
+    console.error("Fehler: Overlay-Elemente nicht gefunden");
+    return; // Frühe Rückgabe
+  }
+
   overlay.classList.remove("closing");
-  const titleDescriptionContainer = document.querySelector(".title-description-container");
+  const titleDescriptionContainer = document.querySelector(
+    ".title-description-container"
+  );
 
   if (!overlay.classList.contains("show-overlay")) {
     titleDescriptionContainer.classList.contains("show-description") &&
@@ -33,6 +41,11 @@ export function showOverlay() {
 // schließt das Overlay und wartet bis Animationen abgeschlossen sind
 
 export function hideOverlay() {
+  if (!overlay || !overlayRight) {
+    console.error("Fehler: Overlay-Elemente nicht gefunden");
+    return; // Frühe Rückgabe
+  }
+
   if (
     overlay.classList.contains("show-overlay") &&
     !overlay.classList.contains("hiding")
@@ -58,6 +71,11 @@ export function hideOverlay() {
 export function toggleAboutImprint(targetClass) {
   const aboutImprintSlider = document.querySelector(".about-imprint-slider");
 
+  if (!aboutImprintSlider) {
+    console.error("Fehler: About-Imprint-Slider nicht gefunden");
+    return; // Frühe Rückgabe
+  }
+
   if (
     targetClass === "show-about" &&
     aboutImprintSlider.classList.contains("show-imprint")
@@ -76,13 +94,7 @@ export function toggleAboutImprint(targetClass) {
 }
 
 export function handleKeyPress(event) {
-    if (event.key === "Escape") {
-      hideOverlay();
-    }
+  if (event.key === "Escape") {
+    hideOverlay();
   }
-
-
-
-
-
-
+}

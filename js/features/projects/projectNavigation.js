@@ -1,16 +1,22 @@
 /**
  * @module projectNavigation
- * @description Enthält alle Funktionen zur Navigation zwischen Projekten:
- * setupScrollHandler()
- * scrollToProject(projectID),
- * scrollToTop(),
- * closeFooter()
+ * @description Verwaltet die Navigation zwischen Projekten und deren Scrollverhalten.
+ * Überwacht Scroll-Events, identifiziert das aktive Projekt basierend auf der
+ * Scroll-Position und bietet Funktionen zum gezielten Navigieren zu bestimmten Projekten.
+ * 
+ * Funktionen: setupScrollHandler(), scrollToProject(), scrollToTop(), closeFooter()
  */
 
-import uiState from '../../core/uiState.js';
+import uiState from "../../core/uiState.js";
 
 export function setupScrollHandler() {
   const container = document.querySelector(".project-container");
+
+  if (!container) {
+    console.error("Fehler: Project-Container nicht gefunden");
+    return; // Frühe Rückgabe
+  }
+
   let lastScrollTime = 0;
   const throttleDelay = 100; // ms
 
@@ -51,10 +57,15 @@ export function setupScrollHandler() {
   }
 }
 
-
 // Neue Funktion zum Scrollen zu einem Projekt
 export function scrollToProject(projectId) {
   const projects = document.querySelectorAll(".project:not(.footer-container)");
+  const container = document.querySelector(".project-container");
+
+  if (!container || projects.length === 0) {
+    console.error("Fehler: Container oder Projekte nicht gefunden");
+    return; // Frühe Rückgabe
+  }
 
   // Das Projekt mit der passenden ID finden
   for (let i = 0; i < projects.length; i++) {
@@ -84,18 +95,30 @@ export function scrollToProject(projectId) {
 // Scrollt nach oben
 
 export function scrollToTop() {
-    const container = document.querySelector(".project-container");
-    container.scrollTo({ top: 0, behavior: "smooth" });
+  const container = document.querySelector(".project-container");
+
+  if (!container) {
+    console.error("Fehler: Project-Container nicht gefunden");
+    return; // Frühe Rückgabe
   }
-  
-  // Footer schließen
-  
-  export function closeFooter() {
-    const container = document.querySelector(".project-container");
-    const currentScrollPos = container.scrollTop;
-    const viewportHeight = window.innerHeight;
-    container.scrollTo({
-      top: Math.max(0, currentScrollPos - viewportHeight),
-      behavior: "smooth",
-    });
+
+  container.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Footer schließen
+
+export function closeFooter() {
+  const container = document.querySelector(".project-container");
+
+  if (!container) {
+    console.error("Fehler: Project-Container nicht gefunden");
+    return; // Frühe Rückgabe
   }
+
+  const currentScrollPos = container.scrollTop;
+  const viewportHeight = window.innerHeight;
+  container.scrollTo({
+    top: Math.max(0, currentScrollPos - viewportHeight),
+    behavior: "smooth",
+  });
+}

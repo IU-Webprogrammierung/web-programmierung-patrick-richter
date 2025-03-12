@@ -1,9 +1,10 @@
 /**
  * @module mobileDescription
- * @description Enthält alle Mobile-spezifischen Inhalte :
- * toggleDescription(),
- * handlePointerDown(event),
- * handleTouchEnd(event)
+ * @description Verwaltet die mobile Ansicht der Projektbeschreibungen.
+ * Implementiert ein expandierbares Beschreibungsfeld mit Touch-Gesten-Unterstützung,
+ * das elegant ein- und ausgeklappt werden kann, um mobile Nutzererfahrung zu verbessern.
+ *
+ * Funktionen: toggleDescription(), handlePointerDown(), handleTouchEnd()
  */
 
 // Mobile Description Element
@@ -35,6 +36,10 @@ export function handlePointerDown(event) {
 // Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
 
 export function handleTouchEnd(event) {
+  const titleDescriptionContainer = document.querySelector(
+    ".title-description-container"
+  );
+
   const endY =
     event.clientY ||
     (event.changedTouches &&

@@ -1,11 +1,19 @@
 /**
  * @module imageNavigation
- * @description Enthält alle Inhalte zur Befüllung der Projekte und des weiteren Inhalts:
- * setupImageNavigation()
+ * @description Implementiert die interaktive Cursor-basierte Navigation in Bildergalerien.
+ * Passt den Cursor basierend auf der Mausposition an, ermöglicht Navigation zwischen
+ * Bildern durch Klicks und unterstützt unendliches Scrollen durch Bilder.
+ * 
+ * Funktionen: setupImageNavigation()
  */
 
 export function setupImageNavigation() {
     const container = document.querySelector(".project-container");
+
+    if (!container) {
+      console.error("Fehler: Project-Container nicht gefunden");
+      return; // Frühe Rückgabe
+    }
   
     console.log("SetupImageNavigation gestartet");
   
