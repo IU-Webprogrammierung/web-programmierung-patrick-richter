@@ -11,7 +11,7 @@ import { EVENT_TYPES } from '../../core/events.js';
 // Timer für Debouncing der Farbänderungen
 let debounceColorTimer = null;
 
-function setupImageColorHandler() {
+export function setupImageColorHandler() {
   // Speichert aktive Observer, um sie später zu trennen
   let currentObservers = [];
 
@@ -62,13 +62,13 @@ function setupImageColorHandler() {
   }
 
   // Bei Projektwechsel neue Observer einrichten
-  document.addEventListener(ACTIVE_PROJECT_CHANGED, (event) => {
+  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
     const { projectIndex } = event.detail;
     setupImageObserversForProject(projectIndex);
   });
 
   // Event-Listener für Farbänderungen
-  document.addEventListener(ACTIVE_IMAGE_CHANGED, handleColorChange);
+  document.addEventListener(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, handleColorChange);
 
   // Initial für das aktive Projekt
   setTimeout(() => {
@@ -76,7 +76,7 @@ function setupImageColorHandler() {
   }, 100);
 }
 
-function handleColorChange(event) {
+export function handleColorChange(event) {
   const textColor = event.detail.textColor;
   const projectIndex = event.detail.projectIndex;
 

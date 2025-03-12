@@ -9,8 +9,10 @@
 
 import uiState from '../../core/uiState.js';
 
-function setupScrollHandler() {
+export function setupScrollHandler() {
   const container = document.querySelector(".project-container");
+  let lastScrollTime = 0;
+  const throttleDelay = 100; // ms
 
   // Aktuellen Projektindex berechnen (Scroll-Abstand nach oben / Fensterhöhe)
   function calculateActiveProjectIndex() {
@@ -34,10 +36,12 @@ function setupScrollHandler() {
     }
   }
 
-  // ScrollEvent-Handler wenn gescrollt wird
   container.addEventListener("scroll", () => {
-    // requestAnimationFrame verhindert zu häufige Updates in kurzer Zeit
-    requestAnimationFrame(updateActiveProject);
+    const now = Date.now();
+    if (now - lastScrollTime > throttleDelay) {
+      lastScrollTime = now;
+      requestAnimationFrame(updateActiveProject);
+    }
   });
 
   // Initialen Status setzen (basierend auf anfänglicher Scroll-Position)
@@ -49,7 +53,7 @@ function setupScrollHandler() {
 
 
 // Neue Funktion zum Scrollen zu einem Projekt
-function scrollToProject(projectId) {
+export function scrollToProject(projectId) {
   const projects = document.querySelectorAll(".project:not(.footer-container)");
 
   // Das Projekt mit der passenden ID finden
@@ -79,14 +83,14 @@ function scrollToProject(projectId) {
 
 // Scrollt nach oben
 
-function scrollToTop() {
+export function scrollToTop() {
     const container = document.querySelector(".project-container");
     container.scrollTo({ top: 0, behavior: "smooth" });
   }
   
   // Footer schließen
   
-  function closeFooter() {
+  export function closeFooter() {
     const container = document.querySelector(".project-container");
     const currentScrollPos = container.scrollTop;
     const viewportHeight = window.innerHeight;

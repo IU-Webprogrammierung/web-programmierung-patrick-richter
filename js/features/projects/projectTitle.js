@@ -106,7 +106,7 @@ export function setupProjectTitle() {
   });
 
   // Auf Projektänderungen reagieren (Wichtig!)
-  document.addEventListener(ACTIVE_PROJECT_CHANGED, () => {
+  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
     console.log("setupProjectTitle: Event activeProjectChanged empfangen");
 
     if (!isAnimating) {

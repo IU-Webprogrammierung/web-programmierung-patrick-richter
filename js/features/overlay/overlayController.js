@@ -17,6 +17,7 @@ const overlayRight = document.querySelector(".overlay-right");
 
 export function showOverlay() {
   overlay.classList.remove("closing");
+  const titleDescriptionContainer = document.querySelector(".title-description-container");
 
   if (!overlay.classList.contains("show-overlay")) {
     titleDescriptionContainer.classList.contains("show-description") &&

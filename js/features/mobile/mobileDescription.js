@@ -7,9 +7,12 @@
  */
 
 // Mobile Description Element
-const titleDescriptionContainer = document.querySelector(".title-description-container");
 
 export function toggleDescription() {
+  const titleDescriptionContainer = document.querySelector(
+    ".title-description-container"
+  );
+
   titleDescriptionContainer.classList.toggle("show-description");
   titleDescriptionContainer.setAttribute(
     "aria-expanded",

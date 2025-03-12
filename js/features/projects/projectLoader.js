@@ -6,13 +6,14 @@
  * createAboutImprintSection
  */
 
-import dataStore from '../../core/dataStore.js';
-import uiState from '../../core/uiState.js';
-import { setupScrollHandler } from './projectNavigation.js';
-import { setupProjectTitle } from './projectTitle.js';
-import { setupImageColorHandler } from '../imageViewer/imageColorHandler.js';
-import { setupImageNavigation } from '../imageViewer/imageNavigation.js';
-import { scrollToProject } from './projectNavigation.js';
+import dataStore from "../../core/dataStore.js";
+import uiState from "../../core/uiState.js";
+import { setupScrollHandler } from "./projectNavigation.js";
+import { setupProjectTitle } from "./projectTitle.js";
+import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
+import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
+import { scrollToProject } from "./projectNavigation.js";
+import { hideOverlay } from "../overlay/overlayController.js";
 
 export async function initializeWebsite() {
   console.log("initializeWebsite: Initialize Website gestartet");
@@ -142,6 +143,11 @@ export function createAboutImprintSection() {
   }
 
   // Clients-Liste füllen
+  if (!clientsData || !clientsData.data || clientsData.data.length === 0) {
+    console.warn("Keine Clients-Daten gefunden oder leere Liste");
+    return; // Beende die Funktion, um weitere Fehler zu vermeiden
+  }
+
   if (clientsData && clientsData.data) {
     console.log("Clients-Daten gefunden:", clientsData.data);
 
@@ -250,5 +256,3 @@ export function createAboutImprintSection() {
     console.warn("Keine Imprint-Daten gefunden");
   }
 }
-
-
