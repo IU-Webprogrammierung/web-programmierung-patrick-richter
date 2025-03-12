@@ -435,6 +435,7 @@ function createAboutImprintSection() {
 
   const aboutIntro = document.querySelector(".about-intro");
   const clientsList = document.querySelector(".about-clients ul");
+  const imprintContent = document.querySelector(".imprint-content");
 
   // About-Intro füllen
   if (
@@ -523,6 +524,50 @@ function createAboutImprintSection() {
     console.log("Clients-Liste mit Links gefüllt");
   } else {
     console.warn("Keine Clients-Daten gefunden");
+  }
+
+  // Imprint-Inhalt füllen
+  if (
+    aboutImprintData &&
+    aboutImprintData.data &&
+    aboutImprintData.data.imprint
+  ) {
+    // Bestehenden Inhalt leeren
+    imprintContent.innerHTML = "";
+
+    // Imprint-Daten verarbeiten
+    const imprintHtml = aboutImprintData.data.imprint
+      .map((paragraph) => {
+        // Inhalte des Paragraphen verarbeiten
+        const children = paragraph.children || [];
+        const content = children
+          .map((child) => {
+            // Wenn es ein Link ist
+            if (child.type === "link") {
+              return `<a href="${child.url}">${child.children[0].text}</a>`;
+            }
+
+            // Normaler Text (mit oder ohne bold)
+            return child.text;
+          })
+          .join("");
+
+        // Wenn einer der Children bold ist, als h2 darstellen
+        const isBold = children.some((child) => child.bold === true);
+
+        if (isBold) {
+          return `<h2>${content}</h2>`;
+        } else {
+          return `<p>${content}</p>`;
+        }
+      })
+      .join("");
+
+    // HTML einfügen
+    imprintContent.innerHTML = imprintHtml;
+    console.log("Imprint-Inhalt gesetzt");
+  } else {
+    console.warn("Keine Imprint-Daten gefunden");
   }
 }
 
