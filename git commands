@@ -1,0 +1,45 @@
+# Branch-Verwaltung
+git checkout -b feature/name    # Neuen Branch erstellen und wechseln
+git checkout main               # Zu main wechseln
+
+# Änderungen
+git status                      # Status anzeigen
+git add .                       # Alle Änderungen stagen
+git commit -m "Nachri# Branch-Verwaltung
+git checkout -b feature/name    # Neuen Branch erstellen und wechseln
+git checkout main               # Zu main wechseln
+
+# Änderungen
+git status                      # Status anzeigen
+git add .                       # Alle Änderungen stagen
+git commit -m "Nachricht"       # Committen
+
+# Synchronisation
+git pull                        # Remote-Änderungen holen
+git push                        # Lokale Änderungen pushen
+git push -u origin feature/name # Branch erstmalig pushen
+
+# Mergen
+git checkout main               # Zu main wechseln
+git pull                        # Main aktualisieren
+git merge feature/name          # Feature in main mergen
+git push                        # Gemergten main pushen
+
+# Versionierung
+git tag -a v0.1.0 -m "Version 0.1.0"  # Tag erstellen
+git push --tags                       # Tags pushencht"       # Committen
+
+# Synchronisation
+git pull                        # Remote-Änderungen holen
+git push                        # Lokale Änderungen pushen
+git push -u origin feature/name # Branch erstmalig pushen
+
+# Mergen
+git checkout main               # Zu main wechseln
+git pull                        # Main aktualisieren
+git merge feature/name          # Feature in main mergen
+git push                        # Gemergten main pushen
+
+# Versionierung
+git tag -a v0.1.0 -m "Version 0.1.0"  # Tag erstellen
+git push --tags                       # Tags pushen

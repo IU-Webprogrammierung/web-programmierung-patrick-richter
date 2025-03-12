@@ -7,7 +7,8 @@
     <title>BB</title>
     <!-- Externe Ressourcen -->
     <link rel="stylesheet" href="styles/styles.css" />
-    <script src="script.js" defer></script>
+    <!-- Neue modulare Einbindung -->
+    <script type="module" src="js/app.js"></script>
   </head>
 
   <body>
@@ -15,7 +16,9 @@
     <header>
       <!-- Navigation -->
       <nav class="navbar">
-        <button class="nav-home button" id="scrollTop" aria-label="Go to top">Home</button>
+        <button class="nav-home button" id="scrollTop" aria-label="Go to top">
+          Home
+        </button>
         <!-- Projektitel soll sich zukünftig mit JS dynamisch ändern -->
         <button
           id="openOverlay"
@@ -25,16 +28,13 @@
           About
         </button>
       </nav>
-      <h1 class="project-title desktop-only" aria-live="polite">
-        &nbsp;
-      </h1>
+      <h1 class="project-title desktop-only" aria-live="polite">&nbsp;</h1>
     </header>
 
     <!-- 3. MAIN CONTENT -->
     <main>
       <!-- Galerien der Projekte -->
       <section class="project-container">
-        
         <footer
           class="project footer-container hidden-footer"
           aria-label="Footer with Email Link"
@@ -53,11 +53,17 @@
         aria-controls="mobile-description"
       >
         <div class="project-title-container">
-          <h1 class="project-title-mobile" aria-live="polite">
-          </h1>
+          <h1 class="project-title-mobile" aria-live="polite"></h1>
           <div class="title-arrow">
-            <svg height="1rem" width="1rem" viewBox="0 0 407.437 407.437" xmlns="http://www.w3.org/2000/svg">
-              <polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815"/>
+            <svg
+              height="1rem"
+              width="1rem"
+              viewBox="0 0 407.437 407.437"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <polygon
+                points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815"
+              />
             </svg>
           </div>
         </div>
@@ -102,13 +108,10 @@
             aria-hidden="false"
           >
             <div class="overlay-content">
-              <div class="about-intro">
-              </div>
+              <div class="about-intro"></div>
 
               <div class="about-clients">
-                <ul aria-labelledby="clients-title">
-                  
-                </ul>
+                <ul aria-labelledby="clients-title"></ul>
               </div>
             </div>
             <footer>
@@ -141,12 +144,18 @@
             aria-hidden="true"
           >
             <div class="overlay-content">
-              <div class="imprint-content">
-              </div>
+              <div class="imprint-content"></div>
             </div>
             <footer>
-              <nav class="overlay-navigation" aria-label="Switch to About section">
-                <button class="btn-about button" id="showAbout" aria-controls="about-section" >
+              <nav
+                class="overlay-navigation"
+                aria-label="Switch to About section"
+              >
+                <button
+                  class="btn-about button"
+                  id="showAbout"
+                  aria-controls="about-section"
+                >
                   Back to about
                 </button>
               </nav>
@@ -155,15 +164,5 @@
         </div>
       </div>
     </dialog>
-
-    <!--   <button class="switch-to-imprint" aria-controls="imprint-section">
-      Switch to Imprint
-    </button> 
-
-    document.querySelector(".overlay").focus();
-    
-    aria-hidden="false" -> mit javascript setzen
-    
-    <button class="close-overlay" aria-label="Close overlay">✕</button>-->
   </body>
 </html>
