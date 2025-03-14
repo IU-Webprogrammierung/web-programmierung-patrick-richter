@@ -6,6 +6,7 @@
 import dataStore from '../../core/dataStore.js';
 import { createProjectElements } from '../projects/projectLoader.js';
 import { createAboutImprintSection } from '../overlay/overlayContent.js';
+import { setupProjectIndicator } from '../projects/projectIndicator.js';
 
 /**
  * Initialisiert die gesamte Website
@@ -20,6 +21,7 @@ export async function initializeWebsite() {
       console.log("initializeWebsite: Loading of projects and about successful!");
       createProjectElements();
       createAboutImprintSection();
+      setupProjectIndicator();
     } else {
       console.error("initializeWebsite: Loading failed - no data returned");
       // Zeige Fehlermeldung für Benutzer an

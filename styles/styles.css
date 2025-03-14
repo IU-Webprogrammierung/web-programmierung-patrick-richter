@@ -15,23 +15,34 @@ cursor: url('../images/icons/arrow-left-white.svg') 20 15, w-resize;
   cursor: url('../images/icons/arrow-right-white.svg') 20 15, e-resize; 
 }
 
-
-
-
 /* Farbwechsel zentral eingestellt */
 .project-title, 
 .project-title-mobile, 
 .description,
 .navbar {
   color: var(--active-text-color);
-  transition: color 0.3s ease;
+  transition: color var(--title-fade-duration) ease;
+}
+
+.project-title, 
+.project-title-mobile,
+.description-mobile {
+  opacity: 1;
+  transition: opacity var(--title-fade-duration) ease-out;
+}
+
+.fade-out {
+  opacity: 0;
+}
+.initial-appear {
+  animation: initialFadeIn var(--title-initial-duration) ease-out;
 }
 
 
 .title-arrow svg,
 .title-arrow svg polygon {
   fill: var(--active-text-color);
-  transition: fill 0.3s ease;
+  transition: fill var(--title-fade-duration) ease;
 }
 
 
@@ -267,19 +278,6 @@ header > * {
   transform: translateX(-50%);
 }
 
-.project-title, 
-.project-title-mobile,
-.description-mobile {
-  opacity: 1;
-  transition: opacity var(--title-fade-duration) ease-out, color 0.5s ease;
-}
-
-.fade-out {
-  opacity: 0;
-}
-.initial-appear {
-  animation: initialFadeIn var(--title-initial-duration) ease-out;
-}
 
 .project-container {
   display: flex;
@@ -326,6 +324,59 @@ header > * {
   transform: translate(-50%);
   text-align: center;
   padding-bottom: var(--header-bottom-padding);
+}
+
+/*Project Indicator - Tab */
+
+.project-indicator-tab {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background-color: rgba(245, 245, 245, 0.2);
+  padding: 1rem 0.25rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  z-index: 100;
+  transition: background-color var(--transition-default);
+}
+
+/* Chevron-Styling */
+.tab-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg); 
+}
+
+.tab-chevron svg,
+.tab-chevron svg polygon {
+  fill: var(--active-text-color);
+  transition: fill 0.3s ease;
+}
+
+/* Text-Styling */
+.tab-text {
+  writing-mode: vertical-rl;
+  color: var(--active-text-color);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+/* Hover-Effekt */
+.project-indicator-tab:hover {
+  background-color: white;
+}
+
+.project-indicator-tab:hover .tab-text,
+.project-indicator-tab:hover .tab-chevron svg,
+.project-indicator-tab:hover .tab-chevron svg polygon {
+  color: black;
+  fill: black;
 }
 
 /* -----------------------------

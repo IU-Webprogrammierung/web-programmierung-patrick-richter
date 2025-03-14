@@ -5,7 +5,9 @@ git checkout main               # Zu main wechseln
 # Änderungen
 git status                      # Status anzeigen
 git add .                       # Alle Änderungen stagen
-git commit -m "Nachri# Branch-Verwaltung
+git commit -m "Nachricht"       
+
+# Branch-Verwaltung
 git checkout -b feature/name    # Neuen Branch erstellen und wechseln
 git checkout main               # Zu main wechseln
 

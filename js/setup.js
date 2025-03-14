@@ -2,6 +2,7 @@ import { showOverlay, hideOverlay, toggleAboutImprint, handleKeyPress } from './
 import { toggleDescription, handlePointerDown, handleTouchEnd } from './features/mobile/mobileDescription.js';
 import { scrollToTop, closeFooter } from './features/projects/projectNavigation.js';
 
+
 export function setupEventListeners() {
   document.querySelector("#openOverlay")?.addEventListener("click", showOverlay);
   document.querySelector("#closeOverlay")?.addEventListener("click", hideOverlay);
