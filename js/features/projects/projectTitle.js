@@ -164,3 +164,4 @@ export function setupProjectTitle() {
     setTimeout(setupInitialTitle, initialDelayMs);
   }
 }
+

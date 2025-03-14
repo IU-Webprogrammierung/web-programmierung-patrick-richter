@@ -1,6 +1,7 @@
 import { showOverlay, hideOverlay, toggleAboutImprint, handleKeyPress } from './features/overlay/overlayController.js';
 import { toggleDescription, handlePointerDown, handleTouchEnd } from './features/mobile/mobileDescription.js';
 import { scrollToTop, closeFooter } from './features/projects/projectNavigation.js';
+import { togglePanel } from './features/projects/projectIndicator.js';
 
 
 export function setupEventListeners() {
@@ -18,4 +19,7 @@ export function setupEventListeners() {
   
   document.querySelector("#scrollTop").addEventListener("click", scrollToTop);
   document.querySelector("#footerTop").addEventListener("click", closeFooter);
+
+  document.querySelector(".project-indicator-tab").addEventListener("click", togglePanel);
+
 }

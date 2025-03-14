@@ -27,6 +27,11 @@ export function showOverlay() {
     ".title-description-container"
   );
 
+    // Schließe Index-Panel, falls geöffnet
+    document.querySelector('.project-indicator')?.classList.remove('open');
+    document.querySelector('.project-indicator-tab')?.setAttribute('aria-expanded', 'false');
+  
+
   if (!overlay.classList.contains("show-overlay")) {
     titleDescriptionContainer.classList.contains("show-description") &&
       toggleDescription();

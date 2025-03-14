@@ -46,13 +46,23 @@
         </footer>
       </section>
 
-      <div class="project-indicator-tab" tabindex="0">
-        <div class="tab-chevron">
-          <svg width="0.8rem" height="0.8rem" viewBox="0 0 407.437 407.437">
-            <polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815"/>
-          </svg>
+      <div class="project-indicator">
+        <!-- Panel für Projektliste -->
+        <div class="project-panel">
+          <ul class="project-list">
+            <!-- Wird dynamisch gefüllt -->
+          </ul>
         </div>
-        <div class="tab-text">1 / 10</div>
+        
+        <!-- Tab für Anzeige und Trigger -->
+        <div class="project-indicator-tab" tabindex="0" aria-expanded="false" aria-controls="project-panel">
+          <div class="tab-chevron">
+            <svg width="0.8rem" height="0.8rem" viewBox="0 0 407.437 407.437">
+              <polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815"/>
+            </svg>
+          </div>
+          <div class="tab-text">1 / 10</div>
+        </div>
       </div>
 
       <!-- Container der Mobile Description -->
