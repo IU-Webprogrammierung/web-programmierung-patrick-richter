@@ -29,7 +29,6 @@
         </button>
       </nav>
       <h1 class="project-title desktop-only" aria-live="polite">
-        Portfolio Projekte
       </h1>
     </header>
 
@@ -48,18 +47,30 @@
 
       <div class="project-indicator">
         <!-- Panel für Projektliste -->
-        <div class="project-panel">
+        <div
+          id="project-panel"
+          class="project-panel"
+          role="region"
+          aria-label="Projektliste"
+        >
           <ul class="project-list">
             <!-- Wird dynamisch gefüllt -->
           </ul>
         </div>
-        
+
         <!-- Tab für Anzeige und Trigger -->
-        <div class="project-indicator-tab" tabindex="0" aria-expanded="false" aria-controls="project-panel">
-<div class="tab-chevron">
-  <div class="chevron-line line1"></div>
-  <div class="chevron-line line2"></div>
-</div>
+        <div
+          class="project-indicator-tab"
+          tabindex="0"
+          role="button"
+          aria-expanded="false"
+          aria-controls="project-panel"
+          aria-label="Projektliste anzeigen/ausblenden"
+        >
+          <div class="tab-chevron">
+            <div class="chevron-line line1"></div>
+            <div class="chevron-line line2"></div>
+          </div>
           <div class="tab-text"></div>
         </div>
       </div>
@@ -73,9 +84,7 @@
         aria-controls="mobile-description"
       >
         <div class="project-title-container">
-          <h1 class="project-title-mobile" aria-live="polite">
-            Portfolio Projekte
-          </h1>
+          <h1 class="project-title-mobile" aria-live="polite"></h1>
           <div class="title-arrow">
             <svg
               height="1rem"
@@ -106,11 +115,14 @@
     >
       <!-- Linke Seite (Portrait) -->
       <div class="overlay-left" id="overlayLeft">
-        <img
-          src="./images/bouncing.jpeg"
-          class="bouncing-image"
-          alt="Portrait of the designer"
-        />
+        <picture>
+          <source srcset="./images/BB.webp" type="image/webp" />
+          <img
+            src="./images/BB.jpg"
+            class="bouncing-image"
+            alt="Portrait of the designer"
+          />
+        </picture>
       </div>
 
       <!-- Rechte Seite (Content) -->

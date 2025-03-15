@@ -49,7 +49,7 @@
 
 :root {
   /* Farben */
-  --active-text-color: white;
+  --active-text-color: black;
   --color-bg-light: 0, 0%, 100%;
 
   /* Typografie */
@@ -347,10 +347,11 @@ header > * {
   gap: var(--spacing-l);
   cursor: pointer;
   z-index: 5;
-  opacity:0;
+  opacity: 0;
   pointer-events: auto;
   transition: background-color var(--transition-fast),
-    transform var(--transition-default), height var(--transition-default), opacity var(--transition-default);
+    transform var(--transition-default), height var(--transition-default),
+    opacity var(--transition-default);
 }
 .project-indicator-tab.visible {
   opacity: 1;
@@ -378,7 +379,8 @@ header > * {
   width: 0.6rem;
   height: 0.6rem;
   position: relative;
-  transition: transform var(--transition-fast), height var(--transition-fast), width var(--transition-default);
+  transition: transform var(--transition-fast), height var(--transition-fast),
+    width var(--transition-default);
 }
 
 .chevron-line {
@@ -386,8 +388,8 @@ header > * {
   width: 100%;
   height: 0.05rem;
   background-color: var(--active-text-color);
-  transition: transform var(--transition-default), 
-              background-color var(--transition-fast);
+  transition: transform var(--transition-default),
+    background-color var(--transition-fast);
 }
 
 /* Chevron-Zustand (nach rechts zeigend) */
@@ -412,7 +414,6 @@ header > * {
 .project-indicator.open .tab-chevron .line2 {
   transform: rotate(-45deg);
 }
-
 
 /* Farbänderungen */
 .project-indicator-tab:hover .chevron-line,
@@ -493,7 +494,7 @@ header > * {
 }
 
 .project-indicator.open .project-indicator-tab {
-  transform: translateX(18rem); 
+  transform: translateX(18rem);
   height: calc(50% + 4.5rem);
   background-color: white;
 }
@@ -721,8 +722,8 @@ dialog::backdrop {
 .bouncing-image {
   position: absolute;
   will-change: transform;
-  width: 250px;
-  height: 338px;
+  width: 239px;
+  height: 332px;
   top: 0;
   left: 0;
   opacity: 0;
@@ -759,7 +760,7 @@ dialog::backdrop {
     top: 0;
   }
   to {
-    top: calc(100% - 338px);
+    top: calc(100% - 323px);
   }
 }
 
@@ -768,7 +769,7 @@ dialog::backdrop {
     left: 0;
   }
   to {
-    left: calc(100% - 250px);
+    left: calc(100% - 239px );
   }
 }
 
@@ -834,6 +835,9 @@ dialog::backdrop {
 
   .title-description-container.show-description .title-arrow {
     transform: rotate(180deg);
+  }
+  .title-description-container.show-description .project-title-mobile {
+    color:black;
   }
 
   .description-mobile {
@@ -927,67 +931,67 @@ dialog::backdrop {
 
   /* Mobile Project-Indicator Anpassungen */
   .project-panel {
-    width: 100vw;    
+    width: 100vw;
     box-shadow: none;
   }
-  
+
   .project-indicator.open .project-indicator-tab {
-    transform: translateX(calc(100vw - 2.5rem)); 
+    transform: translateX(calc(100vw - 2.5rem));
   }
-  
+
   /* Hover-Effekte entfernen */
   .project-indicator-tab:hover {
-    background-color: rgba(245, 245, 245, 0.2); 
-    height: 9rem; 
+    background-color: rgba(245, 245, 245, 0.2);
+    height: 9rem;
   }
-  
+
   /* Projektliste mobile anpassen */
   .project-list {
     padding: var(--spacing-xl) var(--spacing-xl);
   }
-  
+
   .project-list li {
-    margin-bottom: var(--spacing-m); 
+    margin-bottom: var(--spacing-m);
   }
-  
+
   .project-list a {
-    font-size: var(--font-size-mobile-m); 
-    padding: var(--spacing-xs) 0; 
+    font-size: var(--font-size-mobile-m);
+    padding: var(--spacing-xs) 0;
   }
   .project-list a.active::before {
-
     left: calc(-1 * var(--spacing-xl));
     width: 0.6rem;
     height: 0.6rem;
-
   }
-}
 
   /* Mobile Bouncing Image Anpassungen */
 
-  .bouncing-image {
-    width: 120px;
-    height: 180px;
+.bouncing-image {
+  width: 120px;
+  height: 180px;
+}
+@keyframes slideVert {
+  from {
+    top: 0;
   }
-
-  @keyframes slideVert {
-    from {
-      top: 0;
-    }
-    to {
-      top: calc(100% - 180px);
-    }
-  }
-
-  @keyframes slideHori {
-    from {
-      left: 0;
-    }
-    to {
-      left: calc(100% - 120px);
-    }
+  to {
+    top: calc(100% - 180px);
   }
 }
+
+@keyframes slideHori {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 120px);
+  }
+}
+}
+
+
+
+
 
 /* Barrierefreiheit: Reduzierte Animation */
 

@@ -1,204 +1,672 @@
 {
-    "data": [
-      {
-        "id": 1,
-        "name": "EMOTION Magazine",
-        "description": [
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "text": "EMOTION MAGAZIN published monthly — a small selection of double spreads, which I designed for the magazine issues between 2014 and 2023"
-              }
-            ]
-          }
-        ],
-        "rank": 1,
-        "project_images": [
-          {
-            "id": 1,
-            "textColor": "white",
-            "imageTitle": "Emotion1_1",
-            "image": [
-              {
-                "url": "images/project1-1.jpg",
-                "alt": "Emotion Magazine Image 1"
-              }
-            ]
-          },
-          {
-            "id": 2,
-            "textColor": "black",
-            "imageTitle": "Emotion1_2",
-            "image": [
-              {
-                "url": "images/project1-2.jpg",
-                "alt": "Emotion Magazine Image 2"
-              }
-            ]
-          },
-          {
-            "id": 3,
-            "textColor": "black",
-            "imageTitle": "Emotion1_3",
-            "image": [
-              {
-                "url": "images/project1-3.jpg",
-                "alt": "Emotion Magazine Image 3"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "name": "WORKING WOMEN Magazine",
-        "description": [
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "text": "WORKING WOMEN a Magazin with all topics relating to how we want to work in today's world"
-              }
-            ]
-          }
-        ],
-        "rank": 2,
-        "project_images": [
-          {
-            "id": 4,
-            "textColor": "black",
-            "imageTitle": "Working_Women1_1",
-            "image": [
-              {
-                "url": "images/project2-1.jpg",
-                "alt": "Working Women Magazine Image 1"
-              }
-            ]
-          },
-          {
-            "id": 5,
-            "textColor": "white",
-            "imageTitle": "Working_Women1_2",
-            "image": [
-              {
-                "url": "images/project2-2.jpg",
-                "alt": "Working Women Magazine Image 2"
-              }
-            ]
-          },
-          {
-            "id": 6,
-            "textColor": "black",
-            "imageTitle": "Working_Women1_3",
-            "image": [
-              {
-                "url": "images/project2-3.jpg",
-                "alt": "Working Women Magazine Image 3"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": 3,
-        "name": "DUMMY Magazine",
-        "description": [
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "text": "Art Direction for the 53. edition of the quarterly magazine DUMMY"
-              }
-            ]
-          }
-        ],
-        "rank": 3,
-        "project_images": [
-          {
-            "id": 7,
-            "textColor": "black",
-            "imageTitle": "Dummy_1",
-            "image": [
-              {
-                "url": "images/project3-1.jpg",
-                "alt": "Dummy Magazine Image 1"
-              }
-            ]
-          },
-          {
-            "id": 8,
-            "textColor": "black",
-            "imageTitle": "Dummy_2",
-            "image": [
-              {
-                "url": "images/project3-2.jpg",
-                "alt": "Dummy Magazine Image 2"
-              }
-            ]
-          },
-          {
-            "id": 9,
-            "textColor": "black",
-            "imageTitle": "Dummy_3",
-            "image": [
-              {
-                "url": "images/project3-3.jpg",
-                "alt": "Dummy Magazine Image 3"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": 4,
-        "name": "ANNE FISCHER Brand Design",
-        "description": [
-          {
-            "type": "paragraph",
-            "children": [
-              {
-                "text": "ANNE FISCHER – Brand Design for the artist Anne Fischer working in the field of Silverschmith and Jewlery"
-              }
-            ]
-          }
-        ],
-        "rank": 4,
-        "project_images": [
-          {
-            "id": 10,
-            "textColor": "white",
-            "imageTitle": "Anne_Fischer_Brand_1",
-            "image": [
-              {
-                "url": "images/project4-1.jpg",
-                "alt": "Anne Fischer Brand Image 1"
-              }
-            ]
-          },
-          {
-            "id": 11,
-            "textColor": "black",
-            "imageTitle": "Anne_Fischer_Brand_2",
-            "image": [
-              {
-                "url": "images/project4-2.jpg",
-                "alt": "Anne Fischer Brand Image 2"
-              }
-            ]
-          },
-          {
-            "id": 12,
-            "textColor": "white",
-            "imageTitle": "Anne_Fischer_Brand_3",
-            "image": [
-              {
-                "url": "images/project4-3.jpg",
-                "alt": "Anne Fischer Brand Image 3"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "data": [
+    {
+      "id": 1,
+      "name": "EMOTION Magazine",
+      "description": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "EMOTION MAGAZIN published monthly — a small selection of double spreads, which I designed for the magazine issues between 2014 and 2023"
+            }
+          ]
+        }
+      ],
+      "rank": 1,
+      "project_images": [
+        {
+          "id": 1,
+          "textColor": "black",
+          "imageTitle": "Emotion1_1",
+          "image": [
+            {
+              "id": 1,
+              "name": "project1-1.jpg",
+              "alternativeText": "Emotion Magazine Image 1",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project1-1.jpg",
+                  "hash": "project1-1",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-1.webp",
+                  "hash": "project1-1-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project1-1-small.jpg",
+                  "hash": "project1-1-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-1-small.webp",
+                  "hash": "project1-1-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project1-1.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "textColor": "black",
+          "imageTitle": "Emotion1_2",
+          "image": [
+            {
+              "id": 2,
+              "name": "project1-2.jpg",
+              "alternativeText": "Emotion Magazine Image 2",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project1-2.jpg",
+                  "hash": "project1-2",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-2.webp",
+                  "hash": "project1-2-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project1-2-small.jpg",
+                  "hash": "project1-2-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-2-small.webp",
+                  "hash": "project1-2-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project1-2.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "textColor": "black",
+          "imageTitle": "Emotion1_3",
+          "image": [
+            {
+              "id": 3,
+              "name": "project1-3.jpg",
+              "alternativeText": "Emotion Magazine Image 3",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project1-3.jpg",
+                  "hash": "project1-3",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-3.webp",
+                  "hash": "project1-3-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project1-3-small.jpg",
+                  "hash": "project1-3-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project1-3-small.webp",
+                  "hash": "project1-3-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project1-3.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "WORKING WOMEN Magazine",
+      "description": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "WORKING WOMEN a Magazin with all topics relating to how we want to work in today's world"
+            }
+          ]
+        }
+      ],
+      "rank": 2,
+      "project_images": [
+        {
+          "id": 4,
+          "textColor": "black",
+          "imageTitle": "Working_Women1_1",
+          "image": [
+            {
+              "id": 4,
+              "name": "project2-1.jpg",
+              "alternativeText": "Working Women Magazine Image 1",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project2-1.jpg",
+                  "hash": "project2-1",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-1.webp",
+                  "hash": "project2-1-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project2-1-small.jpg",
+                  "hash": "project2-1-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-1-small.webp",
+                  "hash": "project2-1-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project2-1.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "textColor": "black",
+          "imageTitle": "Working_Women1_2",
+          "image": [
+            {
+              "id": 5,
+              "name": "project2-2.jpg",
+              "alternativeText": "Working Women Magazine Image 2",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project2-2.jpg",
+                  "hash": "project2-2",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-2.webp",
+                  "hash": "project2-2-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project2-2-small.jpg",
+                  "hash": "project2-2-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-2-small.webp",
+                  "hash": "project2-2-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project2-2.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "textColor": "black",
+          "imageTitle": "Working_Women1_3",
+          "image": [
+            {
+              "id": 6,
+              "name": "project2-3.jpg",
+              "alternativeText": "Working Women Magazine Image 3",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project2-3.jpg",
+                  "hash": "project2-3",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-3.webp",
+                  "hash": "project2-3-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project2-3-small.jpg",
+                  "hash": "project2-3-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project2-3-small.webp",
+                  "hash": "project2-3-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project2-3.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "DUMMY Magazine",
+      "description": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Art Direction for the 53. edition of the quarterly magazine DUMMY"
+            }
+          ]
+        }
+      ],
+      "rank": 3,
+      "project_images": [
+        {
+          "id": 7,
+          "textColor": "black",
+          "imageTitle": "Dummy_1",
+          "image": [
+            {
+              "id": 7,
+              "name": "project3-1.jpg",
+              "alternativeText": "Dummy Magazine Image 1",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project3-1.jpg",
+                  "hash": "project3-1",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-1.webp",
+                  "hash": "project3-1-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project3-1-small.jpg",
+                  "hash": "project3-1-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-1-small.webp",
+                  "hash": "project3-1-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project3-1.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "textColor": "black",
+          "imageTitle": "Dummy_2",
+          "image": [
+            {
+              "id": 8,
+              "name": "project3-2.jpg",
+              "alternativeText": "Dummy Magazine Image 2",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project3-2.jpg",
+                  "hash": "project3-2",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-2.webp",
+                  "hash": "project3-2-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project3-2-small.jpg",
+                  "hash": "project3-2-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-2-small.webp",
+                  "hash": "project3-2-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project3-2.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "textColor": "black",
+          "imageTitle": "Dummy_3",
+          "image": [
+            {
+              "id": 9,
+              "name": "project3-3.jpg",
+              "alternativeText": "Dummy Magazine Image 3",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project3-3.jpg",
+                  "hash": "project3-3",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-3.webp",
+                  "hash": "project3-3-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project3-3-small.jpg",
+                  "hash": "project3-3-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project3-3-small.webp",
+                  "hash": "project3-3-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project3-3.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "ANNE FISCHER Brand Design",
+      "description": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "ANNE FISCHER – Brand Design for the artist Anne Fischer working in the field of Silverschmith and Jewlery"
+            }
+          ]
+        }
+      ],
+      "rank": 4,
+      "project_images": [
+        {
+          "id": 10,
+          "textColor": "white",
+          "imageTitle": "Anne_Fischer_Brand_1",
+          "image": [
+            {
+              "id": 10,
+              "name": "project4-1.jpg",
+              "alternativeText": "Anne Fischer Brand Image 1",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project4-1.jpg",
+                  "hash": "project4-1",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-1.webp",
+                  "hash": "project4-1-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project4-1-small.jpg",
+                  "hash": "project4-1-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-1-small.webp",
+                  "hash": "project4-1-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project4-1.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "textColor": "black",
+          "imageTitle": "Anne_Fischer_Brand_2",
+          "image": [
+            {
+              "id": 11,
+              "name": "project4-2.jpg",
+              "alternativeText": "Anne Fischer Brand Image 2",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project4-2.jpg",
+                  "hash": "project4-2",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-2.webp",
+                  "hash": "project4-2-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project4-2-small.jpg",
+                  "hash": "project4-2-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-2-small.webp",
+                  "hash": "project4-2-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project4-2.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "textColor": "white",
+          "imageTitle": "Anne_Fischer_Brand_3",
+          "image": [
+            {
+              "id": 12,
+              "name": "project4-3.jpg",
+              "alternativeText": "Anne Fischer Brand Image 3",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project4-3.jpg",
+                  "hash": "project4-3",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-3.webp",
+                  "hash": "project4-3-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project4-3-small.jpg",
+                  "hash": "project4-3-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-3-small.webp",
+                  "hash": "project4-3-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project4-3.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
