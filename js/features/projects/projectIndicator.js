@@ -19,7 +19,7 @@ export function setupProjectIndicator() {
         updateTabText();
         document.querySelector('.project-indicator-tab')?.classList.add('visible');
       }, 300); 
-         
+
     // Auf Projektänderungen reagieren
     document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, handleProjectChange);
     
@@ -88,6 +88,12 @@ function setupProjectList() {
         
         a.textContent = project.getAttribute('data-project-name');
         a.href = '#';
+
+        // Aktives Projekt markieren
+if (index === uiState.activeProjectIndex) {
+    a.classList.add('active');
+  }
+  
         
         // Click-Handler
         a.addEventListener('click', function(e) {

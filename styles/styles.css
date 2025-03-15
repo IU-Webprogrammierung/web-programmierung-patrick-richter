@@ -942,6 +942,44 @@ dialog::backdrop {
     font-size: var(--font-size-mobile-m);
   }
 
+  /* Mobile Project-Indicator Anpassungen */
+  .project-panel {
+    width: 100vw;    
+    box-shadow: none;
+  }
+  
+  .project-indicator.open .project-indicator-tab {
+    transform: translateX(calc(100vw - 2.5rem)); 
+  }
+  
+  /* Hover-Effekte entfernen */
+  .project-indicator-tab:hover {
+    background-color: rgba(245, 245, 245, 0.2); 
+    height: 9rem; 
+  }
+  
+  /* Projektliste mobile anpassen */
+  .project-list {
+    padding: var(--spacing-xl) var(--spacing-xl);
+  }
+  
+  .project-list li {
+    margin-bottom: var(--spacing-m); 
+  }
+  
+  .project-list a {
+    font-size: var(--font-size-mobile-m); 
+    padding: var(--spacing-xs) 0; 
+  }
+  .project-list a.active::before {
+
+    left: calc(-1 * var(--spacing-xl));
+    width: 0.6rem;
+    height: 0.6rem;
+
+  }
+}
+
   /* Mobile Bouncing Image Anpassungen */
 
   .bouncing-image {
