@@ -1,30 +1,29 @@
-
 .project-container.cursor-left {
-  cursor: url('../images/icons/arrow-left-black.svg') 20 15, w-resize;
+  cursor: url("../images/icons/arrow-left-black.svg") 20 15, w-resize;
 }
 
 .project-container.cursor-right {
-cursor: url('../images/icons/arrow-right-black.svg') 20 15, e-resize;
+  cursor: url("../images/icons/arrow-right-black.svg") 20 15, e-resize;
 }
 
 .project-container.cursor-left.white-cursor {
-cursor: url('../images/icons/arrow-left-white.svg') 20 15, w-resize;
-} 
+  cursor: url("../images/icons/arrow-left-white.svg") 20 15, w-resize;
+}
 
 .project-container.cursor-right.white-cursor {
-  cursor: url('../images/icons/arrow-right-white.svg') 20 15, e-resize; 
+  cursor: url("../images/icons/arrow-right-white.svg") 20 15, e-resize;
 }
 
 /* Farbwechsel zentral eingestellt */
-.project-title, 
-.project-title-mobile, 
+.project-title,
+.project-title-mobile,
 .description,
 .navbar {
   color: var(--active-text-color);
   transition: color var(--title-fade-duration) ease;
 }
 
-.project-title, 
+.project-title,
 .project-title-mobile,
 .description-mobile {
   opacity: 1;
@@ -38,14 +37,11 @@ cursor: url('../images/icons/arrow-left-white.svg') 20 15, w-resize;
   animation: initialFadeIn var(--title-initial-duration) ease-out;
 }
 
-
 .title-arrow svg,
 .title-arrow svg polygon {
   fill: var(--active-text-color);
   transition: fill var(--title-fade-duration) ease;
 }
-
-
 
 /* -----------------------------
    1. VARIABLEN UND BASISWERTE
@@ -70,10 +66,10 @@ cursor: url('../images/icons/arrow-left-white.svg') 20 15, w-resize;
   --transition-default: 0.3s ease-out;
   --transition-slow: 0.5s ease-out;
 
-  --title-fade-duration: 300ms;     
-  --title-between-pause: 200ms;     
-  --title-initial-delay: 200ms;     
-  --title-initial-duration: 800ms;  
+  --title-fade-duration: 300ms;
+  --title-between-pause: 200ms;
+  --title-initial-delay: 200ms;
+  --title-initial-duration: 800ms;
 
   /* Layout */
   --overlay-width: 50vw;
@@ -278,7 +274,6 @@ header > * {
   transform: translateX(-50%);
 }
 
-
 .project-container {
   display: flex;
   flex-direction: column;
@@ -324,6 +319,10 @@ header > * {
   padding-bottom: var(--header-bottom-padding);
 }
 
+/* -----------------------------
+   6.1. Project-Indicator
+   ----------------------------- */
+
 /* 1. Basiscontainer */
 .project-indicator {
   position: fixed;
@@ -336,21 +335,25 @@ header > * {
 /* 2. Tab-Styling */
 .project-indicator-tab {
   position: absolute;
-  top: 50%;
+  top: calc(50% - 4.5rem);
   height: 9rem;
   left: 0;
-  transform: translateY(-50%);
+  transform: translateX(0);
   background-color: rgba(245, 245, 245, 0.2);
   padding: var(--spacing-m) var(--spacing-2xs);
-  border-radius: 0 var(--spacing-xs) var(--spacing-xs) 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-l);
   cursor: pointer;
   z-index: 5;
+  opacity:0;
   pointer-events: auto;
-  transition: background-color var(--transition-fast), transform var(--transition-default);
+  transition: background-color var(--transition-fast),
+    transform var(--transition-default), height var(--transition-default), opacity var(--transition-default);
+}
+.project-indicator-tab.visible {
+  opacity: 1;
 }
 
 /* 3. Tab-Komponenten */
@@ -359,7 +362,7 @@ header > * {
   color: var(--active-text-color);
   transition: color var(--transition-fast);
   white-space: nowrap;
-  width: 1.5rem;  
+  width: 1.5rem;
   text-align: center;
   min-height: 4rem;
   display: flex;
@@ -371,7 +374,7 @@ header > * {
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: rotate(90deg); 
+  transform: rotate(90deg);
   transition: transform var(--transition-fast);
 }
 
@@ -388,7 +391,7 @@ header > * {
   left: 0;
   width: 20rem;
   height: calc(50% + 4.5rem);
-  transform: translateX(-100%); 
+  transform: translateX(-100%);
   background-color: white;
   box-shadow: 0 0 var(--spacing-l) rgba(0, 0, 0, 0.1);
   overflow-y: auto;
@@ -405,6 +408,8 @@ header > * {
 
 .project-list li {
   margin-bottom: var(--spacing-s);
+  padding-left: var(--spacing-l);
+  position: relative;
 }
 
 .project-list a {
@@ -412,19 +417,38 @@ header > * {
   text-decoration: none;
   transition: color var(--transition-fast);
   font-size: var(--font-size-desktop-s);
+  display: block; /* Blockformatierung für gleichmäßige Ausrichtung */
 }
 
-.project-list a:hover,
-.project-list a.active {
+/* Normaler Hover-Effekt für alle Projekte */
+.project-list a:hover {
   text-decoration: underline;
   text-underline-offset: var(--spacing-2xs);
   text-decoration-thickness: 0.05rem;
+}
+
+/* Aktives Projekt mit herausstehendem Punkt */
+.project-list a.active {
+  position: relative;
+}
+
+.project-list a.active::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--spacing-l));
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: currentColor;
+  border-radius: 50%;
 }
 
 /* 6. Zustände (hover, open) */
 /* Hover-Zustand */
 .project-indicator-tab:hover {
   background-color: white;
+  height: calc(50% + 4.5rem);
 }
 
 .project-indicator-tab:hover .tab-text,
@@ -440,7 +464,8 @@ header > * {
 }
 
 .project-indicator.open .project-indicator-tab {
-  transform: translateY(-50%) translateX(20rem);
+  transform: translateX(18rem); 
+  height: calc(50% + 4.5rem);
   background-color: white;
 }
 
@@ -463,7 +488,7 @@ header > * {
 
 .project-indicator-tab:hover .tab-text::after,
 .project-indicator.open .tab-text::after {
-  content: 'Index';
+  content: "Index";
   font-size: var(--font-size-desktop-s);
 }
 
@@ -756,7 +781,6 @@ dialog::backdrop {
     transition: transform var(--transition-slow),
       background-color var(--transition-slow);
   }
-  
 
   .title-description-container.show-description {
     background-color: hsla(var(--color-bg-light), 0.9);

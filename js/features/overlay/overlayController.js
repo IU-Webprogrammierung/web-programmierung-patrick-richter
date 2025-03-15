@@ -4,7 +4,7 @@
  * Verwaltet das Öffnen und Schließen des Overlays mit Animationen, sowie den
  * Wechsel zwischen About- und Imprint-Ansichten. Berücksichtigt Barrierefreiheit
  * durch ARIA-Attribute und Fokus-Management.
- * 
+ *
  * Funktionen: showOverlay(), hideOverlay(), toggleAboutImprint(), handleKeyPress()
  */
 
@@ -13,6 +13,9 @@ import { toggleDescription } from "../mobile/mobileDescription.js";
 // Overlay-DOM-Elemente
 const overlay = document.querySelector(".overlay");
 const overlayRight = document.querySelector(".overlay-right");
+const titleDescriptionContainer = document.querySelector(
+  ".title-description-container"
+);
 
 // Öffnet das Overlay und entfernt die Schließen-Animation
 
@@ -23,14 +26,11 @@ export function showOverlay() {
   }
 
   overlay.classList.remove("closing");
-  const titleDescriptionContainer = document.querySelector(
-    ".title-description-container"
-  );
 
-    // Schließe Index-Panel, falls geöffnet
-    document.querySelector('.project-indicator')?.classList.remove('open');
-    document.querySelector('.project-indicator-tab')?.setAttribute('aria-expanded', 'false');
-  
+  document.querySelector(".project-indicator").classList.remove("open");
+  document
+    .querySelector(".project-indicator-tab")
+    ?.setAttribute("aria-expanded", "false");
 
   if (!overlay.classList.contains("show-overlay")) {
     titleDescriptionContainer.classList.contains("show-description") &&
