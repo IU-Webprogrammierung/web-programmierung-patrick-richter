@@ -487,13 +487,6 @@ header > * {
   height: calc(50% + 4.5rem);
 }
 
-.project-indicator-tab:hover .tab-text,
-.project-indicator-tab:hover .tab-chevron svg,
-.project-indicator-tab:hover .tab-chevron svg polygon {
-  color: black;
-  fill: black;
-}
-
 /* Offener Zustand */
 .project-indicator.open .project-panel {
   transform: translateX(0);
@@ -503,17 +496,6 @@ header > * {
   transform: translateX(18rem); 
   height: calc(50% + 4.5rem);
   background-color: white;
-}
-
-.project-indicator.open .tab-chevron {
-  transform: rotate(-90deg);
-}
-
-.project-indicator.open .tab-text,
-.project-indicator.open .tab-chevron svg,
-.project-indicator.open .tab-chevron svg polygon {
-  color: black;
-  fill: black;
 }
 
 /* 7. Text-Wechsel-Effekt */
