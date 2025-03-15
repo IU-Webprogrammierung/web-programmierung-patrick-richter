@@ -508,6 +508,7 @@ header > * {
 .project-indicator.open .tab-text::after {
   content: "Index";
   font-size: var(--font-size-desktop-s);
+  color: black;
 }
 
 /* -----------------------------
