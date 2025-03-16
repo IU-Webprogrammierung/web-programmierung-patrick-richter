@@ -1,8 +1,7 @@
 /**
  * @module mobileDescription
  * @description Verwaltet die mobile Ansicht der Projektbeschreibungen.
- * Implementiert ein expandierbares Beschreibungsfeld mit Touch-Gesten-Unterstützung,
- * das elegant ein- und ausgeklappt werden kann, um mobile Nutzererfahrung zu verbessern.
+ * Implementiert ein ein- / ausklappbares Beschreibungsfeld mit Touch-Gesten-Unterstützung.
  *
  * Funktionen: toggleDescription(), handlePointerDown(), handleTouchEnd()
  */

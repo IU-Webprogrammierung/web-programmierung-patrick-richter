@@ -1,7 +1,7 @@
 /**
  * @module imageNavigation
  * @description Implementiert die interaktive Cursor-basierte Navigation in Bildergalerien.
- * Passt den Cursor basierend auf der Mausposition an, ermöglicht Navigation zwischen
+ * Passt den Cursor basierend auf der Mausposition (links / rechts) an, ermöglicht Navigation zwischen
  * Bildern durch Klicks und unterstützt unendliches Scrollen durch Bilder.
  * 
  * Funktionen: setupImageNavigation()
@@ -94,7 +94,7 @@ export function setupImageNavigation() {
       navigateImage(slider, relativeX < 0.5 ? -1 : 1);
     });
   
-    // Vereinfachte Navigationsfunktion mit Richtungsparameter
+    // Navigationsfunktion mit Richtungsparameter
     function navigateImage(slider, direction) {
       // Parameter: direction = -1 für links, +1 für rechts
       const slideWidth = slider.clientWidth;

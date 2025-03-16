@@ -10,6 +10,7 @@
 import uiState from "../../core/uiState.js";
 
 export function setupScrollHandler() {
+
   const container = document.querySelector(".project-container");
 
   if (!container) {

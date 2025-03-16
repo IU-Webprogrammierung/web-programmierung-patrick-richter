@@ -1,14 +1,14 @@
 /**
  * @module projectTitle
  * @description Steuert die dynamische Anzeige und Animation von Projekttiteln.
- * Reagiert auf Projektwechsel durch sanfte Überblendungen und Aktualisiert Titel
+ * Reagiert auf Projektwechsel durch sanfte Überblendungen und aktualisiert Titel
  * sowohl auf Desktop- als auch auf mobilen Ansichten mit synchronisierten Animations-Timings.
- * 
+ *
  * Funktionen: setupProjectTitle()
  */
 
-import uiState from '../../core/uiState.js';
-import { EVENT_TYPES } from '../../core/events.js';
+import uiState from "../../core/uiState.js";
+import { EVENT_TYPES } from "../../core/events.js";
 
 // Dynamische Änderung der Projekttitel
 export function setupProjectTitle() {
@@ -113,7 +113,7 @@ export function setupProjectTitle() {
     }
   });
 
-  // Auf Projektänderungen reagieren (Wichtig!)
+  // Auf Projektänderungen reagieren
   document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
     console.log("setupProjectTitle: Event activeProjectChanged empfangen");
 
@@ -164,4 +164,3 @@ export function setupProjectTitle() {
     setTimeout(setupInitialTitle, initialDelayMs);
   }
 }
-

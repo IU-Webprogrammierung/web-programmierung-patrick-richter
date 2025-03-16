@@ -2,8 +2,7 @@
  * @module overlayController
  * @description Steuert das Overlay-System für About und Imprint-Inhalte.
  * Verwaltet das Öffnen und Schließen des Overlays mit Animationen, sowie den
- * Wechsel zwischen About- und Imprint-Ansichten. Berücksichtigt Barrierefreiheit
- * durch ARIA-Attribute und Fokus-Management.
+ * Wechsel zwischen About und Imprint.
  *
  * Funktionen: showOverlay(), hideOverlay(), toggleAboutImprint(), handleKeyPress()
  */

@@ -171,7 +171,64 @@ h1 {
 }
 
 /* -----------------------------
-   4. UI-KOMPONENTEN
+   4. ALLGEMEINE STILREGELN & ANIMATIONEN
+   ----------------------------- */
+
+/* Globale Farbwechsel für UI-Elemente */
+.project-title,
+.project-title-mobile,
+.description,
+.navbar {
+  color: var(--active-text-color);
+  transition: color var(--title-fade-duration) ease;
+}
+
+.title-arrow svg,
+.title-arrow svg polygon {
+  fill: var(--active-text-color);
+  transition: fill var(--title-fade-duration) ease;
+}
+
+/* Globale Opacity-Effekte für Titelanimation */
+.project-title,
+.project-title-mobile,
+.description-mobile {
+  opacity: 1;
+  transition: opacity var(--title-fade-duration) ease-out;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.initial-appear {
+  animation: initialFadeIn var(--title-initial-duration) ease-out;
+}
+
+/* -----------------------------
+   5. CUSTOM CURSOR STYLES
+   ----------------------------- */
+
+/* Definiert die speziellen Pfeil-Cursor für die Bildnavigation 
+   Diese werden je nach Mausposition und Textfarbe dynamisch angewendet */
+.project-container.cursor-left {
+  cursor: url("../images/icons/arrow-left-black.svg") 20 15, w-resize;
+}
+
+.project-container.cursor-right {
+  cursor: url("../images/icons/arrow-right-black.svg") 20 15, e-resize;
+}
+
+.project-container.cursor-left.white-cursor {
+  cursor: url("../images/icons/arrow-left-white.svg") 20 15, w-resize;
+}
+
+.project-container.cursor-right.white-cursor {
+  cursor: url("../images/icons/arrow-right-white.svg") 20 15, e-resize;
+}
+
+/* -----------------------------
+   6. UI-KOMPONENTEN
    ----------------------------- */
 
 /* Buttons und interaktive Elemente */
@@ -206,7 +263,7 @@ a.button {
 }
 
 /* -----------------------------
-   5. LAYOUT-KOMPONENTEN
+   7. LAYOUT-KOMPONENTEN
    ----------------------------- */
 
 /* Header  */
@@ -263,7 +320,7 @@ header > * {
 }
 
 /* -----------------------------
-   6. PROJEKT-KOMPONENTEN
+   8. PROJEKT-KOMPONENTEN
    ----------------------------- */
 
 .project-title {
@@ -320,7 +377,7 @@ header > * {
 }
 
 /* -----------------------------
-   6.1. Project-Indicator
+   8.1. Project-Indicator
    ----------------------------- */
 
 /* 1. Basiscontainer */
@@ -431,7 +488,6 @@ header > * {
   height: calc(50% + 4.5rem);
   transform: translateX(-100%);
   background-color: white;
-  box-shadow: 0 0 var(--spacing-l) rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   pointer-events: auto;
   transition: transform var(--transition-default);
@@ -485,7 +541,7 @@ header > * {
 /* 6. Zustände (hover, open) */
 /* Hover-Zustand */
 .project-indicator-tab:hover {
-  background-color: white;
+  background-color: hsla(var(--color-bg-light), 0.7);
   height: calc(50% + 4.5rem);
 }
 
@@ -497,7 +553,7 @@ header > * {
 .project-indicator.open .project-indicator-tab {
   transform: translateX(18rem);
   height: calc(50% + 4.5rem);
-  background-color: white;
+  background-color: hsla(var(--color-bg-light), 1);
 }
 
 /* 7. Text-Wechsel-Effekt */
@@ -514,7 +570,7 @@ header > * {
 }
 
 /* -----------------------------
-   7. OVERLAY-SYSTEM
+   9. OVERLAY-SYSTEM
    ----------------------------- */
 
 /* Overlay Grundstruktur */
@@ -723,7 +779,7 @@ dialog::backdrop {
 .bouncing-image {
   position: absolute;
   will-change: transform;
-  width: 239px;
+  width: 245;
   height: 332px;
   top: 0;
   left: 0;
@@ -738,7 +794,7 @@ dialog::backdrop {
 }
 
 /* -----------------------------
-   8. ANIMATIONEN (KEYFRAMES)
+   10. ANIMATIONEN (KEYFRAMES)
    ----------------------------- */
 
 @keyframes initialFadeIn {
@@ -770,12 +826,12 @@ dialog::backdrop {
     left: 0;
   }
   to {
-    left: calc(100% - 239px );
+    left: calc(100% - 245px);
   }
 }
 
 /* -----------------------------
-   9. MEDIA QUERIES
+   11. MEDIA QUERIES
    ----------------------------- */
 
 @media screen and (max-width: 800px),
@@ -840,11 +896,11 @@ dialog::backdrop {
 
   .title-description-container.show-description .title-arrow svg,
   .title-description-container.show-description .title-arrow svg polygon {
-    fill:black !important;
+    fill: black !important;
   }
 
   .title-description-container.show-description .project-title-mobile {
-    color:black;
+    color: black;
   }
 
   .description-mobile {
@@ -973,32 +1029,28 @@ dialog::backdrop {
 
   /* Mobile Bouncing Image Anpassungen */
 
-.bouncing-image {
-  width: 120px;
-  height: 180px;
-}
-@keyframes slideVert {
-  from {
-    top: 0;
+  .bouncing-image {
+    width: 120px;
+    height: 180px;
   }
-  to {
-    top: calc(100% - 180px);
+  @keyframes slideVert {
+    from {
+      top: 0;
+    }
+    to {
+      top: calc(100% - 180px);
+    }
+  }
+
+  @keyframes slideHori {
+    from {
+      left: 0;
+    }
+    to {
+      left: calc(100% - 120px);
+    }
   }
 }
-
-@keyframes slideHori {
-  from {
-    left: 0;
-  }
-  to {
-    left: calc(100% - 120px);
-  }
-}
-}
-
-
-
-
 
 /* Barrierefreiheit: Reduzierte Animation */
 

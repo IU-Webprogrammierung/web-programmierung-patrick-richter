@@ -1,8 +1,7 @@
 /**
  * @module events
  * @description Zentrale Definition von Event-Typen und Event-Handling-Hilfsfunktionen.
- * Stellt einheitliche Event-Namen zur Verfügung, um Tippfehler zu vermeiden und
- * eine konsistente eventbasierte Kommunikation zwischen Modulen zu ermöglichen.
+ * Stellt einheitliche Event-Namen zur Verfügung für eine konsistente eventbasierte Kommunikation zwischen Modulen.
  * 
  * Funktionen: dispatchCustomEvent(), addEventListener(), removeEventListener()
  */

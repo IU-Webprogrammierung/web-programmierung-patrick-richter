@@ -4,4 +4,6 @@ import { setupEventListeners } from './setup.js';
 document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
   initializeWebsite();
+
+  
 });

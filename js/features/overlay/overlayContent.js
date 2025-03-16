@@ -5,13 +5,12 @@
  * basierend auf den Daten aus dem zentralen Datenspeicher.
  */
 
-import dataStore from '../../core/dataStore.js';
-import { hideOverlay } from './overlayController.js';
-import { scrollToProject } from '../projects/projectNavigation.js';
+import dataStore from "../../core/dataStore.js";
+import { hideOverlay } from "./overlayController.js";
+import { scrollToProject } from "../projects/projectNavigation.js";
 
-/**
- * Erstellt die About- und Imprint-Inhalte im Overlay
- */
+// Erstellt die About- und Imprint-Inhalte im Overlay
+
 export function createAboutImprintSection() {
   try {
     const aboutImprintData = dataStore.getAboutImprint();
@@ -20,35 +19,37 @@ export function createAboutImprintSection() {
     const aboutIntro = document.querySelector(".about-intro");
     const clientsList = document.querySelector(".about-clients ul");
     const imprintContent = document.querySelector(".imprint-content");
-    
+
     if (!aboutIntro || !clientsList || !imprintContent) {
       console.error("Fehler: About/Imprint-Elemente nicht gefunden");
       return;
     }
-    
+
     // About-Intro erstellen
     createAboutIntro(aboutIntro, aboutImprintData);
-    
+
     // Client-Liste erstellen
     createClientsList(clientsList, clientsData);
-    
+
     // Imprint-Inhalt erstellen
     createImprintContent(imprintContent, aboutImprintData);
-    
   } catch (error) {
     console.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
   }
 }
 
-/**
- * Erstellt den About-Intro-Bereich
- */
+// Erstellt den About-Intro-Bereich
+
 function createAboutIntro(container, aboutImprintData) {
-  if (!aboutImprintData || !aboutImprintData.data || !aboutImprintData.data.intro) {
+  if (
+    !aboutImprintData ||
+    !aboutImprintData.data ||
+    !aboutImprintData.data.intro
+  ) {
     console.warn("Keine About-Intro-Daten gefunden");
     return;
   }
-  
+
   const introParagraphs = aboutImprintData.data.intro
     .map((paragraph) => {
       const content = paragraph.children
@@ -67,15 +68,14 @@ function createAboutIntro(container, aboutImprintData) {
   container.innerHTML = introParagraphs;
 }
 
-/**
- * Erstellt die Client-Liste
- */
+// Erstellt die Client-Liste
+
 function createClientsList(container, clientsData) {
   if (!clientsData || !clientsData.data || clientsData.data.length === 0) {
     console.warn("Keine Clients-Daten gefunden");
     return;
   }
-  
+
   // Liste leeren und Titel-Element vorbereiten
   container.innerHTML = "";
 
@@ -101,7 +101,7 @@ function createClientsList(container, clientsData) {
     if (client.projects && client.projects.length > 0) {
       // Client mit Projekt(en) - als Link darstellen
       const project = client.projects[0]; // Erstes Projekt nehmen
-      
+
       // Link-Element erstellen mit einfachem ARIA-Label
       const link = document.createElement("a");
       link.href = "#";
@@ -131,15 +131,18 @@ function createClientsList(container, clientsData) {
   });
 }
 
-/**
- * Erstellt den Imprint-Inhalt
- */
+// Erstellt den Imprint-Inhalt
+
 function createImprintContent(container, aboutImprintData) {
-  if (!aboutImprintData || !aboutImprintData.data || !aboutImprintData.data.imprint) {
+  if (
+    !aboutImprintData ||
+    !aboutImprintData.data ||
+    !aboutImprintData.data.imprint
+  ) {
     console.warn("Keine Imprint-Daten gefunden");
     return;
   }
-  
+
   // Bestehenden Inhalt leeren
   container.innerHTML = "";
 

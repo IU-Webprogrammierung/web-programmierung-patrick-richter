@@ -1,9 +1,8 @@
 /**
  * @module projectLoader
  * @description Verantwortlich für das Erstellen und Rendern der Projektinhalte.
- * Generiert Projekt-DOM-Elemente basierend auf den JSON-Daten und richtet weitere
- * Module ein, um die Funktionalität der Projekte zu gewährleisten.
- * 
+ * Generiert Projekt-DOM-Elemente basierend auf den JSON-Daten.
+ *
  * Funktionen: createProjectElements(), createResponsiveImageHTML()
  */
 
@@ -14,11 +13,8 @@ import { setupProjectTitle } from "./projectTitle.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
-/**
- * Erstellt das HTML für ein responsives Bild mit WebP-Support
- * @param {Object} imageData - Die Bilddaten aus der JSON
- * @returns {string} HTML-String mit picture, source und img-Tags
- */
+// Erstellt das HTML für ein responsives Bild mit WebP-Support
+
 function createResponsiveImageHTML(imageData) {
   // Das erste Element des image-Arrays verwenden
   const imageObj = imageData.image[0];
@@ -26,25 +22,26 @@ function createResponsiveImageHTML(imageData) {
   const imageId = imageData.id;
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
-  
+
   // Basis-URL für Fallback
   const baseUrl = imageObj.url;
-  
+
   // Gruppieren der Formate nach Typ (WebP vs. Original) und Größe
   const formats = {
     webp: {}, // WebP-Formate nach Größe
-    original: {} // Original-Formate nach Größe
+    original: {}, // Original-Formate nach Größe
   };
-  
+
   // Formate strukturieren
   if (imageObj.formats) {
     Object.entries(imageObj.formats).forEach(([formatKey, formatData]) => {
       // Ist es ein WebP-Format?
-      const isWebP = formatKey.endsWith('-webp') || formatData.mime === 'image/webp';
-      
+      const isWebP =
+        formatKey.endsWith("-webp") || formatData.mime === "image/webp";
+
       // Größenname bestimmen (z.B. "large" aus "large-webp")
-      const sizeName = isWebP ? formatKey.replace('-webp', '') : formatKey;
-      
+      const sizeName = isWebP ? formatKey.replace("-webp", "") : formatKey;
+
       // Format in die richtige Kategorie einsortieren
       if (isWebP) {
         formats.webp[sizeName] = formatData;
@@ -53,13 +50,13 @@ function createResponsiveImageHTML(imageData) {
       }
     });
   }
-  
+
   // Erzeugt srcset für einen Formattyp (WebP oder Original)
   function createSrcset(formatType) {
     const sizeOrder = { large: 3, medium: 2, small: 1 };
-    
+
     return Object.entries(formats[formatType])
-      .filter(([size]) => size !== 'thumbnail') // Thumbnails ausschließen
+      .filter(([size]) => size !== "thumbnail") // Thumbnails ausschließen
       .sort(([sizeA], [sizeB]) => {
         // Nach Größe sortieren (large vor medium vor small)
         return (sizeOrder[sizeB] || 0) - (sizeOrder[sizeA] || 0);
@@ -67,19 +64,31 @@ function createResponsiveImageHTML(imageData) {
       .map(([_, data]) => `${data.url} ${data.width}w`)
       .join(", ");
   }
-  
+
   // srcset-Strings für beide Formattypen erstellen
-  const webpSrcset = Object.keys(formats.webp).length > 0 ? createSrcset('webp') : '';
-  const originalSrcset = Object.keys(formats.original).length > 0 ? createSrcset('original') : '';
-  
+  const webpSrcset =
+    Object.keys(formats.webp).length > 0 ? createSrcset("webp") : "";
+  const originalSrcset =
+    Object.keys(formats.original).length > 0 ? createSrcset("original") : "";
+
   // Sizes-Attribut - für verschiedene Viewports anpassen
   const sizes = "(max-width: 768px) 100vw, 100vw";
-  
+
   // Picture-Element mit WebP-Support erstellen
   return `
     <picture>
-      ${webpSrcset ? `<source srcset="${webpSrcset}" sizes="${sizes}" type="image/webp">` : ''}
-      ${originalSrcset ? `<source srcset="${originalSrcset}" sizes="${sizes}" type="${imageObj.mime || 'image/jpeg'}">` : ''}
+      ${
+        webpSrcset
+          ? `<source srcset="${webpSrcset}" sizes="${sizes}" type="image/webp">`
+          : ""
+      }
+      ${
+        originalSrcset
+          ? `<source srcset="${originalSrcset}" sizes="${sizes}" type="${
+              imageObj.mime || "image/jpeg"
+            }">`
+          : ""
+      }
       <img 
         src="${baseUrl}" 
         alt="${altText}" 
@@ -87,15 +96,13 @@ function createResponsiveImageHTML(imageData) {
         data-text-color="${textColor}"
         data-image-title="${imageTitle}"
         class="slide"
-        loading="lazy" 
       />
     </picture>
   `;
 }
 
-/**
- * Erstellt die DOM-Elemente für alle Projekte
- */
+// Erstellt die DOM-Elemente für alle Projekte
+
 export function createProjectElements() {
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
@@ -124,7 +131,7 @@ export function createProjectElements() {
       let imagesHTML = "";
       if (project.project_images && project.project_images.length > 0) {
         imagesHTML = project.project_images
-          .map(img => createResponsiveImageHTML(img))
+          .map((img) => createResponsiveImageHTML(img))
           .join("");
       }
 
@@ -151,13 +158,13 @@ export function createProjectElements() {
       container.insertAdjacentHTML("beforeend", projectHTML);
     });
   }
-  
+
   if (footerElement) {
     // Footer anhängen und "hidden" entfernen
     container.appendChild(footerElement);
     footerElement.classList.remove("hidden-footer");
   }
-  
+
   // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
   setTimeout(() => {
     container.scrollTop = 0;
@@ -171,6 +178,6 @@ export function createProjectElements() {
       setupImageNavigation();
     }, 50);
   }, 50);
-  
+
   uiState.updateProjects();
 }

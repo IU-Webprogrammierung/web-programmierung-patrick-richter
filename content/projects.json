@@ -8,7 +8,7 @@
           "type": "paragraph",
           "children": [
             {
-              "text": "EMOTION MAGAZIN published monthly — a small selection of double spreads, which I designed for the magazine issues between 2014 and 2023"
+              "text": "A selection of double-page spreads from EMOTION MAGAZINE, designed for monthly issues between 2014 and 2023. Editorial design, deputy art direction, and contributions to the magazine’s typographic and visual redesign."
             }
           ]
         }
@@ -168,6 +168,73 @@
       ]
     },
     {
+      "id": 4,
+      "name": "ANNE FISCHER Brand",
+      "description": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Brand design for Anne Fischer, an artist in the field of silversmithing and jewelry. The work includes the design of flyers, cards, and folded paper pieces."
+            }
+          ]
+        }
+      ],
+      "rank": 2,
+      "project_images": [
+        {
+          "id": 10,
+          "textColor": "white",
+          "imageTitle": "Anne_Fischer_Brand_1",
+          "image": [
+            {
+              "id": 10,
+              "name": "project4-1.jpg",
+              "alternativeText": "Anne Fischer Brand Image 1",
+              "width": 2000,
+              "height": 2150,
+              "formats": {
+                "large": {
+                  "ext": ".jpg",
+                  "url": "images/project4-1.jpg",
+                  "hash": "project4-1",
+                  "mime": "image/jpeg",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "large-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-1.webp",
+                  "hash": "project4-1-webp",
+                  "mime": "image/webp",
+                  "width": 2000,
+                  "height": 2150
+                },
+                "small": {
+                  "ext": ".jpg",
+                  "url": "images/project4-1-small.jpg",
+                  "hash": "project4-1-small",
+                  "mime": "image/jpeg",
+                  "width": 1000,
+                  "height": 1075
+                },
+                "small-webp": {
+                  "ext": ".webp",
+                  "url": "images/project4-1-small.webp",
+                  "hash": "project4-1-small-webp",
+                  "mime": "image/webp",
+                  "width": 1000,
+                  "height": 1075
+                }
+              },
+              "url": "images/project4-1.jpg",
+              "mime": "image/jpeg"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": 2,
       "name": "WORKING WOMEN Magazine",
       "description": [
@@ -175,12 +242,12 @@
           "type": "paragraph",
           "children": [
             {
-              "text": "WORKING WOMEN a Magazin with all topics relating to how we want to work in today's world"
+              "text": "Editorial layouts from the 2018/2019 and 2019/2020 editions of WORKING WOMEN, a magazine dedicated to modern work culture. Redesign and art direction for various issues between 2016 and 2020."
             }
           ]
         }
       ],
-      "rank": 2,
+      "rank": 3,
       "project_images": [
         {
           "id": 4,
@@ -342,12 +409,12 @@
           "type": "paragraph",
           "children": [
             {
-              "text": "Art Direction for the 53. edition of the quarterly magazine DUMMY"
+              "text": "Art direction for the 53rd edition of DUMMY. The issue explores the theme of Night, inspired by Night on Earth by Jim Jarmusch, with stories set across the globe."
             }
           ]
         }
       ],
-      "rank": 3,
+      "rank": 4,
       "project_images": [
         {
           "id": 7,
@@ -495,173 +562,6 @@
                 }
               },
               "url": "images/project3-3.jpg",
-              "mime": "image/jpeg"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "ANNE FISCHER Brand Design",
-      "description": [
-        {
-          "type": "paragraph",
-          "children": [
-            {
-              "text": "ANNE FISCHER – Brand Design for the artist Anne Fischer working in the field of Silverschmith and Jewlery"
-            }
-          ]
-        }
-      ],
-      "rank": 4,
-      "project_images": [
-        {
-          "id": 10,
-          "textColor": "white",
-          "imageTitle": "Anne_Fischer_Brand_1",
-          "image": [
-            {
-              "id": 10,
-              "name": "project4-1.jpg",
-              "alternativeText": "Anne Fischer Brand Image 1",
-              "width": 2000,
-              "height": 2150,
-              "formats": {
-                "large": {
-                  "ext": ".jpg",
-                  "url": "images/project4-1.jpg",
-                  "hash": "project4-1",
-                  "mime": "image/jpeg",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "large-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-1.webp",
-                  "hash": "project4-1-webp",
-                  "mime": "image/webp",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "small": {
-                  "ext": ".jpg",
-                  "url": "images/project4-1-small.jpg",
-                  "hash": "project4-1-small",
-                  "mime": "image/jpeg",
-                  "width": 1000,
-                  "height": 1075
-                },
-                "small-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-1-small.webp",
-                  "hash": "project4-1-small-webp",
-                  "mime": "image/webp",
-                  "width": 1000,
-                  "height": 1075
-                }
-              },
-              "url": "images/project4-1.jpg",
-              "mime": "image/jpeg"
-            }
-          ]
-        },
-        {
-          "id": 11,
-          "textColor": "black",
-          "imageTitle": "Anne_Fischer_Brand_2",
-          "image": [
-            {
-              "id": 11,
-              "name": "project4-2.jpg",
-              "alternativeText": "Anne Fischer Brand Image 2",
-              "width": 2000,
-              "height": 2150,
-              "formats": {
-                "large": {
-                  "ext": ".jpg",
-                  "url": "images/project4-2.jpg",
-                  "hash": "project4-2",
-                  "mime": "image/jpeg",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "large-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-2.webp",
-                  "hash": "project4-2-webp",
-                  "mime": "image/webp",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "small": {
-                  "ext": ".jpg",
-                  "url": "images/project4-2-small.jpg",
-                  "hash": "project4-2-small",
-                  "mime": "image/jpeg",
-                  "width": 1000,
-                  "height": 1075
-                },
-                "small-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-2-small.webp",
-                  "hash": "project4-2-small-webp",
-                  "mime": "image/webp",
-                  "width": 1000,
-                  "height": 1075
-                }
-              },
-              "url": "images/project4-2.jpg",
-              "mime": "image/jpeg"
-            }
-          ]
-        },
-        {
-          "id": 12,
-          "textColor": "white",
-          "imageTitle": "Anne_Fischer_Brand_3",
-          "image": [
-            {
-              "id": 12,
-              "name": "project4-3.jpg",
-              "alternativeText": "Anne Fischer Brand Image 3",
-              "width": 2000,
-              "height": 2150,
-              "formats": {
-                "large": {
-                  "ext": ".jpg",
-                  "url": "images/project4-3.jpg",
-                  "hash": "project4-3",
-                  "mime": "image/jpeg",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "large-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-3.webp",
-                  "hash": "project4-3-webp",
-                  "mime": "image/webp",
-                  "width": 2000,
-                  "height": 2150
-                },
-                "small": {
-                  "ext": ".jpg",
-                  "url": "images/project4-3-small.jpg",
-                  "hash": "project4-3-small",
-                  "mime": "image/jpeg",
-                  "width": 1000,
-                  "height": 1075
-                },
-                "small-webp": {
-                  "ext": ".webp",
-                  "url": "images/project4-3-small.webp",
-                  "hash": "project4-3-small-webp",
-                  "mime": "image/webp",
-                  "width": 1000,
-                  "height": 1075
-                }
-              },
-              "url": "images/project4-3.jpg",
               "mime": "image/jpeg"
             }
           ]
