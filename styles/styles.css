@@ -339,7 +339,7 @@ header > * {
   height: 9rem;
   left: 0;
   transform: translateX(0);
-  background-color: rgba(245, 245, 245, 0.2);
+  background-color: hsla(var(--color-bg-light), 0.1);
   padding: var(--spacing-l) var(--spacing-2xs);
   display: flex;
   flex-direction: column;
@@ -353,6 +353,7 @@ header > * {
     transform var(--transition-default), height var(--transition-default),
     opacity var(--transition-default);
 }
+
 .project-indicator-tab.visible {
   opacity: 1;
 }
@@ -797,7 +798,7 @@ dialog::backdrop {
     align-items: center;
     padding: 0 var(--spacing-m) var(--spacing-3xl) var(--spacing-m);
     width: 100%;
-    background-color: hsla(var(--color-bg-light), 0.2);
+    background-color: hsla(var(--color-bg-light), 0.1);
     transition: transform var(--transition-slow),
       background-color var(--transition-slow);
   }
@@ -836,6 +837,12 @@ dialog::backdrop {
   .title-description-container.show-description .title-arrow {
     transform: rotate(180deg);
   }
+
+  .title-description-container.show-description .title-arrow svg,
+  .title-description-container.show-description .title-arrow svg polygon {
+    fill:black !important;
+  }
+
   .title-description-container.show-description .project-title-mobile {
     color:black;
   }
