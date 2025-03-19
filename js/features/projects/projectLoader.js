@@ -8,6 +8,7 @@
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
+import { getValidatedElement } from '../../core/utils.js';
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
@@ -105,7 +106,7 @@ function createResponsiveImageHTML(imageData) {
 
 export function createProjectElements() {
   const projectsData = dataStore.getProjects();
-  const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");

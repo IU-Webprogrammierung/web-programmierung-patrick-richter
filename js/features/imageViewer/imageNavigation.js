@@ -7,8 +7,11 @@
  * Funktionen: setupImageNavigation()
  */
 
+import { getValidatedElement } from '../../core/utils.js';
+
+
 export function setupImageNavigation() {
-    const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
     if (!container) {
       console.error("Fehler: Project-Container nicht gefunden");

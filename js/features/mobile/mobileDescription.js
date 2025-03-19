@@ -8,9 +8,13 @@
 
 // Mobile Description Element
 
+import { getValidatedElement } from '../../core/utils.js';
+
+
 export function toggleDescription() {
-  const titleDescriptionContainer = document.querySelector(
-    ".title-description-container"
+  const titleDescriptionContainer = getValidatedElement(
+    ".title-description-container",
+    "Fehler: Title-Description-Container nicht gefunden"
   );
 
   titleDescriptionContainer.classList.toggle("show-description");
@@ -35,7 +39,7 @@ export function handlePointerDown(event) {
 // Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
 
 export function handleTouchEnd(event) {
-  const titleDescriptionContainer = document.querySelector(
+  const titleDescriptionContainer = document.getValidatedElement(
     ".title-description-container"
   );
 

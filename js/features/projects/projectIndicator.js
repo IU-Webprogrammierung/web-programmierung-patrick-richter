@@ -10,6 +10,8 @@
  */
 
 import uiState from "../../core/uiState.js";
+import { getValidatedElement } from '../../core/utils.js';
+import { getValidatedElements } from '../../core/utils.js';
 import { scrollToProject } from "./projectNavigation.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
@@ -17,7 +19,7 @@ export function setupProjectIndicator() {
   // Initial den Tab-Text aktualisieren
   setTimeout(() => {
     updateTabText();
-    document.querySelector(".project-indicator-tab")?.classList.add("visible");
+    getValidatedElement(".project-indicator-tab")?.classList.add("visible");
   }, 300);
 
   // Auf Projektänderungen reagieren
@@ -31,7 +33,7 @@ export function setupProjectIndicator() {
 }
 
 function updateTabText() {
-  const tabText = document.querySelector(".tab-text");
+  const tabText = getValidatedElement(".tab-text");
   if (!tabText) return;
 
   // Nur anzeigen, wenn ein gültiger Index vorhanden ist
@@ -61,7 +63,7 @@ function handleProjectChange() {
 
 // Aktualisiert die aktive Markierung in der Projektliste
 function updateActiveProjectInList() {
-  const links = document.querySelectorAll(".project-list a");
+  const links = getValidatedElements(".project-list a");
   links.forEach((link, index) => {
     if (index === uiState.activeProjectIndex) {
       link.classList.add("active");
@@ -75,9 +77,9 @@ function updateActiveProjectInList() {
 
 function setupProjectList() {
   setTimeout(() => {
-    const projectList = document.querySelector(".project-list");
-    const indicator = document.querySelector(".project-indicator");
-    const tab = document.querySelector(".project-indicator-tab");
+    const projectList = getValidatedElement(".project-list");
+    const indicator = getValidatedElement(".project-indicator");
+    const tab = getValidatedElement(".project-indicator-tab");
 
     if (!projectList || !uiState.projects.length) return;
 
@@ -124,8 +126,8 @@ function setupProjectList() {
 
 // Toggle-Funktion für das Panel (exportiert für setup.js)
 export function togglePanel() {
-  const indicator = document.querySelector(".project-indicator");
-  const tab = document.querySelector(".project-indicator-tab");
+  const indicator = getValidatedElement(".project-indicator");
+  const tab = getValidatedElement(".project-indicator-tab");
 
   if (!indicator || !tab) return;
 

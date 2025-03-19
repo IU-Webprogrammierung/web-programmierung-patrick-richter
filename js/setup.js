@@ -1,3 +1,4 @@
+import { getValidatedElement } from './core/utils.js';
 import { showOverlay, hideOverlay, toggleAboutImprint, handleKeyPress } from './features/overlay/overlayController.js';
 import { toggleDescription, handlePointerDown, handleTouchEnd } from './features/mobile/mobileDescription.js';
 import { scrollToTop, closeFooter } from './features/projects/projectNavigation.js';
@@ -5,21 +6,21 @@ import { togglePanel } from './features/projects/projectIndicator.js';
 
 
 export function setupEventListeners() {
-  document.querySelector("#openOverlay")?.addEventListener("click", showOverlay);
-  document.querySelector("#closeOverlay")?.addEventListener("click", hideOverlay);
-  document.querySelector("#overlayLeft")?.addEventListener("click", hideOverlay);
+  getValidatedElement("#openOverlay")?.addEventListener("click", showOverlay);
+  getValidatedElement("#closeOverlay")?.addEventListener("click", hideOverlay);
+  getValidatedElement("#overlayLeft")?.addEventListener("click", hideOverlay);
   addEventListener("keydown", handleKeyPress);
-  document.querySelector("#showImprint")?.addEventListener("click", () => toggleAboutImprint("show-imprint"));
-  document.querySelector("#showAbout")?.addEventListener("click", () => toggleAboutImprint("show-about"));
+  getValidatedElement("#showImprint")?.addEventListener("click", () => toggleAboutImprint("show-imprint"));
+  getValidatedElement("#showAbout")?.addEventListener("click", () => toggleAboutImprint("show-about"));
   
-  const titleDescriptionContainer = document.querySelector(".title-description-container");
+  const titleDescriptionContainer = getValidatedElement(".title-description-container");
   titleDescriptionContainer.addEventListener("click", toggleDescription);
   titleDescriptionContainer.addEventListener("pointerdown", handlePointerDown);
   titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
   
-  document.querySelector("#scrollTop").addEventListener("click", scrollToTop);
-  document.querySelector("#footerTop").addEventListener("click", closeFooter);
+  getValidatedElement("#scrollTop").addEventListener("click", scrollToTop);
+  getValidatedElement("#footerTop").addEventListener("click", closeFooter);
 
-  document.querySelector(".project-indicator-tab").addEventListener("click", togglePanel);
+  getValidatedElement(".project-indicator-tab").addEventListener("click", togglePanel);
 
 }

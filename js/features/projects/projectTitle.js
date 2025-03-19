@@ -8,14 +8,15 @@
  */
 
 import uiState from "../../core/uiState.js";
+import { getValidatedElement } from '../../core/utils.js';
 import { EVENT_TYPES } from "../../core/events.js";
 
 // Dynamische Änderung der Projekttitel
 export function setupProjectTitle() {
   // DOM-Elemente
-  const headerTitle = document.querySelector(".project-title");
-  const mobileTitle = document.querySelector(".project-title-mobile");
-  const mobileDescription = document.querySelector(".description-mobile");
+  const headerTitle = getValidatedElement(".project-title");
+  const mobileTitle = getValidatedElement(".project-title-mobile");
+  const mobileDescription = getValidatedElement(".description-mobile");
 
   if (!headerTitle) {
     console.error("Fehler: Projekt-Titel-Element nicht gefunden");
@@ -92,8 +93,8 @@ export function setupProjectTitle() {
         activeProject
       );
       const projectName = activeProject.getAttribute("data-project-name");
-      const projectDesc =
-        activeProject.querySelector(".description")?.textContent || "";
+      const descriptionElement = activeProject.querySelector(".description");
+const projectDesc = descriptionElement ? descriptionElement.textContent || "" : "";
 
       console.log(
         `setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`
