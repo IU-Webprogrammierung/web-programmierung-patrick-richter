@@ -570,6 +570,28 @@ header > * {
 }
 
 /* -----------------------------
+   8.2 Hover image
+   -----------------------------*/
+
+   /* Projektvorschau-Bild */
+.project-hover-preview {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  width: 250px;
+  height: auto;
+  opacity: 0;
+  display: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: opacity 0.2s ease;
+}
+
+/* Ausblenden auf mobilen Geräten */
+@media (max-width: 768px) {
+
+}
+
+/* -----------------------------
    9. OVERLAY-SYSTEM
    ----------------------------- */
 
