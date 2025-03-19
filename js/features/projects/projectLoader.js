@@ -173,8 +173,8 @@ export function createProjectElements() {
       container.style.scrollSnapType = originalSnapType;
       uiState.updateProjects();
 
-      setupProjectTitle();
       setupProjectIndicator();
+      setupProjectTitle();
       setupImageColorHandler();
       setupImageNavigation();
       setupScrollHandler();

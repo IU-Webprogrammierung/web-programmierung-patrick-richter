@@ -62,9 +62,16 @@ function handleProjectChange() {
   updateActiveProjectInList();
 }
 
-// Aktualisiert die aktive Markierung in der Projektliste
 function updateActiveProjectInList() {
-  const links = getValidatedElements(".project-list a");
+  // Direkt querySelectorAll verwenden für besseres Fehlerhandling
+  const links = document.querySelectorAll(".project-list a");
+  
+  // Sicherheitsprüfung vor der forEach-Schleife
+  if (!links || links.length === 0) {
+    console.log("Projektliste noch nicht bereit - überspringe Update");
+    return;
+  }
+  
   links.forEach((link, index) => {
     if (index === uiState.activeProjectIndex) {
       link.classList.add("active");

@@ -101,8 +101,8 @@ export function handleColorChange(event) {
   const isProjectChange =
     event.detail.hasOwnProperty("projectIndex") &&
     projectIndex === uiState.activeProjectIndex &&
-    getValidatedElement(".project-title.fade-out");
-
+    document.querySelector(".project-title.fade-out") !== null; 
+      
   // Debouncing: Zu schnelle Farbwechsel vermeiden
   clearTimeout(debounceColorTimer);
 
