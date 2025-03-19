@@ -8,9 +8,9 @@
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from '../../core/utils.js';
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
+import { setupProjectIndicator } from "./projectIndicator.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
@@ -106,7 +106,7 @@ function createResponsiveImageHTML(imageData) {
 
 export function createProjectElements() {
   const projectsData = dataStore.getProjects();
-  const container = getValidatedElement(".project-container");
+  const container = document.querySelector(".project-container");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -173,10 +173,11 @@ export function createProjectElements() {
       container.style.scrollSnapType = originalSnapType;
       uiState.updateProjects();
 
-      setupScrollHandler();
       setupProjectTitle();
+      setupProjectIndicator();
       setupImageColorHandler();
       setupImageNavigation();
+      setupScrollHandler();
     }, 50);
   }, 50);
 

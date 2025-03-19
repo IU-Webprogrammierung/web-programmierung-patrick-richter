@@ -3,15 +3,14 @@
  * @description Überwacht sichtbare Bilder und passt die Textfarbe der UI dynamisch an.
  * Nutzt IntersectionObserver für effiziente Erkennung sichtbarer Bilder und
  * implementiert Debouncing für flüssige Farbübergänge zwischen Bildern und Projekten.
- * 
+ *
  * Funktionen: setupImageColorHandler(), handleColorChange()
  */
 
-import uiState from '../../core/uiState.js';
-import { EVENT_TYPES } from '../../core/events.js';
-import { validateElement } from '../../core/utils.js';
-import { getValidatedElement } from '../../core/utils.js';
-
+import uiState from "../../core/uiState.js";
+import { EVENT_TYPES } from "../../core/events.js";
+import { validateElement } from "../../core/utils.js";
+import { getValidatedElement } from "../../core/utils.js";
 
 // Timer für Debouncing der Farbänderungen
 let debounceColorTimer = null;
@@ -31,7 +30,14 @@ export function setupImageColorHandler() {
       const project = uiState.projects[projectIndex];
       const slider = project.querySelector(".slider");
 
-      if (!validateElement(slider, `Slider für Projekt ${projectIndex} nicht gefunden`, 'warn')) return;
+      if (
+        !validateElement(
+          slider,
+          `Slider für Projekt ${projectIndex} nicht gefunden`,
+          "warn"
+        )
+      )
+        return;
 
       const slides = slider.querySelectorAll(".slide");
       console.log(
@@ -73,7 +79,10 @@ export function setupImageColorHandler() {
   });
 
   // Event-Listener für Farbänderungen
-  document.addEventListener(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, handleColorChange);
+  document.addEventListener(
+    EVENT_TYPES.ACTIVE_IMAGE_CHANGED,
+    handleColorChange
+  );
 
   // Initial für das aktive Projekt
   setTimeout(() => {
@@ -82,6 +91,9 @@ export function setupImageColorHandler() {
 }
 
 export function handleColorChange(event) {
+  // Sicherstellen, dass das Event gültige Details enthält
+  if (!event || !event.detail) return;
+
   const textColor = event.detail.textColor;
   const projectIndex = event.detail.projectIndex;
 
@@ -103,14 +115,15 @@ export function handleColorChange(event) {
       "--active-text-color",
       textColor
     );
-    if (textColor === "white") {
-      document
-        .getValidatedElement(".project-container")
-        .classList.add("white-cursor");
-    } else {
-      document
-        .getValidatedElement(".project-container")
-        .classList.remove("white-cursor");
+    // Container für Cursor-Stil finden
+    const container = getValidatedElement(".project-container");
+    if (container) {
+      // Cursor basierend auf Textfarbe anpassen
+      if (textColor === "white") {
+        container.classList.add("white-cursor");
+      } else {
+        container.classList.remove("white-cursor");
+      }
     }
     console.log(
       `Farbe geändert zu: ${textColor}${

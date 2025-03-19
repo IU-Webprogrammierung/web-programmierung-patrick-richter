@@ -39,7 +39,7 @@ export function handlePointerDown(event) {
 // Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
 
 export function handleTouchEnd(event) {
-  const titleDescriptionContainer = document.getValidatedElement(
+  const titleDescriptionContainer = getValidatedElement(
     ".title-description-container"
   );
 

@@ -16,6 +16,10 @@ import { scrollToProject } from "./projectNavigation.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
 export function setupProjectIndicator() {
+
+    // Projektliste im Panel erstellen
+    setupProjectList();
+    
   // Initial den Tab-Text aktualisieren
   setTimeout(() => {
     updateTabText();
@@ -27,9 +31,6 @@ export function setupProjectIndicator() {
     EVENT_TYPES.ACTIVE_PROJECT_CHANGED,
     handleProjectChange
   );
-
-  // Projektliste im Panel erstellen
-  setupProjectList();
 }
 
 function updateTabText() {
