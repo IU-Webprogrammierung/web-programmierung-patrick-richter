@@ -6,6 +6,7 @@
  */
 
 import dataStore from "../../core/dataStore.js";
+import { getValidatedElement } from '../../core/utils.js';
 import { hideOverlay } from "./overlayController.js";
 import { scrollToProject } from "../projects/projectNavigation.js";
 
@@ -16,9 +17,9 @@ export function createAboutImprintSection() {
     const aboutImprintData = dataStore.getAboutImprint();
     const clientsData = dataStore.getClients();
 
-    const aboutIntro = document.querySelector(".about-intro");
-    const clientsList = document.querySelector(".about-clients ul");
-    const imprintContent = document.querySelector(".imprint-content");
+    const aboutIntro = getValidatedElement(".about-intro");
+    const clientsList = getValidatedElement(".about-clients ul");
+    const imprintContent = getValidatedElement(".imprint-content");
 
     if (!aboutIntro || !clientsList || !imprintContent) {
       console.error("Fehler: About/Imprint-Elemente nicht gefunden");

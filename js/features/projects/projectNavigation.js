@@ -8,10 +8,13 @@
  */
 
 import uiState from "../../core/uiState.js";
+import { getValidatedElement } from '../../core/utils.js';
+import { getValidatedElements } from '../../core/utils.js';
+
 
 export function setupScrollHandler() {
 
-  const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -60,8 +63,8 @@ export function setupScrollHandler() {
 
 // Neue Funktion zum Scrollen zu einem Projekt
 export function scrollToProject(projectId) {
-  const projects = document.querySelectorAll(".project:not(.footer-container)");
-  const container = document.querySelector(".project-container");
+  const projects = getValidatedElements(".project:not(.footer-container)");
+  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container || projects.length === 0) {
     console.error("Fehler: Container oder Projekte nicht gefunden");
@@ -77,7 +80,7 @@ export function scrollToProject(projectId) {
       console.log(`Scrolle zu Projekt ID: ${projectId}, Index: ${i}`);
 
       // Zum Projekt scrollen
-      const container = document.querySelector(".project-container");
+      const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
       container.scrollTo({
         top: i * window.innerHeight,
         behavior: "smooth",
@@ -96,7 +99,7 @@ export function scrollToProject(projectId) {
 // Scrollt nach oben
 
 export function scrollToTop() {
-  const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -109,7 +112,7 @@ export function scrollToTop() {
 // Footer schließen
 
 export function closeFooter() {
-  const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");

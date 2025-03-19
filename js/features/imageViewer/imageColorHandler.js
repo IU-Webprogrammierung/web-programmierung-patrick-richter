@@ -9,6 +9,9 @@
 
 import uiState from '../../core/uiState.js';
 import { EVENT_TYPES } from '../../core/events.js';
+import { validateElement } from '../../core/utils.js';
+import { getValidatedElement } from '../../core/utils.js';
+
 
 // Timer für Debouncing der Farbänderungen
 let debounceColorTimer = null;
@@ -28,9 +31,9 @@ export function setupImageColorHandler() {
       const project = uiState.projects[projectIndex];
       const slider = project.querySelector(".slider");
 
-      if (!slider) return;
+      if (!validateElement(slider, `Slider für Projekt ${projectIndex} nicht gefunden`, 'warn')) return;
 
-      const slides = slider.querySelectorAll(".slide");
+      const slides = slider.querySelector(".slide");
       console.log(
         `Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`
       );
@@ -86,7 +89,7 @@ export function handleColorChange(event) {
   const isProjectChange =
     event.detail.hasOwnProperty("projectIndex") &&
     projectIndex === uiState.activeProjectIndex &&
-    document.querySelector(".project-title.fade-out");
+    getValidatedElement(".project-title.fade-out");
 
   // Debouncing: Zu schnelle Farbwechsel vermeiden
   clearTimeout(debounceColorTimer);
@@ -102,11 +105,11 @@ export function handleColorChange(event) {
     );
     if (textColor === "white") {
       document
-        .querySelector(".project-container")
+        .getValidatedElement(".project-container")
         .classList.add("white-cursor");
     } else {
       document
-        .querySelector(".project-container")
+        .getValidatedElement(".project-container")
         .classList.remove("white-cursor");
     }
     console.log(

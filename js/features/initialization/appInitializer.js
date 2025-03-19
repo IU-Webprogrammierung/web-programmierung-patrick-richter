@@ -4,6 +4,7 @@
  */
 
 import dataStore from '../../core/dataStore.js';
+import { getValidatedElement } from '../../core/utils.js';
 import { createProjectElements } from '../projects/projectLoader.js';
 import { createAboutImprintSection } from '../overlay/overlayContent.js';
 import { setupProjectIndicator } from '../projects/projectIndicator.js';
@@ -37,7 +38,7 @@ export async function initializeWebsite() {
  * Zeigt eine benutzerfreundliche Fehlermeldung an
  */
 function showLoadingError() {
-  const container = document.querySelector(".project-container");
+  const container = getValidatedElement(".project-container");
   if (container) {
     container.innerHTML = `
       <div class="loading-error">
