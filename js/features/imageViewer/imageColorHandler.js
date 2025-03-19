@@ -33,7 +33,7 @@ export function setupImageColorHandler() {
 
       if (!validateElement(slider, `Slider für Projekt ${projectIndex} nicht gefunden`, 'warn')) return;
 
-      const slides = slider.querySelector(".slide");
+      const slides = slider.querySelectorAll(".slide");
       console.log(
         `Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`
       );
