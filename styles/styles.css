@@ -559,7 +559,7 @@ header > * {
 /* 7. Text-Wechsel-Effekt */
 .project-indicator-tab:hover .tab-text,
 .project-indicator.open .tab-text {
-  font-size: 0;
+  font-size: 0; 
 }
 
 .project-indicator-tab:hover .tab-text::after,
