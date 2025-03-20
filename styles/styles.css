@@ -573,22 +573,28 @@ header > * {
    8.2 Hover image
    -----------------------------*/
 
-   /* Projektvorschau-Bild */
+/* Hover-Vorschaubild mit sanftem Übergang */
 .project-hover-preview {
   position: fixed;
   z-index: 9999;
   pointer-events: none;
-  width: 250px;
-  height: auto;
-  opacity: 0;
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
   display: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: opacity 0.2s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-hover-preview.visible {
+  opacity: 1;
 }
 
 /* Ausblenden auf mobilen Geräten */
 @media (max-width: 768px) {
-
+  .project-hover-preview {
+    display: none !important;
+  }
 }
 
 /* -----------------------------
