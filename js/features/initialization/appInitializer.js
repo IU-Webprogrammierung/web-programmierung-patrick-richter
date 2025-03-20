@@ -6,8 +6,10 @@
 import dataStore from '../../core/dataStore.js';
 import { getValidatedElement } from '../../core/utils.js';
 import { createProjectElements } from '../projects/projectLoader.js';
+import { setupHoverPreview } from '../projects/hoverPreview.js';
 import { createAboutImprintSection } from '../overlay/overlayContent.js';
 import { setupProjectIndicator } from '../projects/projectIndicator.js';
+
 
 /**
  * Initialisiert die gesamte Website
@@ -23,6 +25,8 @@ export async function initializeWebsite() {
       createProjectElements();
       createAboutImprintSection();
       setupProjectIndicator();
+      setupHoverPreview();
+
     } else {
       console.error("initializeWebsite: Loading failed - no data returned");
       // Zeige Fehlermeldung für Benutzer an

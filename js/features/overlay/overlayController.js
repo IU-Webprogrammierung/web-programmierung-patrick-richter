@@ -10,6 +10,8 @@
 import { validateElement } from '../../core/utils.js';
 import { getValidatedElement } from '../../core/utils.js';
 import { toggleDescription } from "../mobile/mobileDescription.js";
+import { removeHoverListeners } from "../projects/hoverPreview.js";
+
 
 // Overlay-DOM-Elemente
 const overlay = getValidatedElement(".overlay");
@@ -55,6 +57,7 @@ export function hideOverlay() {
     overlay.classList.contains("show-overlay") &&
     !overlay.classList.contains("hiding")
   ) {
+    removeHoverListeners();
     overlay.classList.add("closing");
     overlayRight.addEventListener(
       "transitionend",

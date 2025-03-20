@@ -10,16 +10,16 @@
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from '../../core/utils.js';
-import { getValidatedElements } from '../../core/utils.js';
+import { getValidatedElement } from "../../core/utils.js";
+import { getValidatedElements } from "../../core/utils.js";
 import { scrollToProject } from "./projectNavigation.js";
+import { removeHoverListeners } from "../projects/hoverPreview.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
 export function setupProjectIndicator() {
+  // Projektliste im Panel erstellen
+  setupProjectList();
 
-    // Projektliste im Panel erstellen
-    setupProjectList();
-    
   // Initial den Tab-Text aktualisieren
   setTimeout(() => {
     updateTabText();
@@ -65,13 +65,13 @@ function handleProjectChange() {
 function updateActiveProjectInList() {
   // Direkt querySelectorAll verwenden für besseres Fehlerhandling
   const links = document.querySelectorAll(".project-list a");
-  
+
   // Sicherheitsprüfung vor der forEach-Schleife
   if (!links || links.length === 0) {
     console.log("Projektliste noch nicht bereit - überspringe Update");
     return;
   }
-  
+
   links.forEach((link, index) => {
     if (index === uiState.activeProjectIndex) {
       link.classList.add("active");
@@ -100,6 +100,7 @@ function setupProjectList() {
 
       a.textContent = project.getAttribute("data-project-name");
       a.href = "#";
+      a.setAttribute("data-project-id", projectId);
 
       // Aktives Projekt markieren
       if (index === uiState.activeProjectIndex) {
@@ -140,6 +141,11 @@ export function togglePanel() {
   if (!indicator || !tab) return;
 
   indicator.classList.toggle("open");
+  // Prüfen, ob das Panel geschlossen wird
+  if (indicator.classList.contains("open")) {
+    // Hover-Listener entfernen
+    removeHoverListeners();
+  }
   const isOpen = indicator.classList.contains("open");
   tab.setAttribute("aria-expanded", isOpen ? "true" : "false");
 }
