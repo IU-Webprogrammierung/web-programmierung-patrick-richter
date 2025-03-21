@@ -1,8 +1,9 @@
 import { getValidatedElement } from './core/utils.js';
 import { showOverlay, hideOverlay, toggleAboutImprint, handleKeyPress } from './features/overlay/overlayController.js';
 import { toggleDescription, handlePointerDown, handleTouchEnd } from './features/mobile/mobileDescription.js';
-import { scrollToTop, closeFooter } from './features/projects/projectNavigation.js';
 import { togglePanel } from './features/projects/projectIndicator.js';
+import { scrollToTop } from './features/projects/projectNavigation.js';
+
 
 
 export function setupEventListeners() {
@@ -19,7 +20,6 @@ export function setupEventListeners() {
   titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
   
   getValidatedElement("#scrollTop").addEventListener("click", scrollToTop);
-  getValidatedElement("#footerTop").addEventListener("click", closeFooter);
 
   getValidatedElement(".project-indicator-tab").addEventListener("click", togglePanel);
 
