@@ -87,3 +87,39 @@ export function fixImagePath(path) {
   
   return path;
 }
+
+/**
+ * Konvertiert einen Bildpfad in die entsprechende WebP-Version
+ * @param {string} imagePath - Der ursprüngliche Bildpfad
+ * @returns {string} Der Pfad zur WebP-Version
+ */
+export function getWebpPath(imagePath) {
+  if (!imagePath) return '';
+  return imagePath.substring(0, imagePath.lastIndexOf('.')) + '.webp';
+}
+
+/**
+ * Prüft, ob der Browser WebP-Bilder unterstützt
+ * Das Ergebnis wird im localStorage zwischengespeichert
+ * @returns {boolean} True wenn WebP unterstützt wird
+ */
+export function detectWebpSupport() {
+  // Prüfen, ob bereits getestet wurde
+  if (localStorage.getItem('webp-support') !== null) {
+    return localStorage.getItem('webp-support') === 'true';
+  }
+  
+  // Test mit Canvas (funktioniert in den meisten Browsern)
+  const canvas = document.createElement('canvas');
+  if (canvas.getContext && canvas.getContext('2d')) {
+    // Prüfen, ob toDataURL mit WebP-MIME-Typ möglich ist
+    const isSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    localStorage.setItem('webp-support', isSupported);
+    return isSupported;
+  }
+  
+  // Fallback: WebP nicht unterstützt
+  localStorage.setItem('webp-support', false);
+  return false;
+}
+

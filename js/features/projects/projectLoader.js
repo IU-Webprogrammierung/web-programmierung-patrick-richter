@@ -8,7 +8,11 @@
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
-import { getValidatedElement, fixImagePath } from "../../core/utils.js";
+import { 
+  getValidatedElement, 
+  getWebpPath, 
+  fixImagePath 
+} from '../../core/utils.js';
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
@@ -16,82 +20,69 @@ import { closeFooter } from './projectNavigation.js';
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
-// Erstellt das HTML für ein responsives Bild mit WebP-Support
-
 function createResponsiveImageHTML(imageData) {
-  // Das erste Element des image-Arrays verwenden
-  const imageObj = imageData.image[0];
+  // Das erste Element des image-Arrays verwenden, mit Fehlerbehandlung
+  const imageObj = imageData?.image?.[0];
+  if (!imageObj) {
+    console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || 'Unbekanntes Bild'}`);
+    return ''; // Leerer String statt fehlerhaftem HTML
+  }
+  
   const textColor = imageData.textColor || "black";
   const imageId = imageData.id;
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
 
-  // Basis-URL für Fallback mit korrigiertem Pfad
+  // Basis-URL mit korrigiertem Pfad
   const fullImageUrl = fixImagePath(imageObj.url);
-
-  // Gruppieren der Formate nach Typ (WebP vs. Original) und Größe
-  const formats = {
-    webp: {}, 
-    original: {},
-  };
-
-  // Formate strukturieren
+  
+  // Sammelbehälter für srcset-Einträge
+  const srcsetEntries = [];
+  const webpSrcsetEntries = [];
+  
+  // Formate verarbeiten mit zusätzlicher Fehlertoleranz
   if (imageObj.formats) {
-    Object.entries(imageObj.formats).forEach(([formatKey, formatData]) => {
-      // Ist es ein WebP-Format?
-      const isWebP =
-        formatKey.endsWith("-webp") || formatData.mime === "image/webp";
-
-      // Größenname bestimmen (z.B. "large" aus "large-webp")
-      const sizeName = isWebP ? formatKey.replace("-webp", "") : formatKey;
-
-      // Format in die richtige Kategorie einsortieren
-      if (isWebP) {
-        formats.webp[sizeName] = formatData;
-      } else {
-        formats.original[sizeName] = formatData;
+    // Reihenfolge der Formate für srcset (größte zuerst)
+    const formatOrder = ['xlarge', 'large', 'medium', 'small'];
+    
+    formatOrder.forEach(formatKey => {
+      const format = imageObj.formats[formatKey];
+      if (format?.url) {  // Sicherstellen, dass format und format.url existieren
+        // Original-Format
+        const formatUrl = fixImagePath(format.url);
+        srcsetEntries.push(`${formatUrl} ${format.width}w`);
+        
+        // WebP-Version des Formats
+        const webpUrl = getWebpPath(formatUrl);
+        webpSrcsetEntries.push(`${webpUrl} ${format.width}w`);
       }
     });
   }
-
-  // Erzeugt srcset für einen Formattyp (WebP oder Original)
-  function createSrcset(formatType) {
-    const sizeOrder = { large: 3, medium: 2, small: 1 };
-
-    return Object.entries(formats[formatType])
-      .filter(([size]) => size !== "thumbnail") // Thumbnails ausschließen
-      .sort(([sizeA], [sizeB]) => {
-        // Nach Größe sortieren (large vor medium vor small)
-        return (sizeOrder[sizeB] || 0) - (sizeOrder[sizeA] || 0);
-      })
-      .map(([_, data]) => `${fixImagePath(data.url)} ${data.width}w`) 
-      .join(", ");
-  }
-
-  // srcset-Strings für beide Formattypen erstellen
-  const webpSrcset =
-    Object.keys(formats.webp).length > 0 ? createSrcset("webp") : "";
-  const originalSrcset =
-    Object.keys(formats.original).length > 0 ? createSrcset("original") : "";
-
-  // Sizes-Attribut - für verschiedene Viewports anpassen
-  const sizes = "(max-width: 768px) 100vw, 100vw";
+  
+  // Auch das Originalbild zum srcset hinzufügen (falls größer als alle Formate)
+  srcsetEntries.push(`${fullImageUrl} ${imageObj.width}w`);
+  
+  // WebP-Version des Originalbilds
+  const originalWebpUrl = getWebpPath(fullImageUrl);
+  webpSrcsetEntries.push(`${originalWebpUrl} ${imageObj.width}w`);
+  
+  // Srcsets zusammenfügen
+  const srcset = srcsetEntries.join(', ');
+  const webpSrcset = webpSrcsetEntries.join(', ');
+  
+  // Responsives Sizes-Attribut für verschiedene Viewports
+  // Dies informiert den Browser, wie viel Platz das Bild im Layout einnimmt
+  const sizes = `
+    (max-width: 700px) 100vw, 
+    (max-width: 1200px) 100vw, 
+    100vw
+  `.replace(/\s+/g, ' ').trim();
 
   // Picture-Element mit WebP-Support erstellen
   return `
     <picture>
-      ${
-        webpSrcset
-          ? `<source srcset="${webpSrcset}" sizes="${sizes}" type="image/webp">`
-          : ""
-      }
-      ${
-        originalSrcset
-          ? `<source srcset="${originalSrcset}" sizes="${sizes}" type="${
-              imageObj.mime || "image/jpeg"
-            }">`
-          : ""
-      }
+      ${webpSrcset ? `<source srcset="${webpSrcset}" sizes="${sizes}" type="image/webp">` : ""}
+      ${srcset ? `<source srcset="${srcset}" sizes="${sizes}" type="${imageObj.mime || "image/jpeg"}">` : ""}
       <img 
         src="${fullImageUrl}" 
         alt="${altText}" 
@@ -99,6 +90,7 @@ function createResponsiveImageHTML(imageData) {
         data-text-color="${textColor}"
         data-image-title="${imageTitle}"
         class="slide"
+        loading="lazy"
       />
     </picture>
   `;
