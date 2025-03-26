@@ -8,6 +8,8 @@
  * Funktionen: getProjects(), getAboutImprint(), getClients(), loadData()
  */
 
+import { API_URL } from '../config.js';
+
 const dataStore = {
   projectsData: null,
   aboutImprintData: null,
@@ -37,20 +39,27 @@ const dataStore = {
       // Alle vier externen Inputs laden
       const [projectsResponse, aboutResponse, clientsResponse, footerResponse] =
         await Promise.all([
-          fetch("content/projects.json"),
-          fetch("content/aboutImprint.json"),
-          fetch("content/clients.json"),
-          fetch("content/footer.json")
+          fetch(
+            `${API_URL}/projects?populate[project_images][populate]=image&sort=rank:asc`
+          ),
+          fetch(`${API_URL}/about`),
+          fetch(`${API_URL}/clients?populate=projects&sort=name:asc`),
+          fetch(`${API_URL}/footer`),
         ]);
 
       // Überprüfen, ob alle Responses erfolgreich waren
-      if (!projectsResponse.ok || !aboutResponse.ok || !clientsResponse.ok || !footerResponse.ok) {
+      if (
+        !projectsResponse.ok ||
+        !aboutResponse.ok ||
+        !clientsResponse.ok ||
+        !footerResponse.ok
+      ) {
         console.error(
           "Fehler beim Laden eines oder mehrerer Dateien:",
           projectsResponse.status,
           aboutResponse.status,
           clientsResponse.status,
-          footerResponse.status,
+          footerResponse.status
         );
         return false;
       }

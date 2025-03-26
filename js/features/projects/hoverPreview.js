@@ -4,7 +4,7 @@
  */
 
 import dataStore from '../../core/dataStore.js';
-import { getValidatedElement, getValidatedElements } from '../../core/utils.js';
+import { getValidatedElement, getValidatedElements, fixImagePath } from '../../core/utils.js';
 
 // Bildpfade für Projekte
 let projectImages = {};
@@ -112,7 +112,7 @@ export function setupHoverPreview() {
     if (project.project_images && project.project_images.length > 0) {
       const firstImage = project.project_images[0];
       if (firstImage.image && firstImage.image.length > 0) {
-        projectImages[project.id] = firstImage.image[0].url;
+        projectImages[project.id] = fixImagePath(firstImage.image[0].url);
       }
     }
   });

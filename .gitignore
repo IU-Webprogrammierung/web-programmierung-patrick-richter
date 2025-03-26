@@ -20,3 +20,12 @@ Thumbs.db
 node_modules/
 .cache/
 dist/
+
+# Strapi - zu ignorierende Dateien
+strapi-cms/node_modules/
+strapi-cms/.cache/
+strapi-cms/.tmp/
+strapi-cms/build/
+strapi-cms/public/uploads/
+strapi-cms/.env
+strapi-cms/

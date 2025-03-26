@@ -8,7 +8,7 @@
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from "../../core/utils.js";
+import { getValidatedElement, fixImagePath } from "../../core/utils.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
@@ -26,13 +26,13 @@ function createResponsiveImageHTML(imageData) {
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
 
-  // Basis-URL für Fallback
-  const baseUrl = imageObj.url;
+  // Basis-URL für Fallback mit korrigiertem Pfad
+  const fullImageUrl = fixImagePath(imageObj.url);
 
   // Gruppieren der Formate nach Typ (WebP vs. Original) und Größe
   const formats = {
-    webp: {}, // WebP-Formate nach Größe
-    original: {}, // Original-Formate nach Größe
+    webp: {}, 
+    original: {},
   };
 
   // Formate strukturieren
@@ -64,7 +64,7 @@ function createResponsiveImageHTML(imageData) {
         // Nach Größe sortieren (large vor medium vor small)
         return (sizeOrder[sizeB] || 0) - (sizeOrder[sizeA] || 0);
       })
-      .map(([_, data]) => `${data.url} ${data.width}w`)
+      .map(([_, data]) => `${fixImagePath(data.url)} ${data.width}w`) 
       .join(", ");
   }
 
@@ -93,7 +93,7 @@ function createResponsiveImageHTML(imageData) {
           : ""
       }
       <img 
-        src="${baseUrl}" 
+        src="${fullImageUrl}" 
         alt="${altText}" 
         data-id="${imageId}"
         data-text-color="${textColor}"
@@ -236,5 +236,4 @@ export function createProjectElements() {
     }, 50);
   }, 50);
 
-  uiState.updateProjects();
 }

@@ -5,6 +5,8 @@
  * Funktionen: validateElement(), getValidatedElement(),
  */
 
+import { BASE_URL } from '../config.js';
+
 /**
  * Überprüft, ob ein DOM-Element existiert und gibt eine Fehlermeldung aus, wenn nicht.
  *
@@ -65,4 +67,23 @@ export function getValidatedElements(selector, errorMessage, level = "warn") {
   }
 
   return elements;
+}
+
+/**
+ * Korrigiert Bildpfade für verschiedene Umgebungen.
+ * In der Entwicklung werden relative Pfade zu absoluten Pfaden mit der richtigen Domain.
+ * In der Produktion bleiben die Pfade unverändert.
+ *
+ * @param {string} path - Der zu korrigierende Bildpfad
+ * @returns {string} - Der korrigierte Bildpfad
+ */
+export function fixImagePath(path) {
+  if (!path) return '';
+  
+  // Nur Pfade korrigieren, die mit /uploads/ beginnen (Strapi-Medien)
+  if (path.startsWith('/uploads/')) {
+    return `${BASE_URL}${path}`;
+  }
+  
+  return path;
 }
