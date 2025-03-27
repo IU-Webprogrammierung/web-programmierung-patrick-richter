@@ -4,30 +4,45 @@
  */
 
 import dataStore from "../../core/dataStore.js";
-import {
-  getValidatedElement,
-  getWebpPath,
-  detectWebpSupport,
-  fixImagePath,
-} from "../../core/utils.js";
+import { getValidatedElement, fixImagePath } from "../../core/utils.js";
 
-// Bildpfade für Projekte
+// Speicher für Vorschaubilder und DOM-Cache
 let projectImages = {};
-// Bildgrößen für Performance-Optimierung
-let projectImageSizes = {};
-// Cache für DOM-Elemente
 let previewEl = null;
 
-// Handler-Funktion für mousemove
-function mouseMoveHandler(e) {
-  if (!previewEl) return;
-
-  // Positionierung des Vorschaubilds relativ zum Cursor
-  previewEl.style.left = e.clientX + 20 + "px";
-  previewEl.style.top = e.clientY - 210 + "px"; // Höher über dem Cursor positionieren
+/**
+ * Wählt ein passendes Bild für die Hover-Vorschau
+ * Bevorzugt kleinere Formate und WebP wenn unterstützt
+ */
+function getPreviewImageUrl(imageObj) {
+  if (!imageObj) return 'images/placeholder.png';
+  
+  // WebP unterstützt?
+  const webpSupported = localStorage.getItem('webp-support') === 'true';
+  
+  // 1. Priorität: Small Format (WebP wenn unterstützt)
+  if (imageObj.formats) {
+    if (webpSupported && imageObj.formats['small-webp']) {
+      return fixImagePath(imageObj.formats['small-webp'].url);
+    }
+    if (imageObj.formats.small) {
+      return fixImagePath(imageObj.formats.small.url);
+    }
+  }
+  
+  // 2. Fallback: Originalbild
+  return fixImagePath(imageObj.url);
 }
 
-// Handler-Funktion für mouseenter
+// Handler für Mausbewegung
+function mouseMoveHandler(e) {
+  if (previewEl) {
+    previewEl.style.left = e.clientX + 20 + "px";
+    previewEl.style.top = e.clientY - 210 + "px";
+  }
+}
+
+// Handler zum Anzeigen des Vorschaubildes
 function showPreviewHandler() {
   if (!previewEl) return;
 
@@ -36,20 +51,16 @@ function showPreviewHandler() {
     previewEl.src = projectImages[projectId];
     document.addEventListener("mousemove", mouseMoveHandler);
     previewEl.style.display = "block";
-
-    // Verzögerung für sanften Übergang
     setTimeout(() => previewEl.classList.add("visible"), 10);
   }
 }
 
-// Handler-Funktion für mouseleave
+// Handler zum Ausblenden des Vorschaubildes
 function hidePreviewHandler() {
   if (!previewEl) return;
 
   previewEl.classList.remove("visible");
   document.removeEventListener("mousemove", mouseMoveHandler);
-
-  // Verzögerung für sanften Übergang
   setTimeout(() => {
     if (!previewEl.classList.contains("visible")) {
       previewEl.style.display = "none";
@@ -58,51 +69,34 @@ function hidePreviewHandler() {
 }
 
 /**
- * Fügt Hover-Listener zu den übergebenen Elementen hinzu
+ * Fügt Hover-Listener zu Links hinzu
  */
 function addHoverListeners(elements) {
   if (!elements || elements.length === 0) return;
 
-  let newElements = 0;
-
   elements.forEach((link) => {
-    // Skip, falls bereits ein Listener hinzugefügt wurde
-    if (link.hasAttribute("data-hover-initialized")) return;
-
-    newElements++;
-
-    // MouseEnter- und MouseLeave-Listener hinzufügen
-    link.addEventListener("mouseenter", showPreviewHandler);
-    link.addEventListener("mouseleave", hidePreviewHandler);
-
-    // Markieren, dass dieser Link initialisiert wurde
-    link.setAttribute("data-hover-initialized", "true");
+    if (!link.hasAttribute("data-hover-initialized")) {
+      link.addEventListener("mouseenter", showPreviewHandler);
+      link.addEventListener("mouseleave", hidePreviewHandler);
+      link.setAttribute("data-hover-initialized", "true");
+    }
   });
-
-  if (newElements > 0) {
-    console.log(`Hover-Preview: ${newElements} neue Links initialisiert`);
-  }
 }
 
 /**
- * Entfernt alle Hover-Listener von initialisierten Elementen
+ * Entfernt alle Hover-Listener
  */
 export function removeHoverListeners() {
-  const initializedLinks = document.querySelectorAll(
-    '[data-hover-initialized="true"]'
-  );
+  const initializedLinks = document.querySelectorAll('[data-hover-initialized="true"]');
 
   initializedLinks.forEach((link) => {
-    // Die tatsächlichen Listener entfernen
     link.removeEventListener("mouseenter", showPreviewHandler);
     link.removeEventListener("mouseleave", hidePreviewHandler);
     link.removeAttribute("data-hover-initialized");
   });
 
-  // Sicherstellen, dass mousemove-Listener entfernt wird
   document.removeEventListener("mousemove", mouseMoveHandler);
 
-  // Vorschaubild ausblenden
   if (previewEl) {
     previewEl.classList.remove("visible");
     previewEl.style.display = "none";
@@ -110,90 +104,42 @@ export function removeHoverListeners() {
 }
 
 /**
- * Initialisiert die Hover-Funktion mit Projektbildern
+ * Initialisiert die Hover-Vorschau
  */
 export function setupHoverPreview() {
   // Auf Mobilgeräten nicht ausführen
   if (/Mobi|Android/i.test(navigator.userAgent)) return;
 
-  // WebP-Unterstützung prüfen
-  const supportsWebP = detectWebpSupport();
-  console.log("Browser unterstützt WebP:", supportsWebP);
-
-  // Preview-Element einmalig abfragen und cachen
   previewEl = getValidatedElement(".project-hover-preview");
   if (!previewEl) return;
 
-  // Projekte laden
+  // Vorschaubilder für alle Projekte vorbereiten
   const projects = dataStore.getProjects();
-  if (!projects?.data) {
-    // Optional chaining
-    console.error("Hover-Preview: Keine Projektdaten verfügbar");
-    return;
+  if (projects?.data) {
+    projects.data.forEach((project) => {
+      const firstImage = project?.project_images?.[0];
+      if (firstImage?.image?.[0]) {
+        projectImages[project.id] = getPreviewImageUrl(firstImage.image[0]);
+      }
+    });
   }
-
-  // Bildpfade extrahieren - angepasst für Strapi
-  projects.data.forEach((project) => {
-    // Verbesserte Fehlerbehandlung mit optional chaining
-    const firstImage = project?.project_images?.[0];
-    const imageObj = firstImage?.image?.[0];
-
-    if (imageObj) {
-      let imageSrc = imageObj.url;
-      let imageWidth = imageObj.width || 0;
-
-      // Bevorzuge Small-Format für Hover-Vorschau
-      if (imageObj.formats) {
-        if (imageObj.formats.small) {
-          imageSrc = imageObj.formats.small.url;
-          imageWidth = imageObj.formats.small.width;
-        } else if (imageObj.formats.thumbnail) {
-          // Fallback auf Thumbnail, falls Small nicht verfügbar
-          imageSrc = imageObj.formats.thumbnail.url;
-          imageWidth = imageObj.formats.thumbnail.width;
-        }
-      }
-
-      // Bildpfad korrigieren
-      const fixedPath = fixImagePath(imageSrc);
-
-      // Entweder WebP oder Original basierend auf Browser-Unterstützung
-      projectImages[project.id] = supportsWebP
-        ? getWebpPath(fixedPath)
-        : fixedPath;
-
-      // Größe setzen, falls verfügbar (für Performance-Optimierung)
-      if (imageWidth > 0) {
-        projectImageSizes[project.id] = imageWidth;
-      }
-    }
-  });
 
   // Event-Listener für Project Indicator
   const projectIndicatorTab = getValidatedElement(".project-indicator-tab");
   if (projectIndicatorTab) {
-    projectIndicatorTab.addEventListener("click", function () {
-      const projectLinks = document.querySelectorAll(
-        ".project-list a[data-project-id]"
-      );
-      if (projectLinks && projectLinks.length > 0) {
-        addHoverListeners(projectLinks);
-      }
+    projectIndicatorTab.addEventListener("click", () => {
+      const projectLinks = document.querySelectorAll(".project-list a[data-project-id]");
+      addHoverListeners(projectLinks);
     });
   }
 
   // Event-Listener für About-Overlay
   const openOverlayBtn = getValidatedElement("#openOverlay");
   if (openOverlayBtn) {
-    openOverlayBtn.addEventListener("click", function () {
+    openOverlayBtn.addEventListener("click", () => {
       setTimeout(() => {
-        const clientLinks = document.querySelectorAll(
-          ".about-clients-project-link[data-project-id]"
-        );
-        if (clientLinks && clientLinks.length > 0) {
-          addHoverListeners(clientLinks);
-        }
-      }, 300); // Warten bis Overlay geöffnet ist
+        addHoverListeners(document.querySelectorAll(".about-clients-project-link[data-project-id]"));
+      }, 300);
     });
   }
 }
