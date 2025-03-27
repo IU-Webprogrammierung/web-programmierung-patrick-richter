@@ -7,7 +7,7 @@ import { FALLBACK_DATA } from '../../config.js';
 import { ensureValue, ensureBaseStructure } from './utils.js';
 
 /**
- * Normalisiert die Daten eines einzelnen Bildes
+ * Normalisiert die Bilddaten innerhalb eines Projektbildes
  * @param {Object} imgData - Rohdaten des Bildes
  * @returns {Object} - Normalisierte Bilddaten
  */
@@ -32,37 +32,39 @@ export function normalizeImageData(imgData) {
       publishedAt: imgData.publishedAt
     };
     
-    // Formats-Objekt normalisieren
+    // Formats-Objekt normalisieren (wenn vorhanden)
     if (imgData.formats) {
-      normalized.formats = {};
-      
-      // Alle Formate, einschließlich WebP, normalisieren
-      Object.entries(imgData.formats).forEach(([key, format]) => {
-        if (!format) return;
-        
-        // Ist es ein WebP-Format?
-        const isWebP = key === 'webp' || key.endsWith('-webp');
-        
-        normalized.formats[key] = {
-          ext: format.ext || (isWebP ? '.webp' : '.jpg'),
-          url: format.url || '',
-          hash: format.hash || '',
-          mime: format.mime || (isWebP ? 'image/webp' : 'image/jpeg'),
-          name: format.name || '',
-          path: format.path,
-          size: format.size || 0,
-          width: format.width || 0,
-          height: format.height || 0,
-          sizeInBytes: format.sizeInBytes || (format.size ? format.size * 1024 : 0)
-        };
-      });
+      normalized.formats = {...imgData.formats};
     } else {
       normalized.formats = {};
     }
     
     return normalized;
-  }
+}
+
+/**
+ * Normalisiert ein Projektbild (einschließlich seiner metadata)
+ * @param {Object} imgData - Rohdaten des Projektbildes
+ * @returns {Object} - Normalisiertes Projektbild
+ */
+function normalizeProjectImage(imgData) {
+  if (!imgData) return {};
   
+  return {
+    id: imgData.id || 0,
+    textColor: imgData.textColor || "black",
+    imageTitle: imgData.imageTitle || "",
+    createdAt: imgData.createdAt,
+    updatedAt: imgData.updatedAt,
+    publishedAt: imgData.publishedAt,
+    documentId: imgData.documentId,
+    // Bilder normalisieren wenn vorhanden
+    image: Array.isArray(imgData.image)
+      ? imgData.image.map(img => normalizeImageData(img))
+      : []
+  };
+}
+
 /**
  * Hauptfunktion zur Normalisierung von Projektdaten
  * @param {Object} data - Rohdaten der Projekte

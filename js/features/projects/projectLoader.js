@@ -2,16 +2,11 @@
  * @module projectLoader
  * @description Verantwortlich für das Erstellen und Rendern der Projektinhalte.
  * Generiert Projekt-DOM-Elemente basierend auf den JSON-Daten.
- *
- * Funktionen: createProjectElements(), createResponsiveImageHTML()
  */
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
-import {
-  getValidatedElement,
-  fixImagePath,
-} from "../../core/utils.js";
+import { getValidatedElement, fixImagePath } from "../../core/utils.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
@@ -19,88 +14,61 @@ import { closeFooter } from "./projectNavigation.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
+/**
+ * Erstellt HTML für ein responsives Bild mit automatischem WebP-Fallback
+ * @param {Object} imageData - Die Bilddaten mit allen Formaten
+ * @returns {string} - HTML für das Bild mit picture/source-Tags
+ */
 function createResponsiveImageHTML(imageData) {
-  // Das erste Element des image-Arrays verwenden, mit Fehlerbehandlung
   const imageObj = imageData?.image?.[0];
   if (!imageObj) {
     console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || 'Unbekanntes Bild'}`);
-    return `
-      <picture>
-        <img 
-          src="images/placeholder.png" 
-          alt="Bildvorschau nicht verfügbar" 
-          class="slide"
-        />
-      </picture>
-    `; 
+    return `<picture><img src="images/placeholder.png" alt="Bildvorschau nicht verfügbar" class="slide"/></picture>`;
   }
   
   const textColor = imageData.textColor || "black";
   const imageId = imageData.id;
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
-
-  // Basis-URL für das Originalbild
   const fullImageUrl = fixImagePath(imageObj.url);
   
-  // Gruppiere Formate nach Typ (Standard vs. WebP)
-  const standardFormats = {};
-  const webpFormats = {};
+  // Sammle srcset-Einträge nach Format
+  let webpSrcset = [];
+  let standardSrcset = [];
   
   if (imageObj.formats) {
-    // Formate nach Typ gruppieren
     Object.entries(imageObj.formats).forEach(([key, format]) => {
-      if (key === 'webp' || key.endsWith('-webp')) {
-        webpFormats[key] = format;
-      } else {
-        standardFormats[key] = format;
+      if (!format || !format.url) return;
+      
+      const formatUrl = fixImagePath(format.url);
+      const formatWidth = format.width || 0;
+      
+      if (formatWidth > 0) {
+        // Nach Typ sortieren (WebP vs. Standard)
+        if (key === 'webp' || key.endsWith('-webp')) {
+          webpSrcset.push(`${formatUrl} ${formatWidth}w`);
+        } else {
+          standardSrcset.push(`${formatUrl} ${formatWidth}w`);
+        }
       }
     });
   }
   
-  // Prüfe, ob der Browser WebP unterstützt
-  const supportsWebP = (function() {
-    // In einer realen Implementierung würde hier die Browser-Erkennung stehen
-    // Für dieses Beispiel nehmen wir an, dass WebP unterstützt wird
-    return true;
-  })();
+  // Responsive sizes-Attribut für beide Formate
+  const sizes = "(max-width: 700px) 100vw, (max-width: 1200px) 100vw, 100vw";
   
-  // Erstelle srcset für Standard-Formate (JPEG/PNG)
-  const srcsetEntries = Object.values(standardFormats)
-    .filter(format => format && format.url)
-    .map(format => {
-      const url = fixImagePath(format.url);
-      return `${url} ${format.width}w`;
-    });
-  
-  // Füge das Original zum srcset hinzu
-  if (imageObj.url) {
-    srcsetEntries.push(`${fullImageUrl} ${imageObj.width}w`);
+  // Quellen mit korrekt formatierten srcset- und sizes-Attributen
+  let sources = [];
+  if (webpSrcset.length > 0) {
+    sources.push(`<source srcset="${webpSrcset.join(', ')}" sizes="${sizes}" type="image/webp">`);
+  }
+  if (standardSrcset.length > 0) {
+    sources.push(`<source srcset="${standardSrcset.join(', ')}" sizes="${sizes}" type="${imageObj.mime || 'image/jpeg'}">`);
   }
   
-  // Erstelle srcset für WebP-Formate, wenn unterstützt
-  let webpSrcsetEntries = [];
-  if (supportsWebP) {
-    webpSrcsetEntries = Object.values(webpFormats)
-      .filter(format => format && format.url)
-      .map(format => {
-        const url = fixImagePath(format.url);
-        return `${url} ${format.width}w`;
-      });
-  }
-  
-  // Erstelle sizes-Attribut für responsive Bilder
-  const sizes = `
-    (max-width: 700px) 100vw, 
-    (max-width: 1200px) 100vw, 
-    100vw
-  `.replace(/\s+/g, ' ').trim();
-  
-  // Erstelle das picture-Element mit WebP-Unterstützung
   return `
     <picture>
-      ${webpSrcsetEntries.length ? `<source srcset="${webpSrcsetEntries.join(', ')}" sizes="${sizes}" type="image/webp">` : ''}
-      ${srcsetEntries.length ? `<source srcset="${srcsetEntries.join(', ')}" sizes="${sizes}" type="${imageObj.mime || 'image/jpeg'}">` : ''}
+      ${sources.join('\n      ')}
       <img 
         src="${fullImageUrl}" 
         alt="${altText}" 
@@ -254,11 +222,6 @@ export async function createProjectElements() {
       setupImageColorHandler();
       setupImageNavigation();
       setupScrollHandler();
-
-      // WebP-Zusammenfassung aus dataStore importieren und ausgeben
-      import("../../core/dataStore.js").then((module) => {
-        console.log(module.getWebpSummary());
-      });
     }, 50);
   }, 50);
 }
