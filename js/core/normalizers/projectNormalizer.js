@@ -11,50 +11,58 @@ import { ensureValue, ensureBaseStructure } from './utils.js';
  * @param {Object} imgData - Rohdaten des Bildes
  * @returns {Object} - Normalisierte Bilddaten
  */
-function normalizeImageData(imgData) {
-  if (!imgData) return {};
+export function normalizeImageData(imgData) {
+    if (!imgData) return {};
+    
+    // Basis-Informationen normalisieren
+    const normalized = {
+      id: imgData.id || 0,
+      name: imgData.name || '',
+      alternativeText: imgData.alternativeText || imgData.name || '',
+      width: imgData.width || 0,
+      height: imgData.height || 0,
+      hash: imgData.hash || '',
+      ext: imgData.ext || '',
+      mime: imgData.mime || 'image/jpeg',
+      size: imgData.size || 0,
+      url: imgData.url || '',
+      createdAt: imgData.createdAt,
+      updatedAt: imgData.updatedAt,
+      documentId: imgData.documentId,
+      publishedAt: imgData.publishedAt
+    };
+    
+    // Formats-Objekt normalisieren
+    if (imgData.formats) {
+      normalized.formats = {};
+      
+      // Alle Formate, einschließlich WebP, normalisieren
+      Object.entries(imgData.formats).forEach(([key, format]) => {
+        if (!format) return;
+        
+        // Ist es ein WebP-Format?
+        const isWebP = key === 'webp' || key.endsWith('-webp');
+        
+        normalized.formats[key] = {
+          ext: format.ext || (isWebP ? '.webp' : '.jpg'),
+          url: format.url || '',
+          hash: format.hash || '',
+          mime: format.mime || (isWebP ? 'image/webp' : 'image/jpeg'),
+          name: format.name || '',
+          path: format.path,
+          size: format.size || 0,
+          width: format.width || 0,
+          height: format.height || 0,
+          sizeInBytes: format.sizeInBytes || (format.size ? format.size * 1024 : 0)
+        };
+      });
+    } else {
+      normalized.formats = {};
+    }
+    
+    return normalized;
+  }
   
-  return {
-    id: imgData.id || 0,
-    name: imgData.name || '',
-    alternativeText: imgData.alternativeText || imgData.name || '',
-    width: imgData.width || 0,
-    height: imgData.height || 0,
-    formats: imgData.formats || {},
-    hash: imgData.hash || '',
-    ext: imgData.ext || '',
-    mime: imgData.mime || 'image/jpeg',
-    size: imgData.size || 0,
-    url: imgData.url || '',
-    createdAt: imgData.createdAt,
-    updatedAt: imgData.updatedAt,
-    documentId: imgData.documentId,
-    publishedAt: imgData.publishedAt
-  };
-}
-
-/**
- * Normalisiert die Daten eines Projektbildes mit Metainformationen
- * @param {Object} img - Rohdaten des Projektbildes
- * @returns {Object} - Normalisiertes Projektbild
- */
-function normalizeProjectImage(img) {
-  if (!img) return {};
-  
-  return {
-    id: img.id || 0,
-    textColor: img.textColor || 'black',
-    imageTitle: img.imageTitle || '',
-    createdAt: img.createdAt,
-    updatedAt: img.updatedAt,
-    publishedAt: img.publishedAt,
-    documentId: img.documentId,
-    image: img.image?.length 
-      ? img.image.map(imgData => normalizeImageData(imgData)) 
-      : []
-  };
-}
-
 /**
  * Hauptfunktion zur Normalisierung von Projektdaten
  * @param {Object} data - Rohdaten der Projekte

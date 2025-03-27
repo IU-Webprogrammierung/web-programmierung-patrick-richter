@@ -8,15 +8,14 @@
 
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
-import { 
-  getValidatedElement, 
-  getWebpPath, 
-  fixImagePath 
-} from '../../core/utils.js';
+import {
+  getValidatedElement,
+  fixImagePath,
+} from "../../core/utils.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
-import { closeFooter } from './projectNavigation.js';
+import { closeFooter } from "./projectNavigation.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
@@ -25,7 +24,15 @@ function createResponsiveImageHTML(imageData) {
   const imageObj = imageData?.image?.[0];
   if (!imageObj) {
     console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || 'Unbekanntes Bild'}`);
-    return ''; // Leerer String statt fehlerhaftem HTML
+    return `
+      <picture>
+        <img 
+          src="images/placeholder.png" 
+          alt="Bildvorschau nicht verfügbar" 
+          class="slide"
+        />
+      </picture>
+    `; 
   }
   
   const textColor = imageData.textColor || "black";
@@ -33,56 +40,67 @@ function createResponsiveImageHTML(imageData) {
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
 
-  // Basis-URL mit korrigiertem Pfad
+  // Basis-URL für das Originalbild
   const fullImageUrl = fixImagePath(imageObj.url);
   
-  // Sammelbehälter für srcset-Einträge
-  const srcsetEntries = [];
-  const webpSrcsetEntries = [];
+  // Gruppiere Formate nach Typ (Standard vs. WebP)
+  const standardFormats = {};
+  const webpFormats = {};
   
-  // Formate verarbeiten mit zusätzlicher Fehlertoleranz
   if (imageObj.formats) {
-    // Reihenfolge der Formate für srcset (größte zuerst)
-    const formatOrder = ['xlarge', 'large', 'medium', 'small'];
-    
-    formatOrder.forEach(formatKey => {
-      const format = imageObj.formats[formatKey];
-      if (format?.url) {  // Sicherstellen, dass format und format.url existieren
-        // Original-Format
-        const formatUrl = fixImagePath(format.url);
-        srcsetEntries.push(`${formatUrl} ${format.width}w`);
-        
-        // WebP-Version des Formats
-        const webpUrl = getWebpPath(formatUrl);
-        webpSrcsetEntries.push(`${webpUrl} ${format.width}w`);
+    // Formate nach Typ gruppieren
+    Object.entries(imageObj.formats).forEach(([key, format]) => {
+      if (key === 'webp' || key.endsWith('-webp')) {
+        webpFormats[key] = format;
+      } else {
+        standardFormats[key] = format;
       }
     });
   }
   
-  // Auch das Originalbild zum srcset hinzufügen (falls größer als alle Formate)
-  srcsetEntries.push(`${fullImageUrl} ${imageObj.width}w`);
+  // Prüfe, ob der Browser WebP unterstützt
+  const supportsWebP = (function() {
+    // In einer realen Implementierung würde hier die Browser-Erkennung stehen
+    // Für dieses Beispiel nehmen wir an, dass WebP unterstützt wird
+    return true;
+  })();
   
-  // WebP-Version des Originalbilds
-  const originalWebpUrl = getWebpPath(fullImageUrl);
-  webpSrcsetEntries.push(`${originalWebpUrl} ${imageObj.width}w`);
+  // Erstelle srcset für Standard-Formate (JPEG/PNG)
+  const srcsetEntries = Object.values(standardFormats)
+    .filter(format => format && format.url)
+    .map(format => {
+      const url = fixImagePath(format.url);
+      return `${url} ${format.width}w`;
+    });
   
-  // Srcsets zusammenfügen
-  const srcset = srcsetEntries.join(', ');
-  const webpSrcset = webpSrcsetEntries.join(', ');
+  // Füge das Original zum srcset hinzu
+  if (imageObj.url) {
+    srcsetEntries.push(`${fullImageUrl} ${imageObj.width}w`);
+  }
   
-  // Responsives Sizes-Attribut für verschiedene Viewports
-  // Dies informiert den Browser, wie viel Platz das Bild im Layout einnimmt
+  // Erstelle srcset für WebP-Formate, wenn unterstützt
+  let webpSrcsetEntries = [];
+  if (supportsWebP) {
+    webpSrcsetEntries = Object.values(webpFormats)
+      .filter(format => format && format.url)
+      .map(format => {
+        const url = fixImagePath(format.url);
+        return `${url} ${format.width}w`;
+      });
+  }
+  
+  // Erstelle sizes-Attribut für responsive Bilder
   const sizes = `
     (max-width: 700px) 100vw, 
     (max-width: 1200px) 100vw, 
     100vw
   `.replace(/\s+/g, ' ').trim();
-
-  // Picture-Element mit WebP-Support erstellen
+  
+  // Erstelle das picture-Element mit WebP-Unterstützung
   return `
     <picture>
-      ${webpSrcset ? `<source srcset="${webpSrcset}" sizes="${sizes}" type="image/webp">` : ""}
-      ${srcset ? `<source srcset="${srcset}" sizes="${sizes}" type="${imageObj.mime || "image/jpeg"}">` : ""}
+      ${webpSrcsetEntries.length ? `<source srcset="${webpSrcsetEntries.join(', ')}" sizes="${sizes}" type="image/webp">` : ''}
+      ${srcsetEntries.length ? `<source srcset="${srcsetEntries.join(', ')}" sizes="${sizes}" type="${imageObj.mime || 'image/jpeg'}">` : ''}
       <img 
         src="${fullImageUrl}" 
         alt="${altText}" 
@@ -91,6 +109,7 @@ function createResponsiveImageHTML(imageData) {
         data-image-title="${imageTitle}"
         class="slide"
         loading="lazy"
+        onerror="this.onerror=null; this.src='images/placeholder.png';"
       />
     </picture>
   `;
@@ -99,7 +118,7 @@ function createResponsiveImageHTML(imageData) {
 // Erzeugt den Footer-HTML-Code aus den JSON-Daten
 function createFooterHTML() {
   const footerData = dataStore.getFooter();
-  
+
   if (!footerData || !footerData.data || !footerData.data.getincontact) {
     console.warn("Keine Footer-Daten gefunden!");
     // Fallback für den Fall, dass keine Daten vorhanden sind
@@ -111,29 +130,29 @@ function createFooterHTML() {
       </div>
     `;
   }
-  
+
   // Content aus der JSON-Datei verarbeiten
-  let footerContent = '';
-  
+  let footerContent = "";
+
   // Die getincontact-Array durchlaufen und HTML generieren
-  footerData.data.getincontact.forEach(item => {
-    if (item.type === 'heading' && item.level === 1) {
+  footerData.data.getincontact.forEach((item) => {
+    if (item.type === "heading" && item.level === 1) {
       // Überschrift
       const headingText = item.children[0].text;
       footerContent += `<h1>${headingText}</h1>\n`;
-    } else if (item.type === 'paragraph') {
+    } else if (item.type === "paragraph") {
       // Paragraph mit möglichen Links
-      let paragraphContent = '';
-      
-      item.children.forEach(child => {
-        if (child.type === 'text') {
+      let paragraphContent = "";
+
+      item.children.forEach((child) => {
+        if (child.type === "text") {
           paragraphContent += child.text;
-        } else if (child.type === 'link' && child.url) {
+        } else if (child.type === "link" && child.url) {
           const linkText = child.children[0].text;
           paragraphContent += `<a href="${child.url}">${linkText}</a>`;
         }
       });
-      
+
       footerContent += `<p>${paragraphContent}</p>\n`;
     }
   });
@@ -147,14 +166,13 @@ function createFooterHTML() {
 }
 
 // Erstellt die DOM-Elemente für alle Projekte
-
-export function createProjectElements() {
+export async function createProjectElements() {
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
-    return; // Frühe Rückgabe, wenn Element fehlt
+    return;
   }
 
   // Scroll-Snap temporär deaktivieren
@@ -165,13 +183,17 @@ export function createProjectElements() {
   container.innerHTML = "";
 
   if (projectsData && projectsData.data) {
-    projectsData.data.forEach((project) => {
+    // HTML für alle Projekte erstellen
+    for (const project of projectsData.data) {
       // Bilder-HTML mit der integrierten Funktion erstellen
       let imagesHTML = "";
       if (project.project_images && project.project_images.length > 0) {
-        imagesHTML = project.project_images
-          .map((img) => createResponsiveImageHTML(img))
-          .join("");
+        // Für jedes Bild des Projekts asynchron HTML erzeugen
+        const imagePromises = project.project_images.map((img) =>
+          createResponsiveImageHTML(img)
+        );
+        const imageHTMLs = await Promise.all(imagePromises);
+        imagesHTML = imageHTMLs.join("");
       }
 
       // Eindeutige IDs für Accessibility
@@ -189,43 +211,54 @@ export function createProjectElements() {
             ${imagesHTML}
           </div>
           <div class="description desktop-only" id="${projectTitleId}">
-            ${project.description[0].children[0].text}
+            ${project.description[0]?.children[0]?.text || ""}
           </div>
         </article>
       `;
 
       container.insertAdjacentHTML("beforeend", projectHTML);
-    });
+    }
   }
 
   // Neuen dynamischen Footer erstellen und einfügen
+  const footerInnerHTML = createFooterHTML();
   const footerHTML = `
-    <footer class="project footer-container" aria-label="Footer with Email Link">
-      ${createFooterHTML()}
-    </footer>
-  `;
+  <footer class="project footer-container" aria-label="Footer with Email Link">
+    ${footerInnerHTML}
+  </footer>
+`;
   container.insertAdjacentHTML("beforeend", footerHTML);
 
-    // Event-Listener für den Footer-Top-Bereich neu hinzufügen
+  // Event-Listener für den Footer-Top-Bereich neu hinzufügen
   const footerTopElement = getValidatedElement("#footerTop");
   if (footerTopElement) {
     footerTopElement.addEventListener("click", closeFooter);
-    console.log("Footer-Top Event-Listener hinzugefügt");
   }
 
   // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
   setTimeout(() => {
+    // Scrolle zum Anfang
     container.scrollTop = 0;
+
+    // Warte kurz für DOM-Updates
     setTimeout(() => {
+      // Scroll-Snap wiederherstellen
       container.style.scrollSnapType = originalSnapType;
+
+      // UI-Status aktualisieren
       uiState.updateProjects();
 
+      // UI-Komponenten initialisieren
       setupProjectIndicator();
       setupProjectTitle();
       setupImageColorHandler();
       setupImageNavigation();
       setupScrollHandler();
+
+      // WebP-Zusammenfassung aus dataStore importieren und ausgeben
+      import("../../core/dataStore.js").then((module) => {
+        console.log(module.getWebpSummary());
+      });
     }, 50);
   }, 50);
-
 }

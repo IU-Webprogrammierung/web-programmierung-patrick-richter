@@ -22,14 +22,12 @@ export async function initializeWebsite() {
     
     if (success) {
       console.log("initializeWebsite: Loading of projects and about successful!");
-      createProjectElements();
+      await createProjectElements(); // Jetzt mit await
       createAboutImprintSection();
       setupProjectIndicator();
       setupHoverPreview();
-
     } else {
       console.error("initializeWebsite: Loading failed - no data returned");
-      // Zeige Fehlermeldung für Benutzer an
       showLoadingError();
     }
   } catch (error) {

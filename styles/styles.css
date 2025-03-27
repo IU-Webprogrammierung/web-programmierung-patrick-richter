@@ -271,7 +271,7 @@ header > * {
   display: flex;
   flex-direction: column;
   scroll-snap-stop: normal;
-  z-index: 20;
+  z-index: 100;
 }
 .footer-top {
   height: 50vh;
