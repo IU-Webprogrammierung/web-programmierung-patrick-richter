@@ -1,14 +1,16 @@
 /**
  * @module dataStore
  * @description Zentraler Datenspeicher für alle Inhalte der Website.
- * Lädt Projektdaten, About/Imprint-Informationen und Client-Daten asynchron
- * und stellt sie über Getter-Methoden bereit. Fungiert als Single Source of Truth
- * für alle Content-Daten in der Anwendung.
- *
- * Funktionen: getProjects(), getAboutImprint(), getClients(), loadData()
+ * Lädt Daten asynchron und stellt sie über Getter-Methoden bereit.
  */
 
-import { API_URL } from '../config.js';
+import { API_ENDPOINTS, FALLBACK_DATA } from '../config.js';
+import { 
+  normalizeProjectData, 
+  normalizeAboutData, 
+  normalizeClientsData, 
+  normalizeFooterData 
+} from './normalizers/index.js';
 
 const dataStore = {
   projectsData: null,
@@ -16,6 +18,7 @@ const dataStore = {
   clientsData: null,
   footerData: null,
 
+  // Getter-Methoden bleiben unverändert
   getProjects: function () {
     return this.projectsData;
   },
@@ -32,59 +35,78 @@ const dataStore = {
     return this.footerData;
   },
 
-  loadData: async function () {
+  // Hilfsfunktion zum Laden eines einzelnen Datentyps
+  fetchDataWithFallback: async function (url, dataType, normalizeFn, fallbackData) {
     try {
-      console.log("dataStore: Daten-Fetch beginnt...");
-
-      // Alle vier externen Inputs laden
-      const [projectsResponse, aboutResponse, clientsResponse, footerResponse] =
-        await Promise.all([
-          fetch(
-            `${API_URL}/projects?populate[project_images][populate]=image&sort=rank:asc`
-          ),
-          fetch(`${API_URL}/about`),
-          fetch(`${API_URL}/clients?populate=projects&sort=name:asc`),
-          fetch(`${API_URL}/footer`),
-        ]);
-
-      // Überprüfen, ob alle Responses erfolgreich waren
-      if (
-        !projectsResponse.ok ||
-        !aboutResponse.ok ||
-        !clientsResponse.ok ||
-        !footerResponse.ok
-      ) {
-        console.error(
-          "Fehler beim Laden eines oder mehrerer Dateien:",
-          projectsResponse.status,
-          aboutResponse.status,
-          clientsResponse.status,
-          footerResponse.status
-        );
-        return false;
+      console.log(`Lade ${dataType} von ${url}...`);
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.warn(`Fehler beim Laden von ${dataType}: ${response.status}`);
+        return normalizeFn(fallbackData);
       }
-
-      // Alle JSON-Responses verarbeiten
-      const projectsData = await projectsResponse.json();
-      const aboutData = await aboutResponse.json();
-      const clientsData = await clientsResponse.json();
-      const footerData = await footerResponse.json();
-
-      console.log("dataStore: Laden erfolgreich");
-
-      // Daten im Store speichern
-      this.projectsData = projectsData;
-      this.aboutImprintData = aboutData;
-      this.clientsData = clientsData;
-      this.footerData = footerData;
-
-      return true;
+      
+      const data = await response.json();
+      console.log(`${dataType} erfolgreich geladen`);
+      return normalizeFn(data);
     } catch (error) {
-      console.error(error);
-      console.log("dataStore: Laden nicht erfolgreich");
-      return false;
+      console.error(`Fehler beim Laden von ${dataType}:`, error);
+      return normalizeFn(fallbackData);
     }
   },
+
+  // Hauptmethode zum Laden aller Daten
+  loadData: async function () {
+    console.log("dataStore: Daten-Fetch beginnt...");
+    
+    // Kritische Daten (Projekte) zuerst laden
+    this.projectsData = await this.fetchDataWithFallback(
+      API_ENDPOINTS.projects,
+      "Projekte",
+      normalizeProjectData,
+      FALLBACK_DATA.projects
+    );
+    
+    // Erfolgsprüfung
+    const projectsLoaded = this.projectsData?.data?.length > 0;
+    
+    // Paralleles Laden der weniger kritischen Daten
+    const [aboutData, clientsData, footerData] = await Promise.allSettled([
+      this.fetchDataWithFallback(
+        API_ENDPOINTS.about,
+        "About",
+        normalizeAboutData,
+        FALLBACK_DATA.about
+      ),
+      this.fetchDataWithFallback(
+        API_ENDPOINTS.clients,
+        "Clients",
+        normalizeClientsData,
+        FALLBACK_DATA.clients
+      ),
+      this.fetchDataWithFallback(
+        API_ENDPOINTS.footer,
+        "Footer",
+        normalizeFooterData,
+        FALLBACK_DATA.footer
+      )
+    ]);
+    
+    // Ergebnisse verarbeiten
+    this.aboutImprintData = aboutData.status === 'fulfilled' ? aboutData.value : normalizeAboutData(FALLBACK_DATA.about);
+    this.clientsData = clientsData.status === 'fulfilled' ? clientsData.value : normalizeClientsData(FALLBACK_DATA.clients);
+    this.footerData = footerData.status === 'fulfilled' ? footerData.value : normalizeFooterData(FALLBACK_DATA.footer);
+    
+    // Status-Übersicht ausgeben
+    console.log("Daten-Laden Status:", {
+      projects: projectsLoaded ? "OK" : "FEHLER",
+      about: this.aboutImprintData?.data ? "OK" : "FEHLER",
+      clients: this.clientsData?.data?.length > 0 ? "OK" : "FEHLER",
+      footer: this.footerData?.data ? "OK" : "FEHLER"
+    });
+    
+    return projectsLoaded;
+  }
 };
 
 export default dataStore;
