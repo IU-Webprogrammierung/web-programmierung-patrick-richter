@@ -12,14 +12,29 @@ import { ensureValue, ensureBaseStructure } from './utils.js';
  * @returns {Object} - Normalisiertes Kind-Element
  */
 function normalizeChild(child) {
-  if (!child) return { text: "", type: "text" };
-  
-  return {
-    text: child.text || "",
-    type: child.type || "text",
-    ...(child.url ? { url: child.url } : {})
-  };
-}
+    if (!child) return { text: "", type: "text" };
+    
+    // Basis-Objekt erstellen
+    const normalized = {
+      text: child.text || "",
+      type: child.type || "text"
+    };
+    
+    // URL hinzufügen, wenn vorhanden
+    if (child.url) {
+      normalized.url = child.url;
+    }
+    
+    // Die children-Eigenschaft für Links beibehalten
+    if (child.type === 'link' && Array.isArray(child.children)) {
+      normalized.children = child.children.map(childElement => ({
+        text: childElement.text || "",
+        type: childElement.type || "text"
+      }));
+    }
+    
+    return normalized;
+  }
 
 /**
  * Normalisiert einen einzelnen Eintrag im Footer

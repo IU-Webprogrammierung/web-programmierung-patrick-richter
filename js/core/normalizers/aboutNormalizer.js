@@ -12,20 +12,41 @@ import { ensureValue, ensureBaseStructure } from './utils.js';
  * @returns {Object} - Normalisierter Paragraph
  */
 function normalizeParagraph(paragraph) {
-  if (!paragraph) return { type: "paragraph", children: [{ text: "", type: "text" }] };
-  
-  return {
-    type: paragraph.type || "paragraph",
-    children: Array.isArray(paragraph.children) 
-      ? paragraph.children.map(child => ({
-          text: child.text || "",
-          type: child.type || "text",
-          ...(child.url ? { url: child.url } : {}),
-          ...(child.bold ? { bold: true } : {})
-        }))
-      : [{ text: "", type: "text" }]
-  };
-}
+    if (!paragraph) return { type: "paragraph", children: [{ text: "", type: "text" }] };
+    
+    return {
+      type: paragraph.type || "paragraph",
+      children: Array.isArray(paragraph.children) 
+        ? paragraph.children.map(child => {
+            // Basisobjekt erstellen
+            const normalizedChild = {
+              text: child.text || "",
+              type: child.type || "text"
+            };
+            
+            // URL hinzufügen, wenn vorhanden
+            if (child.url) {
+              normalizedChild.url = child.url;
+            }
+            
+            // Bold-Eigenschaft übernehmen, wenn vorhanden 
+            if (child.bold) {
+              normalizedChild.bold = true;
+            }
+            
+            // Wichtig: children-Eigenschaft für Links beibehalten
+            if (child.type === 'link' && Array.isArray(child.children)) {
+              normalizedChild.children = child.children.map(linkChild => ({
+                text: linkChild.text || "",
+                type: linkChild.type || "text"
+              }));
+            }
+            
+            return normalizedChild;
+          })
+        : [{ text: "", type: "text" }]
+    };
+  }
 
 /**
  * Normalisiert About/Imprint-Daten
