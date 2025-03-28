@@ -7,12 +7,13 @@
 import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
 import { getValidatedElement, fixImagePath } from "../../core/utils.js";
+import swiperInitializer from "../imageViewer/swiperInitializer.js";
+import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
 import { closeFooter } from "./projectNavigation.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
-import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
 /**
  * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
@@ -22,91 +23,101 @@ import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 function createResponsiveImageHTML(imageData) {
   const imageObj = imageData?.image?.[0];
   if (!imageObj) {
-    console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || 'Unbekanntes Bild'}`);
+    console.warn(
+      `Keine Bilddaten gefunden für: ${
+        imageData?.imageTitle || "Unbekanntes Bild"
+      }`
+    );
     return `<picture><img src="images/placeholder.png" alt="Bildvorschau nicht verfügbar" class="slide"/></picture>`;
   }
-  
+
   const textColor = imageData.textColor || "black";
   const imageId = imageData.id;
   const imageTitle = imageData.imageTitle || "";
   const altText = imageObj.alternativeText || imageTitle || "";
   const fullImageUrl = fixImagePath(imageObj.url);
-  
+
   // Sammle srcset-Einträge nach Format
   let webpSrcset = [];
   let standardSrcset = [];
-  
+
   // Optimierter Code für die Sammlung von Bildformaten
   if (imageObj.formats) {
     Object.entries(imageObj.formats).forEach(([key, format]) => {
       if (!format || !format.url) return;
-      
+
       const formatUrl = fixImagePath(format.url);
       const formatWidth = format.width || 0;
-      
+
       if (formatWidth > 0) {
         // Nach Typ sortieren und intelligent aufnehmen
-        if (key === 'webp') {
+        if (key === "webp") {
           // Original WebP aufnehmen - wird als "xlarge" Option behandelt
           webpSrcset.push(`${formatUrl} ${formatWidth}w`);
-        } else if (key.endsWith('-webp')) {
+        } else if (key.endsWith("-webp")) {
           // Optimierte WebP-Versionen
           webpSrcset.push(`${formatUrl} ${formatWidth}w`);
-        } else if (key !== 'thumbnail') {
+        } else if (key !== "thumbnail") {
           // Standard-Formate (JPG, PNG, etc.) - aber keine Thumbnails in srcset
           standardSrcset.push(`${formatUrl} ${formatWidth}w`);
         }
       }
     });
-    
+
     // Auch das Original in standardSrcset aufnehmen, wenn es nicht WebP ist
-    if (imageObj.mime !== 'image/webp') {
+    if (imageObj.mime !== "image/webp") {
       standardSrcset.push(`${fullImageUrl} ${imageObj.width}w`);
     }
   }
-  
+
   // Sortieren der srcsets nach Bildgröße (aufsteigend)
   webpSrcset.sort((a, b) => {
-    const widthA = parseInt(a.split(' ')[1]);
-    const widthB = parseInt(b.split(' ')[1]);
+    const widthA = parseInt(a.split(" ")[1]);
+    const widthB = parseInt(b.split(" ")[1]);
     return widthA - widthB;
   });
-  
+
   standardSrcset.sort((a, b) => {
-    const widthA = parseInt(a.split(' ')[1]);
-    const widthB = parseInt(b.split(' ')[1]);
+    const widthA = parseInt(a.split(" ")[1]);
+    const widthB = parseInt(b.split(" ")[1]);
     return widthA - widthB;
   });
-  
+
   // Debug-Ausgabe für Entwicklung
   if (webpSrcset.length > 0) {
-    console.log(`WebP-Optionen für ${imageTitle}:`, webpSrcset.join(', '));
+    console.log(`WebP-Optionen für ${imageTitle}:`, webpSrcset.join(", "));
   }
-  
+
   // Genauere Größendefinition für unterschiedliche Viewport-Größen
   // Annahme: Bilder nehmen auf allen Geräten die volle Breite ein
   const sizes = "(max-width: 768px) 100vw, (max-width: 1440px) 100vw, 100vw";
-  
+
   // Quellen mit korrekter Formatierung
   let sources = [];
   if (webpSrcset.length > 0) {
-    sources.push(`<source srcset="${webpSrcset.join(', ')}" sizes="${sizes}" type="image/webp">`);
+    sources.push(
+      `<source srcset="${webpSrcset.join(
+        ", "
+      )}" sizes="${sizes}" type="image/webp">`
+    );
   }
   if (standardSrcset.length > 0) {
-    sources.push(`<source srcset="${standardSrcset.join(', ')}" sizes="${sizes}" type="${imageObj.mime || 'image/jpeg'}">`);
+    sources.push(
+      `<source srcset="${standardSrcset.join(", ")}" sizes="${sizes}" type="${
+        imageObj.mime || "image/jpeg"
+      }">`
+    );
   }
-  
+
   return `
-    <picture>
-      ${sources.join('\n      ')}
+    <picture class="swiper-slide">
+      ${sources.join("\n      ")}
       <img 
         src="${fullImageUrl}" 
         alt="${altText}" 
         data-id="${imageId}"
         data-text-color="${textColor}"
         data-image-title="${imageTitle}"
-        class="slide"
-        loading="lazy"
         onerror="this.onerror=null; this.src='images/placeholder.png';"
       />
     </picture>
@@ -165,7 +176,6 @@ function createFooterHTML() {
 
 // Erstellt die DOM-Elemente für alle Projekte
 export async function createProjectElements() {
-  
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
 
@@ -200,26 +210,22 @@ export async function createProjectElements() {
 
       // Gesamtes Projekt-HTML
       const projectHTML = `
-        <article 
-          class="project" 
-          aria-labelledby="${projectTitleId}"
-          data-project-id="${project.id}"
-          data-project-name="${project.name}"
-        >
-          <div class="slider">
-            ${imagesHTML}
-          </div>
-          <div class="description desktop-only" id="${projectTitleId}">
-            ${project.description[0]?.children[0]?.text || ""}
-          </div>
-        </article>
+<article class="project" ...>
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      ${imagesHTML}
+    </div>
+  </div>
+  <!-- Beschreibung außerhalb des Swiper-Containers -->
+  <div class="description desktop-only" id="${projectTitleId}">
+    ${project.description[0]?.children[0]?.text || ""}
+  </div>
+</article>
       `;
 
       container.insertAdjacentHTML("beforeend", projectHTML);
     }
   }
-
-  
 
   // Neuen dynamischen Footer erstellen und einfügen
   const footerInnerHTML = createFooterHTML();
@@ -252,11 +258,12 @@ export async function createProjectElements() {
       uiState.updateProjects();
 
       // UI-Komponenten initialisieren
-      setupProjectIndicator();
       setupProjectTitle();
+      setupProjectIndicator();
       setupImageColorHandler();
       setupImageNavigation();
       setupScrollHandler();
+      swiperInitializer.init();
     }, 50);
   }, 50);
 }

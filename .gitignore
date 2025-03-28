@@ -30,3 +30,5 @@ strapi-cms/build/
 strapi-cms/public/uploads/
 strapi-cms/.env
 strapi-cms/
+package-lock.json
+package.json

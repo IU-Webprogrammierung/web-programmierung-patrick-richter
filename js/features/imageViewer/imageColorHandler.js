@@ -101,8 +101,8 @@ export function handleColorChange(event) {
   const isProjectChange =
     event.detail.hasOwnProperty("projectIndex") &&
     projectIndex === uiState.activeProjectIndex &&
-    document.querySelector(".project-title.fade-out") !== null; 
-      
+    document.querySelector(".project-title.fade-out") !== null;
+
   // Debouncing: Zu schnelle Farbwechsel vermeiden
   clearTimeout(debounceColorTimer);
 
@@ -116,6 +116,7 @@ export function handleColorChange(event) {
       textColor
     );
     // Container für Cursor-Stil finden
+    // In der handleColorChange-Funktion, behalte diesen Block bei:
     const container = getValidatedElement(".project-container");
     if (container) {
       // Cursor basierend auf Textfarbe anpassen
@@ -125,6 +126,7 @@ export function handleColorChange(event) {
         container.classList.remove("white-cursor");
       }
     }
+    
     console.log(
       `Farbe geändert zu: ${textColor}${
         isProjectChange ? " (verzögert nach Projektwechsel)" : ""

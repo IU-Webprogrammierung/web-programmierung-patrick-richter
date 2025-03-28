@@ -8,13 +8,33 @@
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from '../../core/utils.js';
+import { getValidatedElement } from "../../core/utils.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
 // Dynamische Änderung der Projekttitel
 export function setupProjectTitle() {
   // DOM-Elemente
+  // Im setupProjectTitle
   const headerTitle = getValidatedElement(".project-title");
+  console.log("Projekttitel-DOM-Element:", headerTitle);
+  console.log("Element im DOM vorhanden:", document.querySelector(".project-title") !== null);
+  console.log("Header-Inhalt:", document.querySelector("header").innerHTML);
+  
+  if (!headerTitle) {
+    console.error("Fehler: Projekt-Titel-Element nicht gefunden - versuche erneut in 100ms");
+    // Notfall-Versuch mit Verzögerung
+    setTimeout(() => {
+      const retryTitle = document.querySelector(".project-title");
+      console.log("Zweiter Versuch - Titel gefunden:", retryTitle !== null);
+      if (retryTitle) {
+        // Jetzt mit dem gefundenen Element arbeiten
+        console.log("Titel-Element beim zweiten Versuch gefunden");
+        // Hier könnte die normale Titellogik dupliziert werden
+      }
+    }, 100);
+    return;
+  }
+
   const mobileTitle = getValidatedElement(".project-title-mobile");
   const mobileDescription = getValidatedElement(".description-mobile");
 
@@ -94,7 +114,9 @@ export function setupProjectTitle() {
       );
       const projectName = activeProject.getAttribute("data-project-name");
       const descriptionElement = activeProject.querySelector(".description");
-const projectDesc = descriptionElement ? descriptionElement.textContent || "" : "";
+      const projectDesc = descriptionElement
+        ? descriptionElement.textContent || ""
+        : "";
 
       console.log(
         `setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`
