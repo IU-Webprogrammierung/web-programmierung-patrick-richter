@@ -19,7 +19,12 @@
   position: relative;
 }
 
-/* Styling für Bilder in Slides */
+.swiper-slide picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .swiper-slide img {
   width: 100%;
   height: 100%;

@@ -23,12 +23,8 @@ import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 function createResponsiveImageHTML(imageData) {
   const imageObj = imageData?.image?.[0];
   if (!imageObj) {
-    console.warn(
-      `Keine Bilddaten gefunden für: ${
-        imageData?.imageTitle || "Unbekanntes Bild"
-      }`
-    );
-    return `<picture><img src="images/placeholder.png" alt="Bildvorschau nicht verfügbar" class="slide"/></picture>`;
+    console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || "Unbekanntes Bild"}`);
+    return `<div class="swiper-slide"><picture><img src="images/placeholder.png" alt="Bildvorschau nicht verfügbar"/></picture></div>`;
   }
 
   const textColor = imageData.textColor || "black";
@@ -95,33 +91,25 @@ function createResponsiveImageHTML(imageData) {
   // Quellen mit korrekter Formatierung
   let sources = [];
   if (webpSrcset.length > 0) {
-    sources.push(
-      `<source srcset="${webpSrcset.join(
-        ", "
-      )}" sizes="${sizes}" type="image/webp">`
-    );
+    sources.push(`<source srcset="${webpSrcset.join(", ")}" sizes="${sizes}" type="image/webp">`);
   }
   if (standardSrcset.length > 0) {
-    sources.push(
-      `<source srcset="${standardSrcset.join(", ")}" sizes="${sizes}" type="${
-        imageObj.mime || "image/jpeg"
-      }">`
-    );
+    sources.push(`<source srcset="${standardSrcset.join(", ")}" sizes="${sizes}" type="${imageObj.mime || "image/jpeg"}">`);
   }
 
   return `
-    <picture class="swiper-slide">
-      ${sources.join("\n      ")}
-      <img 
-        src="${fullImageUrl}" 
-        alt="${altText}" 
-        data-id="${imageId}"
-        data-text-color="${textColor}"
-        data-image-title="${imageTitle}"
-        onerror="this.onerror=null; this.src='images/placeholder.png';"
-      />
-    </picture>
+    <div class="swiper-slide" data-id="${imageId}" data-text-color="${textColor}" data-image-title="${imageTitle}">
+      <picture>
+        ${sources.join("\n        ")}
+        <img 
+          src="${fullImageUrl}" 
+          alt="${altText}" 
+          onerror="this.onerror=null; this.src='images/placeholder.png';"
+        />
+      </picture>
+    </div>
   `;
+
 }
 
 // Erzeugt den Footer-HTML-Code aus den JSON-Daten
@@ -210,8 +198,12 @@ export async function createProjectElements() {
 
       // Gesamtes Projekt-HTML
       const projectHTML = `
-<article class="project" ...>
-  <div class="swiper">
+        <article 
+          class="project" 
+          aria-labelledby="${projectTitleId}"
+          data-project-id="${project.id}"
+          data-project-name="${project.name}"
+        >  <div class="swiper">
     <div class="swiper-wrapper">
       ${imagesHTML}
     </div>

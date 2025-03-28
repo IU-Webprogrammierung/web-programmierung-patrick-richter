@@ -28,7 +28,7 @@ export function setupImageColorHandler() {
     // Nur für gültige Projekte fortfahren
     if (projectIndex >= 0 && projectIndex < uiState.projects.length) {
       const project = uiState.projects[projectIndex];
-      const slider = project.querySelector(".slider");
+      const slider = project.querySelector(".swiper");
 
       if (
         !validateElement(
@@ -39,10 +39,10 @@ export function setupImageColorHandler() {
       )
         return;
 
-      const slides = slider.querySelectorAll(".slide");
-      console.log(
-        `Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`
-      );
+        const slides = slider.querySelectorAll(".swiper-slide");
+        console.log(`Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`);
+    
+    
 
       const options = {
         root: slider,
