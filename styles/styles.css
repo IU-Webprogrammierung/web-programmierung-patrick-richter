@@ -1,3 +1,65 @@
+/* Benutzerdefinierte Pagination */
+.custom-pagination-list {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.custom-pagination-item {
+  margin: 0 5px;
+}
+
+.custom-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+}
+
+.custom-pagination-bullet:hover {
+  opacity: 0.8;
+}
+
+.custom-pagination-bullet.active {
+  opacity: 1;
+  background-color: var(--active-text-color, #000);
+  transform: scale(1.2);
+}
+
+/* Container-Styling */
+.pagination {
+  text-align: center;
+  margin-bottom: 1rem;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+/* Für die Farbanpassung */
+.pagination-description-container {
+  pointer-events: none;
+}
+
+/* Animation für Pagination */
+.pagination {
+  opacity: 1;
+  transition: opacity var(--title-fade-duration) ease;
+}
+
+.pagination.fade-out {
+  opacity: 0;
+}
+
+.pagination.initial-appear {
+  animation: initialFadeIn var(--title-initial-duration) ease-out;
+}
+
 /* Basis-Styling für Swiper */
 .swiper {
   width: 100%;

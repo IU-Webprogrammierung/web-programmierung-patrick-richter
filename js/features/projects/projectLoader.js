@@ -8,6 +8,7 @@ import dataStore from "../../core/dataStore.js";
 import uiState from "../../core/uiState.js";
 import { getValidatedElement, fixImagePath } from "../../core/utils.js";
 import swiperInitializer from "../imageViewer/swiperInitializer.js";
+import customPagination from '../imageViewer/customPagination.js';
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
@@ -253,6 +254,7 @@ export async function createProjectElements() {
       setupImageNavigation();
       setupScrollHandler();
       swiperInitializer.init();
+      customPagination.init();
     }, 50);
   }, 50);
 }
