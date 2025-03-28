@@ -35,13 +35,29 @@ export function initializeSwiperSliders() {
       p => p.getAttribute('data-project-id') === projectId
     );
     
+    const paginationEl = document.querySelector(`.pagination[data-for-project="${projectId}"]`);
+
     // Swiper mit Optionen initialisieren
     const swiper = new Swiper(container, {
       // Grundlegende Parameter
       slidesPerView: 1,
       speed: 1000,
       direction: 'horizontal',
-
+      pagination: {
+        enabled: true,
+        el: paginationEl || '.pagination', // Fallback zur allgemeinen Pagination
+        clickable: true
+      },
+    
+      on: {
+        init: function() {
+          // Nach der Initialisierung die Pagination aktualisieren
+          setTimeout(() => {
+            this.pagination.update();
+            console.log("Pagination aktualisiert");
+          }, 100);
+        }
+      },
 
       
       // Eigene Navigationslösung verwenden, keine Swiper-Controls
@@ -130,29 +146,44 @@ function setupProjectChangeHandler() {
 /**
  * Navigation zu einem Slide
  */
-function navigateSlide(slider, direction) {
-  // Finde die entsprechende Swiper-Instanz
-  const containerIndex = Array.from(document.querySelectorAll('.swiper')).indexOf(slider);
-  if (containerIndex === -1) return false;
+
+function navigateSlide(slider, clientX) {
+    const containerIndex = Array.from(document.querySelectorAll('.swiper')).indexOf(slider);
+    if (containerIndex === -1) return false;
   
-  const swiperInfo = swiperInstances[containerIndex];
-  if (!swiperInfo) return false;
+    const swiperInfo = swiperInstances[containerIndex];
+    if (!swiperInfo) return false;
   
-  const swiper = swiperInfo.swiper;
+    const swiper = swiperInfo.swiper;
+    const screenWidth = window.innerWidth;
   
-  // Navigation durchführen
-  if (direction < 0) {
-    swiper.slidePrev();
-  } else {
-    swiper.slideNext();
+    const isLeftClick = clientX < screenWidth / 2;
+    const isRightClick = !isLeftClick;
+    const isFirstSlide = swiper.activeIndex === 0;
+    const isLastSlide = swiper.isEnd;
+  
+    if (isRightClick && isLastSlide) {
+      setTimeout(() => {
+        swiper.slideTo(0, 1000);
+      }, 200);
+    } else if (isLeftClick && isFirstSlide) {
+      swiper.slideTo(swiper.slides.length - 1, 1000);
+    } else {
+      if (isLeftClick) {
+        swiper.slidePrev();
+      } else {
+        swiper.slideNext();
+      }
+    }
+  
+    return true;
   }
   
-  return true;
-}
 
 // Öffentliche API
 export default {
-  init: initializeSwiperSliders,
-  getInstance: (index) => swiperInstances[index]?.swiper,
-  navigateSlide: navigateSlide
-};
+    init: initializeSwiperSliders,
+    getInstance: (index) => swiperInstances[index]?.swiper,
+    navigateSlide,
+  };
+  

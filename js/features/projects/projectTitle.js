@@ -11,11 +11,20 @@ import uiState from "../../core/uiState.js";
 import { getValidatedElement } from "../../core/utils.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
+/* <!-- Beschreibung außerhalb des Swiper-Containers -->
+<div class="description desktop-only" id="${projectTitleId}">
+${project.description[0]?.children[0]?.text || ""}
+</div>*/
+
 // Dynamische Änderung der Projekttitel
 export function setupProjectTitle() {
   // DOM-Elemente
   // Im setupProjectTitle
   const headerTitle = getValidatedElement(".project-title");
+  const mobileTitle = getValidatedElement(".project-title-mobile");
+  const mobileDescription = getValidatedElement(".description-mobile");
+  const desktopDescription = getValidatedElement(".description");
+  
   console.log("Projekttitel-DOM-Element:", headerTitle);
   console.log("Element im DOM vorhanden:", document.querySelector(".project-title") !== null);
   console.log("Header-Inhalt:", document.querySelector("header").innerHTML);
@@ -35,8 +44,7 @@ export function setupProjectTitle() {
     return;
   }
 
-  const mobileTitle = getValidatedElement(".project-title-mobile");
-  const mobileDescription = getValidatedElement(".description-mobile");
+
 
   if (!headerTitle) {
     console.error("Fehler: Projekt-Titel-Element nicht gefunden");
@@ -76,7 +84,10 @@ export function setupProjectTitle() {
 
   // Gemeinsame Funktion zum Setzen der Titel
   function setTitles(projectName, projectDesc) {
-    headerTitle.textContent = projectName;
+    if (headerTitle) headerTitle.textContent = projectName;
+    if (desktopDescription) desktopDescription.textContent = projectDesc;
+    console.log("Desktop Description:", desktopDescription);
+
     if (mobileTitle) mobileTitle.textContent = projectName;
     if (mobileDescription) mobileDescription.textContent = projectDesc;
   }
@@ -90,6 +101,7 @@ export function setupProjectTitle() {
 
       // Alle Elemente wieder einblenden
       headerTitle.classList.remove("fade-out");
+      if (desktopDescription) desktopDescription.classList.remove("fade-out");
       if (mobileTitle) mobileTitle.classList.remove("fade-out");
       if (mobileDescription) mobileDescription.classList.remove("fade-out");
 
@@ -113,14 +125,8 @@ export function setupProjectTitle() {
         activeProject
       );
       const projectName = activeProject.getAttribute("data-project-name");
-      const descriptionElement = activeProject.querySelector(".description");
-      const projectDesc = descriptionElement
-        ? descriptionElement.textContent || ""
-        : "";
-
-      console.log(
-        `setupProjectTitle: updateTitleContents: Titel wird aktualisiert zu: ${projectName}`
-      );
+      const projectDesc = activeProject.getAttribute("data-project-description") || "";
+      console.log(projectDesc);
       setTitles(projectName, projectDesc);
     }
   }
@@ -146,6 +152,7 @@ export function setupProjectTitle() {
 
       // Alle Elemente ausblenden
       headerTitle.classList.add("fade-out");
+      if (desktopDescription) desktopDescription.classList.add("fade-out");
       if (mobileTitle) mobileTitle.classList.add("fade-out");
       if (mobileDescription) mobileDescription.classList.add("fade-out");
 
@@ -165,6 +172,7 @@ export function setupProjectTitle() {
   function setupInitialTitle() {
     // Animation anwenden
     headerTitle.classList.add("initial-appear");
+    if (desktopDescription) desktopDescription.classList.add("initial-appear");
     if (mobileTitle) mobileTitle.classList.add("initial-appear");
     if (mobileDescription) mobileDescription.classList.add("initial-appear");
 
@@ -174,6 +182,7 @@ export function setupProjectTitle() {
     // Animation nach Ablauf entfernen
     setTimeout(() => {
       headerTitle.classList.remove("initial-appear");
+      if (desktopDescription) desktopDescription.classList.remove("initial-appear");
       if (mobileTitle) mobileTitle.classList.remove("initial-appear");
       if (mobileDescription)
         mobileDescription.classList.remove("initial-appear");

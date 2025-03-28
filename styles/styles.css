@@ -189,7 +189,8 @@ h1 {
 /* Globale Farbwechsel für UI-Elemente */
 .project-title,
 .project-title-mobile,
-.description-mobile {
+.description-mobile,
+.description {
   opacity: 1;
   color: var(--active-text-color);
   transition: 
@@ -197,7 +198,6 @@ h1 {
     color var(--title-fade-duration) ease;
 }
 
-.description,
 .navbar {
   color: var(--active-text-color);
   transition: color var(--title-fade-duration) ease;
@@ -360,20 +360,35 @@ header > * {
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
+.swiper-pagination-lock {
+  /* Nur überschreiben, wenn es im pagination-description-container ist */
+  .pagination-description-container & {
+    display: block !important; /* Force display */
+  }
+}
 
-
-
-/* Beschreibung immer über Swiper anzeigen */
-.project .description {
-  position: absolute;
-  bottom: 0;
+.pagination-description-container {
+  position: fixed;
+  bottom: 2rem;
   width: 80%;
   left: 50%;
-  transform: translate(-50%);
+  transform: translateX(-50%);
+  z-index: 10;
   text-align: center;
-  padding-bottom: var(--header-bottom-padding);
-  z-index: 10; /* Wichtig: Höherer z-index als Swiper */
-  pointer-events: none; /* Erlaubt Klicks durch die Beschreibung hindurch */
+  pointer-events: none; /* Erlaubt Klicks durch die Container hindurch */
+}
+
+.pagination-description-container .description {
+  position: relative;
+  transform: none;
+  left: auto;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.pagination {
+  z-index: 100;
+  bottom: 200px;
 }
 
 /* -----------------------------

@@ -203,15 +203,11 @@ export async function createProjectElements() {
           aria-labelledby="${projectTitleId}"
           data-project-id="${project.id}"
           data-project-name="${project.name}"
+          data-project-description="${project.description[0]?.children[0]?.text || ""}"
         >  <div class="swiper">
     <div class="swiper-wrapper">
       ${imagesHTML}
     </div>
-    <div class="swiper-pagination"></div>
-  </div>
-  <!-- Beschreibung außerhalb des Swiper-Containers -->
-  <div class="description desktop-only" id="${projectTitleId}">
-    ${project.description[0]?.children[0]?.text || ""}
   </div>
 </article>
       `;

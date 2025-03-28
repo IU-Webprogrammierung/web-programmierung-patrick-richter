@@ -89,10 +89,8 @@ export function setupImageNavigation() {
     
     // Position im Container
     const rect = container.getBoundingClientRect();
-    const relativeX = (e.clientX - rect.left) / rect.width;
     
     // Swiper-Navigation verwenden statt scrollTo
-    // Wir verwenden die Hilfsmethode aus dem swiperInitializer
-    swiperInitializer.navigateSlide(slider, relativeX < 0.5 ? -1 : 1);
-  });
+    swiperInitializer.navigateSlide(slider, e.clientX);
+});
 }

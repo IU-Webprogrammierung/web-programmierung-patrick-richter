@@ -97,6 +97,11 @@ export function scrollToProject(projectId) {
 }
 
 // Scrollt nach oben
+//TODO ggf löschen - wenn ander Lösung für das blinken da ists
+const headerTitle = getValidatedElement(".project-title");
+const mobileTitle = getValidatedElement(".project-title-mobile");
+const mobileDescription = getValidatedElement(".description-mobile");
+const desktopDescription = getValidatedElement(".description");
 
 export function scrollToTop() {
   const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
@@ -105,8 +110,18 @@ export function scrollToTop() {
     console.error("Fehler: Project-Container nicht gefunden");
     return; // Frühe Rückgabe
   }
-
+  //TODO ggf löschen - wenn ander Lösung für das blinken da ists
+  headerTitle.classList.add("fade-out");
+  if (desktopDescription) desktopDescription.classList.add("fade-out");
+  if (mobileTitle) mobileTitle.classList.add("fade-out");
+  if (mobileDescription) mobileDescription.classList.add("fade-out");
   container.scrollTo({ top: 0, behavior: "smooth" });
+  //TODO ggf löschen - wenn ander Lösung für das blinken da ists
+  headerTitle.classList.add("fade-out");
+  if (desktopDescription) desktopDescription.classList.remove("fade-out");
+  if (mobileTitle) mobileTitle.classList.remove("fade-out");
+  if (mobileDescription) mobileDescription.classList.remove("fade-out");
+
 }
 
 // Footer schließen
