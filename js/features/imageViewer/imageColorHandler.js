@@ -1,95 +1,36 @@
 /**
  * @module imageColorHandler
- * @description Überwacht sichtbare Bilder und passt die Textfarbe der UI dynamisch an.
- * Nutzt IntersectionObserver für effiziente Erkennung sichtbarer Bilder und
- * implementiert Debouncing für flüssige Farbübergänge zwischen Bildern und Projekten.
+ * @description Überwacht Farbänderungen und passt die Textfarbe der UI dynamisch an.
+ * Reagiert auf ACTIVE_IMAGE_CHANGED Events aus dem zentralen uiState.
  *
  * Funktionen: setupImageColorHandler(), handleColorChange()
  */
 
-import uiState from "../../core/uiState.js";
 import { EVENT_TYPES } from "../../core/events.js";
-import { validateElement } from "../../core/utils.js";
 import { getValidatedElement } from "../../core/utils.js";
+import uiState from "../../core/uiState.js";
 
 // Timer für Debouncing der Farbänderungen
 let debounceColorTimer = null;
 
+/**
+ * Richtet den Event-Listener für Farbänderungen ein.
+ * Deutlich einfacher, da alle Logik zur Bildermittlung entfernt wurde.
+ */
 export function setupImageColorHandler() {
-  // Speichert aktive Observer, um sie später zu trennen
-  let currentObservers = [];
-
-  // Funktion zum Einrichten der Observer für ein bestimmtes Projekt
-  function setupImageObserversForProject(projectIndex) {
-    // Bestehende Observer trennen
-    currentObservers.forEach((obs) => obs.disconnect());
-    currentObservers = [];
-
-    // Nur für gültige Projekte fortfahren
-    if (projectIndex >= 0 && projectIndex < uiState.projects.length) {
-      const project = uiState.projects[projectIndex];
-      const slider = project.querySelector(".swiper");
-
-      if (
-        !validateElement(
-          slider,
-          `Slider für Projekt ${projectIndex} nicht gefunden`,
-          "warn"
-        )
-      )
-        return;
-
-        const slides = slider.querySelectorAll(".swiper-slide");
-        console.log(`Observer für Projekt ${projectIndex} eingerichtet, ${slides.length} Bilder gefunden`);
-    
-    
-
-      const options = {
-        root: slider,
-        threshold: 0.6,
-        rootMargin: "0px",
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const slide = entry.target;
-            const imageId = parseInt(slide.getAttribute("data-id"));
-            const textColor = slide.getAttribute("data-text-color");
-
-            // Status aktualisieren (löst activeImageChanged aus)
-            uiState.setActiveImage(projectIndex, imageId, textColor);
-          }
-        });
-      }, options);
-
-      // Alle Bilder im aktuellen Slider beobachten
-      slides.forEach((slide) => {
-        observer.observe(slide);
-      });
-
-      currentObservers.push(observer);
-    }
-  }
-
-  // Bei Projektwechsel neue Observer einrichten
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
-    const { projectIndex } = event.detail;
-    setupImageObserversForProject(projectIndex);
-  });
-
-  // Event-Listener für Farbänderungen
+  // Einfacher Event-Listener für Farbänderungen
   document.addEventListener(
     EVENT_TYPES.ACTIVE_IMAGE_CHANGED,
     handleColorChange
   );
-
-  // Initial für das aktive Projekt
-  setTimeout(() => {
-    setupImageObserversForProject(uiState.activeProjectIndex);
-  }, 100);
+  
+  console.log("ImageColorHandler: Setup abgeschlossen, auf Events wartend");
 }
 
+/**
+ * Zentrale Funktion zur Handhabung aller Farbänderungen.
+ * Wird durch ACTIVE_IMAGE_CHANGED Events ausgelöst.
+ */
 export function handleColorChange(event) {
   // Sicherstellen, dass das Event gültige Details enthält
   if (!event || !event.detail) return;
@@ -115,8 +56,8 @@ export function handleColorChange(event) {
       "--active-text-color",
       textColor
     );
+    
     // Container für Cursor-Stil finden
-    // In der handleColorChange-Funktion, behalte diesen Block bei:
     const container = getValidatedElement(".project-container");
     if (container) {
       // Cursor basierend auf Textfarbe anpassen

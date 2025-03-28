@@ -207,6 +207,7 @@ export async function createProjectElements() {
     <div class="swiper-wrapper">
       ${imagesHTML}
     </div>
+    <div class="swiper-pagination"></div>
   </div>
   <!-- Beschreibung außerhalb des Swiper-Containers -->
   <div class="description desktop-only" id="${projectTitleId}">
