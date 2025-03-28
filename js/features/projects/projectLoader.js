@@ -15,7 +15,7 @@ import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 
 /**
- * Erstellt HTML für ein responsives Bild mit automatischem WebP-Fallback
+ * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
  * @param {Object} imageData - Die Bilddaten mit allen Formaten
  * @returns {string} - HTML für das Bild mit picture/source-Tags
  */
@@ -36,6 +36,7 @@ function createResponsiveImageHTML(imageData) {
   let webpSrcset = [];
   let standardSrcset = [];
   
+  // Optimierter Code für die Sammlung von Bildformaten
   if (imageObj.formats) {
     Object.entries(imageObj.formats).forEach(([key, format]) => {
       if (!format || !format.url) return;
@@ -44,20 +45,49 @@ function createResponsiveImageHTML(imageData) {
       const formatWidth = format.width || 0;
       
       if (formatWidth > 0) {
-        // Nach Typ sortieren (WebP vs. Standard)
-        if (key === 'webp' || key.endsWith('-webp')) {
+        // Nach Typ sortieren und intelligent aufnehmen
+        if (key === 'webp') {
+          // Original WebP aufnehmen - wird als "xlarge" Option behandelt
           webpSrcset.push(`${formatUrl} ${formatWidth}w`);
-        } else {
+        } else if (key.endsWith('-webp')) {
+          // Optimierte WebP-Versionen
+          webpSrcset.push(`${formatUrl} ${formatWidth}w`);
+        } else if (key !== 'thumbnail') {
+          // Standard-Formate (JPG, PNG, etc.) - aber keine Thumbnails in srcset
           standardSrcset.push(`${formatUrl} ${formatWidth}w`);
         }
       }
     });
+    
+    // Auch das Original in standardSrcset aufnehmen, wenn es nicht WebP ist
+    if (imageObj.mime !== 'image/webp') {
+      standardSrcset.push(`${fullImageUrl} ${imageObj.width}w`);
+    }
   }
   
-  // Responsive sizes-Attribut für beide Formate
-  const sizes = "(max-width: 700px) 100vw, (max-width: 1200px) 100vw, 100vw";
+  // Sortieren der srcsets nach Bildgröße (aufsteigend)
+  webpSrcset.sort((a, b) => {
+    const widthA = parseInt(a.split(' ')[1]);
+    const widthB = parseInt(b.split(' ')[1]);
+    return widthA - widthB;
+  });
   
-  // Quellen mit korrekt formatierten srcset- und sizes-Attributen
+  standardSrcset.sort((a, b) => {
+    const widthA = parseInt(a.split(' ')[1]);
+    const widthB = parseInt(b.split(' ')[1]);
+    return widthA - widthB;
+  });
+  
+  // Debug-Ausgabe für Entwicklung
+  if (webpSrcset.length > 0) {
+    console.log(`WebP-Optionen für ${imageTitle}:`, webpSrcset.join(', '));
+  }
+  
+  // Genauere Größendefinition für unterschiedliche Viewport-Größen
+  // Annahme: Bilder nehmen auf allen Geräten die volle Breite ein
+  const sizes = "(max-width: 768px) 100vw, (max-width: 1440px) 100vw, 100vw";
+  
+  // Quellen mit korrekter Formatierung
   let sources = [];
   if (webpSrcset.length > 0) {
     sources.push(`<source srcset="${webpSrcset.join(', ')}" sizes="${sizes}" type="image/webp">`);
@@ -135,6 +165,7 @@ function createFooterHTML() {
 
 // Erstellt die DOM-Elemente für alle Projekte
 export async function createProjectElements() {
+  
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
 
@@ -188,6 +219,8 @@ export async function createProjectElements() {
     }
   }
 
+  
+
   // Neuen dynamischen Footer erstellen und einfügen
   const footerInnerHTML = createFooterHTML();
   const footerHTML = `
@@ -202,6 +235,8 @@ export async function createProjectElements() {
   if (footerTopElement) {
     footerTopElement.addEventListener("click", closeFooter);
   }
+
+  // TODO hier Logging für erweitere Bildanalyse einfügen
 
   // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
   setTimeout(() => {

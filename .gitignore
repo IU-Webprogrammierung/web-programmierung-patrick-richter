@@ -6,6 +6,7 @@ script.js
 script copy.js
 *copy*.js     # Schließt alle Dateien mit "copy" im Namen aus
 *backup*.js   # Optional: Schließt alle Dateien mit "backup" im Namen aus
+.dump/
 
 # Betriebssystem-Dateien
 .DS_Store
