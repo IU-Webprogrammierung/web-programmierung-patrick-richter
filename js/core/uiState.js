@@ -43,37 +43,41 @@ const uiState = {
   },
 
   // Methode zum Setzen des aktiven Bildes
-  setActiveImage(projectIndex, imageIndex, textColor) {
-    const changed =
-      projectIndex !== this.activeProjectIndex ||
-      imageIndex !== this.activeImageIndex ||
-      textColor !== this.activeTextColor;
+  // In uiState.js
+setActiveImage(projectIndex, imageId, textColor, slideIndex = -1) {
+  const changed =
+    projectIndex !== this.activeProjectIndex ||
+    imageId !== this.activeImageIndex ||
+    textColor !== this.activeTextColor;
 
-    if (changed) {
-      this.activeProjectIndex = projectIndex;
-      this.activeImageIndex = imageIndex;
-      this.activeTextColor = textColor || "black";
+  if (changed) {
+    this.activeProjectIndex = projectIndex;
+    this.activeImageIndex = imageId;
+    this.activeTextColor = textColor || "black";
 
-      document.dispatchEvent(
-        new CustomEvent(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, {
-          detail: {
-            projectIndex: projectIndex,
-            imageIndex: imageIndex,
-            textColor: this.activeTextColor,
-          },
-        })
-      );
-      console.log(
-        "uiState: Bild geupdated - neues Bild:",
-        imageIndex,
-        this.activeImageIndex,
-        "projekt: ",
-        projectIndex,
-        "TextFarbe: ",
-        textColor
-      );
-    }
-  },
+    document.dispatchEvent(
+      new CustomEvent(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, {
+        detail: {
+          projectIndex: projectIndex,
+          imageIndex: imageId,
+          textColor: this.activeTextColor,
+          slideIndex: slideIndex // Neuer Parameter
+        },
+      })
+    );
+    console.log(
+      "uiState: Bild geupdated - neues Bild:",
+      imageId,
+      this.activeImageIndex,
+      "projekt: ",
+      projectIndex,
+      "TextFarbe: ",
+      textColor,
+      "Slide-Index: ",
+      slideIndex
+    );
+  }
+},
 };
 
 export default uiState;

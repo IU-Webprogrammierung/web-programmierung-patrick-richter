@@ -12,6 +12,13 @@ import swiperInitializer from './swiperInitializer.js';
 // Pagination-Container
 let paginationContainer;
 
+// Pausendauer zwischen Ausblenden und Einblenden (muss mit projectTitle.js übereinstimmen)
+const style = getComputedStyle(document.documentElement);
+const betweenPauseMs = parseInt(style.getPropertyValue("--title-between-pause").trim()) || 200;
+
+// Flag für laufende Projektanimation
+let isAnimatingProject = false;
+
 /**
  * Initialisiert die benutzerdefinierte Pagination
  */
@@ -26,13 +33,43 @@ export function setupCustomPagination() {
   // 1. Auf Projektwechsel reagieren (Anzahl der Bullets ändern)
   document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
     if (!event || !event.detail) return;
-    updatePaginationForProject(event.detail.projectIndex);
+    
+    // Markieren, dass gerade ein Projektwechsel stattfindet
+    isAnimatingProject = true;
+    
+    // Verzögert die Aktualisierung der Pagination um die Pausenzeit
+    setTimeout(() => {
+      // Pagination aktualisieren (ohne aktiven Bullet zu markieren)
+      updatePaginationForProject(event.detail.projectIndex, false);
+      
+      // Aktiven Bullet separat aktualisieren, BEVOR die Pagination wieder eingeblendet wird
+      const projectIndex = event.detail.projectIndex;
+      const project = uiState.projects[projectIndex];
+      if (project) {
+        const swiperElement = project.querySelector('.swiper');
+        if (swiperElement) {
+          const swiperIndex = Array.from(document.querySelectorAll('.swiper')).indexOf(swiperElement);
+          const swiper = swiperInitializer.getInstance(swiperIndex);
+          if (swiper) {
+            updateActiveBullet(-1, swiper.activeIndex);
+          }
+        }
+      }
+      
+      // Reset des Animation-Flags nach der Aktualisierung
+      setTimeout(() => {
+        isAnimatingProject = false;
+      }, 50);
+    }, betweenPauseMs); // Gleiche Pausenzeit wie in projectTitle.js
   });
 
-  // 2. Auf Bildwechsel reagieren (aktiven Bullet aktualisieren)
+  // 2. Auf Bildwechsel reagieren (aktiven Bullet aktualisieren), nur wenn kein Projektwechsel stattfindet
   document.addEventListener(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, (event) => {
-    if (!event || !event.detail) return;
-    updateActiveBullet(event.detail.imageIndex);
+    if (!event || !event.detail || isAnimatingProject) return;
+    
+    // Verwende den Slide-Index, wenn verfügbar, sonst fallback auf den Image-Index
+    const slideIndex = event.detail.slideIndex !== undefined ? event.detail.slideIndex : -1;
+    updateActiveBullet(event.detail.imageIndex, slideIndex);
   });
 
   // 3. Initial für das aktuell aktive Projekt einrichten
@@ -48,8 +85,9 @@ export function setupCustomPagination() {
 /**
  * Aktualisiert die Pagination für ein bestimmtes Projekt
  * @param {number} projectIndex - Index des Projekts
+ * @param {boolean} updateActiveBulletFlag - Ob der aktive Bullet aktualisiert werden soll
  */
-function updatePaginationForProject(projectIndex) {
+function updatePaginationForProject(projectIndex, updateActiveBulletFlag = true) {
   // Projekt im DOM finden
   const project = uiState.projects[projectIndex];
   if (!project) {
@@ -72,7 +110,7 @@ function updatePaginationForProject(projectIndex) {
     return;
   }
 
-  // Anzahl der Slides aus Swiper ermitteln (zuverlässiger als aus dem Projekt)
+  // Anzahl der Slides aus Swiper ermitteln
   const slideCount = swiper.slides ? swiper.slides.length : 0;
   if (slideCount === 0) {
     paginationContainer.innerHTML = '';
@@ -112,36 +150,41 @@ function updatePaginationForProject(projectIndex) {
   paginationContainer.appendChild(bulletList);
   
   console.log(`Pagination aktualisiert für Projekt ${projectIndex}: ${slideCount} Bullets`);
+  
+  // Aktives Bild markieren - nur wenn updateActiveBulletFlag = true
+  if (updateActiveBulletFlag && swiper) {
+    updateActiveBullet(-1, swiper.activeIndex);
+  }
 }
 
 /**
  * Aktualisiert nur den aktiven Bullet
- * @param {number} activeIndex - Index des aktiven Bildes
+ * @param {number} imageIndex - Index des aktiven Bildes (Bild-ID)
+ * @param {number} slideIndex - Index des Slides im aktuellen Swiper (bevorzugt)
  */
-function updateActiveBullet(activeIndex) {
-    console.log(`Aktualisiere aktive Bullet auf Index ${activeIndex}`);
-    
-    // Manchmal ist activeIndex undefined, dann 0 als Default
-    const indexToUse = activeIndex !== undefined ? activeIndex : 0;
-    
-    const bullets = paginationContainer.querySelectorAll('.custom-pagination-bullet');
-    if (bullets.length === 0) {
-      console.warn('Keine Bullets gefunden für Aktualisierung');
-      return;
-    }
-    
-    bullets.forEach((bullet, index) => {
-      // Vergleich mit String-Konvertierung für robustere Prüfung
-      if (index === indexToUse) {
-        console.log(`Bullet ${index} wird aktiviert`);
-        bullet.classList.add('active');
-        bullet.setAttribute('aria-selected', 'true');
-      } else {
-        bullet.classList.remove('active');
-        bullet.setAttribute('aria-selected', 'false');
-      }
-    });
+function updateActiveBullet(imageIndex, slideIndex = -1) {
+  // Verwende slideIndex, wenn verfügbar, sonst fallback auf imageIndex
+  const indexToUse = slideIndex !== -1 ? slideIndex : 0;
+  
+  console.log(`Aktualisiere aktive Bullet auf Index ${indexToUse} (Slide-Index: ${slideIndex}, Bild-ID: ${imageIndex})`);
+  
+  const bullets = paginationContainer.querySelectorAll('.custom-pagination-bullet');
+  if (bullets.length === 0) {
+    console.warn('Keine Bullets gefunden für Aktualisierung');
+    return;
   }
+  
+  bullets.forEach((bullet, index) => {
+    if (index === indexToUse) {
+      console.log(`Bullet ${index} wird aktiviert`);
+      bullet.classList.add('active');
+      bullet.setAttribute('aria-selected', 'true');
+    } else {
+      bullet.classList.remove('active');
+      bullet.setAttribute('aria-selected', 'false');
+    }
+  });
+}
 
 /**
  * Navigiert zu einem bestimmten Slide

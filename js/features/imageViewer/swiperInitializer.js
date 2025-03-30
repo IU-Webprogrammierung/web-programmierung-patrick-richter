@@ -43,22 +43,6 @@ export function initializeSwiperSliders() {
       slidesPerView: 1,
       speed: 1000,
       direction: 'horizontal',
-      pagination: {
-        enabled: true,
-        el: paginationEl || '.pagination', // Fallback zur allgemeinen Pagination
-        clickable: true
-      },
-    
-      on: {
-        init: function() {
-          // Nach der Initialisierung die Pagination aktualisieren
-          setTimeout(() => {
-            this.pagination.update();
-            console.log("Pagination aktualisiert");
-          }, 100);
-        }
-      },
-
       
       // Eigene Navigationslösung verwenden, keine Swiper-Controls
       navigation: {
@@ -71,22 +55,22 @@ export function initializeSwiperSliders() {
       touchRatio: 1,
       
       // Events für Bildwechsel
-      on: {
-        slideChange: function() {
-          if (projectIndex < 0) return;
-          
-          // Aktiven Slide ermitteln
-          const activeSlide = this.slides[this.activeIndex];
-          if (!activeSlide) return;
-          
-          // Daten aus Attributen auslesen
-          const imageId = parseInt(activeSlide.getAttribute('data-id'));
-          const textColor = activeSlide.getAttribute('data-text-color') || 'black';
-          
-          // Zentralen Status aktualisieren (löst ACTIVE_IMAGE_CHANGED aus)
-          uiState.setActiveImage(projectIndex, imageId, textColor);
-        }
-      }
+      // In swiperInitializer.js, in der slideChange-Funktion
+on: {
+    slideChange: function() {
+      if (projectIndex < 0) return;
+      
+      // Zusätzlich zum imageId auch den Slide-Index (this.activeIndex) übermitteln
+      const activeSlide = this.slides[this.activeIndex];
+      if (!activeSlide) return;
+      
+      const imageId = parseInt(activeSlide.getAttribute('data-id'));
+      const textColor = activeSlide.getAttribute('data-text-color') || 'black';
+      
+      // Den Slide-Index als zusätzlichen Parameter übergeben
+      uiState.setActiveImage(projectIndex, imageId, textColor, this.activeIndex);
+    }
+  }
     });
     
     // Swiper-Instanz speichern
