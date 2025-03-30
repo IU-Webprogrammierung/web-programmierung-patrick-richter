@@ -18,11 +18,6 @@
   margin-top: 1rem;
 }
 
-.pagination {
-  z-index: 100;
-  bottom: 200px;
-}
-
 .custom-pagination-list {
   display: flex;
   justify-content: center;
@@ -36,8 +31,8 @@
 }
 
 .custom-pagination-bullet {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.3);
   border: none;
@@ -48,11 +43,11 @@
 }
 
 .custom-pagination-bullet:hover {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .custom-pagination-bullet.active {
-  opacity: 1;
+  opacity: 0.6;
   background-color: var(--active-text-color, #000);
 }
 
@@ -67,20 +62,6 @@
 /* Für die Farbanpassung */
 .pagination-description-container {
   pointer-events: none;
-}
-
-/* Animation für Pagination */
-.pagination {
-  opacity: 1;
-  transition: opacity var(--title-fade-duration) ease;
-}
-
-.pagination.fade-out {
-  opacity: 0;
-}
-
-.pagination.initial-appear {
-  animation: initialFadeIn var(--title-initial-duration) ease-out;
 }
 
 /* Basis-Styling für Swiper */
@@ -275,7 +256,8 @@ h1 {
 .project-title,
 .project-title-mobile,
 .description-mobile,
-.description {
+.description,
+.pagination {
   opacity: 1;
   color: var(--active-text-color);
   transition: 
@@ -295,7 +277,7 @@ h1 {
 }
 
 .fade-out {
-  opacity: 0;
+  opacity: 0
 }
 
 .initial-appear {

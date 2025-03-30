@@ -44,16 +44,20 @@ const uiState = {
 
   // Methode zum Setzen des aktiven Bildes
   // In uiState.js
+// In uiState.js, die setActiveImage-Methode erweitern
+// In uiState.js, die setActiveImage-Methode 
 setActiveImage(projectIndex, imageId, textColor, slideIndex = -1) {
   const changed =
     projectIndex !== this.activeProjectIndex ||
     imageId !== this.activeImageIndex ||
-    textColor !== this.activeTextColor;
+    textColor !== this.activeTextColor ||
+    slideIndex !== this.activeSlideIndex;
 
   if (changed) {
     this.activeProjectIndex = projectIndex;
     this.activeImageIndex = imageId;
     this.activeTextColor = textColor || "black";
+    this.activeSlideIndex = slideIndex; // Wichtig: Speichere den Slide-Index
 
     document.dispatchEvent(
       new CustomEvent(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, {
@@ -61,20 +65,16 @@ setActiveImage(projectIndex, imageId, textColor, slideIndex = -1) {
           projectIndex: projectIndex,
           imageIndex: imageId,
           textColor: this.activeTextColor,
-          slideIndex: slideIndex // Neuer Parameter
+          slideIndex: slideIndex 
         },
       })
     );
     console.log(
       "uiState: Bild geupdated - neues Bild:",
-      imageId,
-      this.activeImageIndex,
-      "projekt: ",
-      projectIndex,
-      "TextFarbe: ",
-      textColor,
-      "Slide-Index: ",
-      slideIndex
+      imageId, this.activeImageIndex,
+      "projekt: ", projectIndex,
+      "TextFarbe: ", textColor,
+      "Slide-Index: ", slideIndex
     );
   }
 },
