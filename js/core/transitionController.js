@@ -4,6 +4,7 @@
  */
 
 import { getCSSTimeVariable } from './animationUtils.js';
+import uiState from './uiState.js';
 
 const TransitionController = {
   // Definierte Phasen eines Übergangs
@@ -39,6 +40,10 @@ const TransitionController = {
     // Wenn wir in die BETWEEN-Phase wechseln, Content-Update-Event auslösen
     if (newPhase === this.phases.BETWEEN) {
       document.dispatchEvent(new CustomEvent(this.events.CONTENT_UPDATE_NEEDED));
+      
+      // Die aktuelle Textfarbe aus dem uiState wird in der BETWEEN-Phase
+      // durch den imageColorHandler gesetzt, der auf das PHASE_CHANGED-Event reagiert
+      // Dies gewährleistet Synchronisation aller UI-Updates in dieser Phase
     }
   },
   

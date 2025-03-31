@@ -16,6 +16,9 @@
   left: auto;
   width: 100%;
   margin-top: 1rem;
+  line-height: 1lh;     /* 1 line-height unit */
+  block-size: 2lh;      /* genau 2 Zeilen */
+
 }
 
 .custom-pagination-list {

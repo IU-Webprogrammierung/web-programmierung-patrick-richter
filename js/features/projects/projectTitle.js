@@ -10,13 +10,16 @@ export function setupProjectTitle() {
   const mobileTitle = getValidatedElement(".project-title-mobile");
   const mobileDescription = getValidatedElement(".description-mobile");
   const desktopDescription = getValidatedElement(".description");
+  const paginationContainer = getValidatedElement(".pagination"); // Pagination hinzufügen
+
 
   // Alle zu animierenden Elemente
   const allElements = [
     headerTitle, 
     mobileTitle, 
     mobileDescription, 
-    desktopDescription
+    desktopDescription,
+    paginationContainer
   ].filter(el => el !== null);
 
   // Gemeinsame Funktion zum Setzen der Titel

@@ -8,6 +8,7 @@
 import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs';
 import uiState from '../../core/uiState.js';
 import { EVENT_TYPES } from '../../core/events.js';
+import TransitionController from '../../core/transitionController.js';
 
 // Speichert Swiper-Instanzen für späteren Zugriff
 const swiperInstances = [];
@@ -98,31 +99,43 @@ function setupProjectChangeHandler() {
     const { projectIndex } = event.detail;
     console.log(`SwiperJS: Projektwechsel zu ${projectIndex} erkannt`);
     
-    // Kurze Verzögerung für DOM-Updates
+    // Finde die zum Projekt gehörende Swiper-Instanz
+    const swiperInfo = swiperInstances.find(info => info.projectIndex === projectIndex);
+    if (!swiperInfo) {
+      console.warn(`SwiperJS: Keine Swiper-Instanz für Projekt ${projectIndex} gefunden`);
+      return;
+    }
+    
+    const swiper = swiperInfo.swiper;
+    
+    // Aktiven Slide identifizieren
+    const activeSlide = swiper.slides[swiper.activeIndex];
+    if (!activeSlide) {
+      console.warn(`SwiperJS: Kein aktiver Slide in Projekt ${projectIndex} gefunden`);
+      return;
+    }
+    
+    // Attribute auslesen
+    const imageId = parseInt(activeSlide.getAttribute('data-id'));
+    const textColor = activeSlide.getAttribute('data-text-color') || 'black';
+    
+    console.log(`SwiperJS: Nach Projektwechsel ist Bild ${imageId} aktiv, Farbe: ${textColor}`);
+    
+    // WICHTIG: Bei aktivem Transition nur die Werte im uiState aktualisieren, ohne Event auszulösen
+    if (TransitionController && TransitionController.isActive()) {
+      // Zustand aktualisieren ohne Event auszulösen
+      uiState.activeImageIndex = imageId;
+      uiState.activeTextColor = textColor;
+      if (swiper.activeIndex >= 0) {
+        uiState.activeSlideIndices[projectIndex] = swiper.activeIndex;
+      }
+      console.log(`SwiperJS: Stiller Update während Transition - Farbe: ${textColor}`);
+      return;
+    }
+    
+    // Nur ohne aktiven Transition das Event auslösen
     setTimeout(() => {
-      // Finde die zum Projekt gehörende Swiper-Instanz
-      const swiperInfo = swiperInstances.find(info => info.projectIndex === projectIndex);
-      if (!swiperInfo) {
-        console.warn(`SwiperJS: Keine Swiper-Instanz für Projekt ${projectIndex} gefunden`);
-        return;
-      }
-      
-      const swiper = swiperInfo.swiper;
-      
-      // Aktiven Slide identifizieren und Daten an uiState weitergeben
-      const activeSlide = swiper.slides[swiper.activeIndex];
-      if (!activeSlide) {
-        console.warn(`SwiperJS: Kein aktiver Slide in Projekt ${projectIndex} gefunden`);
-        return;
-      }
-      
-      const imageId = parseInt(activeSlide.getAttribute('data-id'));
-      const textColor = activeSlide.getAttribute('data-text-color') || 'black';
-      
-      console.log(`SwiperJS: Nach Projektwechsel ist Bild ${imageId} aktiv, Farbe: ${textColor}`);
-      
-      // uiState aktualisieren, löst ACTIVE_IMAGE_CHANGED aus
-      uiState.setActiveImage(projectIndex, imageId, textColor);
+      uiState.setActiveImage(projectIndex, imageId, textColor, swiper.activeIndex);
     }, 50);
   });
 }

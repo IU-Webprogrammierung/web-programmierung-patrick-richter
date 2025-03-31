@@ -47,7 +47,6 @@ export function setupCustomPagination() {
     updateActiveBullet(slideIndex);
   });
 
-  // 3. Auf TransitionController-Phasen reagieren
   document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
     const { phase } = event.detail;
     
@@ -55,26 +54,15 @@ export function setupCustomPagination() {
     if (phase === TransitionController.phases.BETWEEN) {
       const projectIndex = uiState.activeProjectIndex;
       
-      // Komplett neue Pagination für das aktuelle Projekt erstellen
-      updatePaginationForProject(projectIndex);
+      // Pagination aktualisieren und dann in separatem Rendering-Zyklus den Bullet
+      updatePaginationForProject(projectIndex, false);
       
-      // Aktiven Bullet markieren
-      if (uiState.activeSlideIndex !== undefined && uiState.activeSlideIndex >= 0) {
-        updateActiveBullet(uiState.activeSlideIndex);
-      } else {
-        // Default: Erstes Bild aktiv
-        updateActiveBullet(0);
-      }
-    }
-    
-    // CSS-Klassen für Animation setzen
-    if (paginationContainer) {
-      if (phase === TransitionController.phases.FADE_OUT || 
-          phase === TransitionController.phases.BETWEEN) {
-        paginationContainer.classList.add('fade-out');
-      } else if (phase === TransitionController.phases.FADE_IN) {
-        paginationContainer.classList.remove('fade-out');
-      }
+      requestAnimationFrame(() => {
+        const savedIndex = uiState.getActiveSlideIndexForProject ? 
+          uiState.getActiveSlideIndexForProject(projectIndex) : 0;
+        
+        updateActiveBullet(savedIndex);
+      });
     }
   });
 
