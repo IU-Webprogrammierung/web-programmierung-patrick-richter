@@ -1,6 +1,5 @@
 /**
- * @module customPagination
- * @description Benutzerdefinierte Pagination für Swiper mit konsistenter uiState-Integration
+ * Bietet benutzerdefinierte Pagination für Swiper mit konsistenter uiState-Integration
  */
 
 import uiState from '../../core/uiState.js';
@@ -23,30 +22,7 @@ export function setupCustomPagination() {
     return;
   }
 
-  // 1. Auf Projektwechsel reagieren (direkt auf das uiState-Event)
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
-    if (!event || !event.detail) return;
-    
-    const projectIndex = event.detail.projectIndex;
-    console.log(`Pagination: Projektwechsel zu ${projectIndex} erkannt`);
-    
-    // WICHTIG: Wir setzen die Pagination nicht sofort, sondern
-    // warten auf die BETWEEN-Phase des TransitionControllers
-  });
-
-  // 2. Auf Bildwechsel reagieren (direkt auf das uiState-Event)
-  document.addEventListener(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, (event) => {
-    if (!event || !event.detail || TransitionController.isActive()) return;
-    
-    // Nur reagieren, wenn KEIN Übergang läuft
-    const projectIndex = event.detail.projectIndex;
-    const imageIndex = event.detail.imageIndex;
-    const slideIndex = event.detail.slideIndex;
-    
-    console.log(`Pagination: Bildwechsel zu Bild ${imageIndex}, Slide ${slideIndex} in Projekt ${projectIndex}`);
-    updateActiveBullet(slideIndex);
-  });
-
+  // Event-Handler für Projektwechsel-Synchronisierung
   document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
     const { phase } = event.detail;
     
@@ -82,7 +58,6 @@ export function setupCustomPagination() {
 
 /**
  * Aktualisiert die Pagination für ein bestimmtes Projekt
- * @param {number} projectIndex - Index des Projekts
  */
 function updatePaginationForProject(projectIndex) {
   console.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
@@ -152,10 +127,10 @@ function updatePaginationForProject(projectIndex) {
 }
 
 /**
- * Aktualisiert nur den aktiven Bullet
- * @param {number} slideIndex - Index des Slides im aktuellen Swiper
+ * Aktualisiert den aktiven Bullet in der Pagination
+ * Exportiert für Verwendung in der synchronisierten Update-Funktion
  */
-function updateActiveBullet(slideIndex) {
+export function updateActiveBullet(slideIndex) {
   console.log(`updateActiveBullet: Aktiviere Slide ${slideIndex}`);
   
   if (!paginationContainer) {
@@ -185,8 +160,6 @@ function updateActiveBullet(slideIndex) {
 
 /**
  * Navigiert zu einem bestimmten Slide
- * @param {number} swiperIndex - Index des Swipers
- * @param {number} slideIndex - Index des Slides
  */
 function navigateToSlide(swiperIndex, slideIndex) {
   console.log(`navigateToSlide: Swiper ${swiperIndex}, Slide ${slideIndex}`);
