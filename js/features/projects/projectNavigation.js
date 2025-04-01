@@ -14,7 +14,9 @@ import { getValidatedElements } from '../../core/utils.js';
 
 export function setupScrollHandler() {
 
-  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
+  console.log("Alte setupScrollHandler deaktiviert - wird durch GSAP ersetzt");
+
+  /*const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -58,12 +60,14 @@ export function setupScrollHandler() {
   const initialIndex = calculateActiveProjectIndex();
   if (initialIndex >= 0 && initialIndex < uiState.projects.length) {
     uiState.setActiveProject(initialIndex);
-  }
+  }*/
 }
 
 // Neue Funktion zum Scrollen zu einem Projekt
 export function scrollToProject(projectId) {
-  const projects = getValidatedElements(".project:not(.footer-container)");
+  console.log("Alte scrollToProject deaktiviert - wird durch GSAP ersetzt");
+
+  /*const projects = getValidatedElements(".project:not(.footer-container)");
   const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container || projects.length === 0) {
@@ -93,7 +97,7 @@ export function scrollToProject(projectId) {
     }
   }
 
-  console.warn(`Projekt mit ID ${projectId} wurde nicht gefunden.`);
+  console.warn(`Projekt mit ID ${projectId} wurde nicht gefunden.`);*/
 }
 
 // Scrollt nach oben
@@ -104,7 +108,10 @@ const mobileDescription = getValidatedElement(".description-mobile");
 const desktopDescription = getValidatedElement(".description");
 
 export function scrollToTop() {
-  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
+
+  console.log("Alte scrollToTop deaktiviert - wird durch GSAP ersetzt");
+
+  /*const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -120,14 +127,16 @@ export function scrollToTop() {
   headerTitle.classList.add("fade-out");
   if (desktopDescription) desktopDescription.classList.remove("fade-out");
   if (mobileTitle) mobileTitle.classList.remove("fade-out");
-  if (mobileDescription) mobileDescription.classList.remove("fade-out");
+  if (mobileDescription) mobileDescription.classList.remove("fade-out");*/
 
 }
 
 // Footer schließen
 
 export function closeFooter() {
-  const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
+  console.log("Alte closeFooter deaktiviert - wird durch GSAP ersetzt");
+
+  /*const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
     console.error("Fehler: Project-Container nicht gefunden");
@@ -139,5 +148,5 @@ export function closeFooter() {
   container.scrollTo({
     top: Math.max(0, currentScrollPos - viewportHeight),
     behavior: "smooth",
-  });
+  });*/
 }

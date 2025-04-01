@@ -15,6 +15,7 @@ import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
 import { closeFooter } from "./projectNavigation.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
+import { setupAdvancedNavigation } from "../scrolling/scrollTriggerTest.js";
 
 /**
  * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
@@ -255,6 +256,18 @@ export async function createProjectElements() {
       setupScrollHandler();
       swiperInitializer.init();
       customPagination.init();
+        // ScrollTrigger-Test ausführen
+      
+      // Verzögerte Initialisierung des ScrollTriggers, um sicherzustellen,
+      // dass alle anderen UI-Komponenten vollständig initialisiert sind
+      setTimeout(() => {
+        console.log("Initialisiere GSAP-Navigation");
+        const scrollController = setupAdvancedNavigation();
+        
+        // Event-Listener für Projektänderungen registrieren
+        window.scrollController = scrollController; // Für Debugging
+      }, 300);  
+  
     }, 50);
   }, 50);
 }

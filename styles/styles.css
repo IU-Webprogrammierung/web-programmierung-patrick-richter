@@ -190,7 +190,7 @@
 html {
   font-size: 16px;
   /*font-size: clamp(1rem, 1.1vw, 2rem);*/
-  scroll-behavior: smooth;
+  /*scroll-behavior: smooth;*/
   overflow: hidden;
   font-family: var(--font-primary);
   box-sizing: border-box;
@@ -380,7 +380,7 @@ header > * {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  scroll-snap-stop: normal;
+  /*scroll-snap-stop: normal;*/
   z-index: 100;
 }
 .footer-top {
@@ -416,7 +416,7 @@ header > * {
 .project-container {
   display: flex;
   flex-direction: column;
-  scroll-snap-type: y mandatory;
+  /*scroll-snap-type: y mandatory;*/
   overflow-y: auto;
   height: 100vh;
   width: 100vw;
@@ -425,10 +425,10 @@ header > * {
 .project {
   width: 100vw;
   height: 100vh;
-  position: sticky;
+  /*position: sticky;*/
   top: 0;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  /*scroll-snap-align: start;
+  scroll-snap-stop: always;*/
 }
 
 

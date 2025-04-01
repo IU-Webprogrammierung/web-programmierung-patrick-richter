@@ -32,3 +32,4 @@ strapi-cms/.env
 strapi-cms/
 package-lock.json
 package.json
+CLAUDE.md
