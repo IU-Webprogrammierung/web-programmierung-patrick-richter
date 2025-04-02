@@ -44,6 +44,7 @@ export function initializeSwiperSliders() {
       slidesPerView: 1,
       speed: 1000,
       direction: 'horizontal',
+      loop: true,
       
       // Eigene Navigationslösung verwenden, keine Swiper-Controls
       navigation: {
@@ -60,6 +61,7 @@ export function initializeSwiperSliders() {
 on: {
     slideChange: function() {
       if (projectIndex < 0) return;
+      
       
       // Zusätzlich zum imageId auch den Slide-Index (this.activeIndex) übermitteln
       const activeSlide = this.slides[this.activeIndex];
@@ -155,23 +157,14 @@ function navigateSlide(slider, clientX) {
     const screenWidth = window.innerWidth;
   
     const isLeftClick = clientX < screenWidth / 2;
-    const isRightClick = !isLeftClick;
-    const isFirstSlide = swiper.activeIndex === 0;
-    const isLastSlide = swiper.isEnd;
   
-    if (isRightClick && isLastSlide) {
-      setTimeout(() => {
-        swiper.slideTo(0, 1000);
-      }, 200);
-    } else if (isLeftClick && isFirstSlide) {
-      swiper.slideTo(swiper.slides.length - 1, 1000);
-    } else {
+    // TODO kann jetzt auch mit swiper.slideNext() und swiper.slidePrev() gelöst werden
+    
       if (isLeftClick) {
         swiper.slidePrev();
       } else {
         swiper.slideNext();
       }
-    }
   
     return true;
   }

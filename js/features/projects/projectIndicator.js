@@ -10,12 +10,10 @@
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement, getValidatedElements } from '../../core/utils.js';
-// Import der zentralen Navigation statt der projektspezifischen scrollToProject-Funktion
-import { navigateToProject } from "../../core/navigationUtils.js";
+import { getValidatedElement, getValidatedElements } from "../../core/utils.js";
+import { getNavigationAPI } from "../navigation/navigationUtils.js";
 import { removeHoverListeners } from "./hoverPreview.js";
 import { EVENT_TYPES } from "../../core/events.js";
-
 
 export function setupProjectIndicator() {
   // Projektliste im Panel erstellen
@@ -98,6 +96,7 @@ function setupProjectList() {
       const li = document.createElement("li");
       const a = document.createElement("a");
       const projectId = project.getAttribute("data-project-id");
+      const nav = getNavigationAPI();
 
       a.textContent = project.getAttribute("data-project-name");
       a.href = "#";
@@ -112,19 +111,24 @@ function setupProjectList() {
       a.addEventListener("click", function (e) {
         e.preventDefault();
 
+        const navigation = getNavigationAPI();
+        if (!navigation) {
+          console.error("Navigation-API nicht verfügbar");
+          return;
+        }
+
         // Panel schließen
         if (indicator && indicator.classList.contains("open")) {
           indicator.classList.remove("open");
           tab?.setAttribute("aria-expanded", "false");
 
-          // Auf Animation warten, bevor gescrollt wird
+          // Auf Animation warten, bevor navigiert wird
           setTimeout(function () {
-            // ÄNDERUNG: Zentrale Navigationsfunktion verwenden
-            navigateToProject(projectId);
+            navigation.navigateToProject(projectId);
           }, 300);
         } else {
-          // Direkt scrollen, wenn Panel nicht offen ist
-          navigateToProject(projectId);
+          // Direkt navigieren, wenn Panel nicht offen ist
+          navigation.navigateToProject(projectId);
         }
       });
 

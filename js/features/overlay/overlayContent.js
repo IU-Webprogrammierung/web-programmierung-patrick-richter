@@ -8,8 +8,8 @@
 import dataStore from "../../core/dataStore.js";
 import { getValidatedElement } from '../../core/utils.js';
 import { hideOverlay } from "./overlayController.js";
-// Import der zentralen Navigation statt der projektspezifischen scrollToProject-Funktion
-import { navigateToProject } from "../../core/navigationUtils.js";
+import { getNavigationAPI } from "../navigation/navigationUtils.js";
+
 
 // Erstellt die About- und Imprint-Inhalte im Overlay
 
@@ -119,8 +119,12 @@ function createClientsList(container, clientsData) {
 
       // Zum Projekt scrollen (mit kurzer Verzögerung für Animation)
       setTimeout(() => {
-        // ÄNDERUNG: Zentrale Navigationsfunktion verwenden
-        navigateToProject(project.id);
+        const navigation = getNavigationAPI();
+        if (navigation) {
+          navigation.navigateToProject(project.id);
+        } else {
+          console.error("Navigation-API nicht verfügbar");
+        }
       }, 300);
     });
 

@@ -87,9 +87,6 @@ export function setupImageNavigation() {
     const slider = elementAtClick.closest(".swiper");
     if (!slider) return;
     
-    // Position im Container
-    const rect = container.getBoundingClientRect();
-    
     // Swiper-Navigation verwenden statt scrollTo
     swiperInitializer.navigateSlide(slider, e.clientX);
 });

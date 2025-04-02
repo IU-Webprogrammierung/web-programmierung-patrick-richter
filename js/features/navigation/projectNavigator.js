@@ -1,20 +1,28 @@
 /**
- * Erweiterte Projekt-Navigation mit GSAP
- * Mit vereinfachtem, robustem Observer
+ * projectNavigator.js
+ * Hauptmodul für die Projekt-Navigation mit GSAP
+ * 
+ * Dieses Modul ist verantwortlich für:
+ * - Initialisierung der Navigation
+ * - Animation der Projektwechsel
+ * - Verwaltung des Scroll-Verhaltens
+ * - Koordination mit anderen Navigationsmodulen
  */
 
+import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
+import { setupHistoryRouting } from './navigationRouting.js';
 import uiState from "../../core/uiState.js";
-import { registerNavigationAPI } from "../../core/navigationUtils.js";
+import { registerNavigationAPI } from "./navigationUtils.js";
 
-gsap.registerPlugin(Observer);
-
-export function setupAdvancedNavigation() {
+export function setupProjectNavigation() {
+  // Konfiguration ohne bedingte Steuerung
   const CONFIG = {
-    PARALLAX_AMOUNT: 15,        // Wie weit Projekte rausgeschoben werden
-    ANIMATION_DURATION: 0.8,    // Dauer der Animation
-    SCROLL_TOLERANCE: 15        // Toleranz für Scroll-Events
+    PARALLAX_AMOUNT: 15,
+    ANIMATION_DURATION: 0.8,
+    SCROLL_TOLERANCE: 15
   };
 
+  // DOM-Elemente und Zustandsverwaltung
   const wrapper = document.querySelector(".project-scroll-wrapper") || document;
   const projects = document.querySelectorAll(".project");
   let currentIndex = 0;
@@ -35,9 +43,20 @@ export function setupAdvancedNavigation() {
       yPercent: i === 0 ? 0 : 100,
       zIndex: i === 0 ? 5 : 0 
     });
+    
+    // Accessibility: ARIA-Attribute
+    p.setAttribute('aria-hidden', i !== 0 ? 'true' : 'false');
+    if (p.getAttribute('role') !== 'region') {
+      p.setAttribute('role', 'region');
+    }
   });
 
-  // Einheitliche Transition-Funktion für alle Projektwechsel
+  /**
+   * Transition-Funktion für Projektwechsel
+   * @param {number} index - Ziel-Projektindex
+   * @param {number} direction - Richtung (1 = nach unten, -1 = nach oben)
+   * @returns {gsap.core.Timeline} - Die erstellte GSAP-Timeline
+   */
   function transitionToProject(index, direction) {
     index = wrap(index);
     if (index === currentIndex || animating) return;
@@ -57,10 +76,31 @@ export function setupAdvancedNavigation() {
       onComplete: () => {
         // Aufräumen nach der Animation
         projects.forEach((p, i) => {
+          const isFooter = p.classList.contains('footer-container');
+          const isLastRegularProject = i === projects.length - 2; // Vorletztes Element = letztes reguläres Projekt
+          const isFooterActive = index === projects.length - 1;
+          
           if (i !== index) {
-            gsap.set(p, { autoAlpha: 0, zIndex: 0 });
+            if (isFooter) {
+              // Footer immer sichtbar
+              gsap.set(p, { autoAlpha: 1, zIndex: 1 });
+              p.setAttribute('aria-hidden', 'false');
+            } else if (isLastRegularProject && isFooterActive) {
+              // Letztes Projekt sichtbar lassen, wenn Footer aktiv ist
+              gsap.set(p, { autoAlpha: 1, zIndex: 2 }); // Zwischen Footer und aktivem Projekt
+              p.setAttribute('aria-hidden', 'false');
+            } else {
+              // Andere Projekte ausblenden
+              gsap.set(p, { autoAlpha: 0, zIndex: 0 });
+              p.setAttribute('aria-hidden', 'true');
+            }
+          } else {
+            // Aktives Projekt
+            gsap.set(p, { zIndex: 5 }); // Höchster z-index für aktives Projekt
+            p.setAttribute('aria-hidden', 'false');
           }
         });
+        
         animating = false;
         currentIndex = index;
       }
@@ -90,14 +130,17 @@ export function setupAdvancedNavigation() {
     return tl;
   }
 
-  // Event-Dispatch an uiState
+  /**
+   * Benachrichtigt uiState über Projektwechsel
+   * @param {number} index - Index des neuen aktiven Projekts
+   */
   function dispatchProjectChangeEvent(index) {
     const projectElement = projects[index];
     if (!projectElement) return;
     uiState.setActiveProject(index);
   }
 
-  // VERBESSERT: Vereinfachter Observer ohne Zeit-basiertes Debouncing
+  // Scroll/Touch-Handler mit Observer
   Observer.create({
     target: wrapper,
     type: "wheel,touch,pointer",
@@ -114,6 +157,18 @@ export function setupAdvancedNavigation() {
     preventDefault: true
   });
 
+  // Klick auf oberen Footer-Bereich zum vorherigen Projekt
+  const footerTop = document.querySelector('.footer-top');
+  if (footerTop) {
+    footerTop.addEventListener('click', () => {
+      if (!animating) {
+        // Zum letzten regulären Projekt scrollen
+        const lastRegularProjectIndex = projects.length - 2;
+        transitionToProject(lastRegularProjectIndex, -1);
+      }
+    });
+  }
+
   // Erstes Projekt anzeigen
   gsap.set(projects[0], {
     autoAlpha: 1,
@@ -121,12 +176,23 @@ export function setupAdvancedNavigation() {
     yPercent: 0
   });
 
+  // Keyboard Navigation initialisieren
+  setupKeyboardNavigation(transitionToProject, projects, () => animating);
+
+//Routing-Funktionen initialisieren
+  setupHistoryRouting({
+    projects,
+    transitionToProject,
+    getCurrentIndex: () => currentIndex,
+    dispatchProjectChangeEvent
+  });
+
   // Initialer Event-Dispatch
   setTimeout(() => {
     dispatchProjectChangeEvent(0);
   }, 300);
 
-  // Navigation API für externe Verwendung
+  // Navigation-API für externe Nutzung
   const api = {
     moveToNextProject: () => {
       if (animating) return;
@@ -155,7 +221,22 @@ export function setupAdvancedNavigation() {
       if (animating || currentIndex === 0) return;
       transitionToProject(0, -1);
     },
-    getCurrentIndex: () => currentIndex
+    getCurrentIndex: () => currentIndex,
+    // Routing-Funktionen
+    disableRouting: () => {
+      // Hier könnte ein Cleanup-Code stehen
+    },
+    enableRouting: () => {
+      if (!CONFIG.ENABLE_ROUTING) {
+        CONFIG.ENABLE_ROUTING = true;
+        setupHistoryRouting({
+          projects,
+          transitionToProject,
+          getCurrentIndex: () => currentIndex,
+          dispatchProjectChangeEvent
+        });
+      }
+    }
   };
 
   // API registrieren und zurückgeben
