@@ -10,11 +10,12 @@
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from "../../core/utils.js";
-import { getValidatedElements } from "../../core/utils.js";
-import { scrollToProject } from "./projectNavigation.js";
-import { removeHoverListeners } from "../projects/hoverPreview.js";
+import { getValidatedElement, getValidatedElements } from '../../core/utils.js';
+// Import der zentralen Navigation statt der projektspezifischen scrollToProject-Funktion
+import { navigateToProject } from "../../core/navigationUtils.js";
+import { removeHoverListeners } from "./hoverPreview.js";
 import { EVENT_TYPES } from "../../core/events.js";
+
 
 export function setupProjectIndicator() {
   // Projektliste im Panel erstellen
@@ -107,7 +108,7 @@ function setupProjectList() {
         a.classList.add("active");
       }
 
-      // Click-Handler
+      // Click-Handler mit zentraler Navigation
       a.addEventListener("click", function (e) {
         e.preventDefault();
 
@@ -117,13 +118,13 @@ function setupProjectList() {
           tab?.setAttribute("aria-expanded", "false");
 
           // Auf Animation warten, bevor gescrollt wird
-          // TODO eventuell über transitionend lösen?
           setTimeout(function () {
-            scrollToProject(projectId);
+            // ÄNDERUNG: Zentrale Navigationsfunktion verwenden
+            navigateToProject(projectId);
           }, 300);
         } else {
           // Direkt scrollen, wenn Panel nicht offen ist
-          scrollToProject(projectId);
+          navigateToProject(projectId);
         }
       });
 

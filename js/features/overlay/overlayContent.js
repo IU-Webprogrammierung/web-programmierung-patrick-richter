@@ -8,7 +8,8 @@
 import dataStore from "../../core/dataStore.js";
 import { getValidatedElement } from '../../core/utils.js';
 import { hideOverlay } from "./overlayController.js";
-import { scrollToProject } from "../projects/projectNavigation.js";
+// Import der zentralen Navigation statt der projektspezifischen scrollToProject-Funktion
+import { navigateToProject } from "../../core/navigationUtils.js";
 
 // Erstellt die About- und Imprint-Inhalte im Overlay
 
@@ -94,42 +95,43 @@ function createClientsList(container, clientsData) {
     a.name.localeCompare(b.name)
   );
 
-  // Clients in die Liste einfügen
-  sortedClients.forEach((client) => {
-    const li = document.createElement("li");
+ // Clients in die Liste einfügen
+ sortedClients.forEach((client) => {
+  const li = document.createElement("li");
 
-    // Prüfen, ob Client Projekte hat
-    if (client.projects && client.projects.length > 0) {
-      // Client mit Projekt(en) - als Link darstellen
-      const project = client.projects[0]; // Erstes Projekt nehmen
+  // Prüfen, ob Client Projekte hat
+  if (client.projects && client.projects.length > 0) {
+    // Client mit Projekt(en) - als Link darstellen
+    const project = client.projects[0]; // Erstes Projekt nehmen
 
-      // Link-Element erstellen mit einfachem ARIA-Label
-      const link = document.createElement("a");
-      link.href = "#";
-      link.className = "about-clients-project-link";
-      link.setAttribute("data-project-id", project.id);
-      link.textContent = client.name;
-      link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
+    // Link-Element erstellen mit einfachem ARIA-Label
+    const link = document.createElement("a");
+    link.href = "#";
+    link.className = "about-clients-project-link";
+    link.setAttribute("data-project-id", project.id);
+    link.textContent = client.name;
+    link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
 
-      // Event-Listener für Klick hinzufügen
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        hideOverlay(); // Overlay schließen
+    // Event-Listener für Klick hinzufügen
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      hideOverlay(); // Overlay schließen
 
-        // Zum Projekt scrollen (mit kurzer Verzögerung für Animation)
-        setTimeout(() => {
-          scrollToProject(project.id);
-        }, 300);
-      });
+      // Zum Projekt scrollen (mit kurzer Verzögerung für Animation)
+      setTimeout(() => {
+        // ÄNDERUNG: Zentrale Navigationsfunktion verwenden
+        navigateToProject(project.id);
+      }, 300);
+    });
 
-      li.appendChild(link);
-    } else {
-      // Client ohne Projekte - als normaler Text
-      li.textContent = client.name;
-    }
+    li.appendChild(link);
+  } else {
+    // Client ohne Projekte - als normaler Text
+    li.textContent = client.name;
+  }
 
-    container.appendChild(li);
-  });
+  container.appendChild(li);
+});
 }
 
 // Erstellt den Imprint-Inhalt

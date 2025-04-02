@@ -1,253 +1,247 @@
+/**
+ * Erweiterte Projekt-Navigation mit GSAP Observer
+ * Inklusive Durchblätterfunktion und richtungsabhängigem Z-Index-Handling
+ */
+
 import uiState from "../../core/uiState.js";
 import { EVENT_TYPES } from "../../core/events.js";
+import { registerNavigationAPI } from "../../core/navigationUtils.js";
+
+gsap.registerPlugin(Observer);
 
 export function setupAdvancedNavigation() {
-  // GSAP Observer Plugin registrieren für Scroll-Erkennung
-  gsap.registerPlugin(Observer);
-
-  // 1. Grundlegende Variablen und Elemente initialisieren
-  // ====================================================
-  
-  // Konfigurierbare Parameter für die Animation
   const CONFIG = {
-    // Parallax-Effekt: Wie weit sich Projekte beim Übergang bewegen (in Prozent)
     PARALLAX_AMOUNT: 15,
-    
-    // Animationsdauer in Sekunden
     ANIMATION_DURATION: 1,
-    
-    // Beschleunigungskurve der Animation
-    EASE: "power1.inOut",
-    
-    // Toleranz für kleine Bewegungen (verhindert versehentliches Scrollen)
     SCROLL_TOLERANCE: 15
   };
-  
-  // Alle Projekte aus dem DOM auswählen
-  const projects = document.querySelectorAll(".project");
-  
-  // Aktueller Index (0 = erstes Projekt ist aktiv)
-  let currentIndex = 0;
-  
-  // Flag, ob gerade eine Animation läuft (verhindert mehrfache Auslösungen)
-  let animating = false;
-  
-  // Hilfsfunktion: Stellt sicher, dass der Index im gültigen Bereich bleibt
-  const wrap = index => Math.max(0, Math.min(index, projects.length - 1));
 
-  // 2. Anfangsstile für alle Projekte setzen
-  // =======================================
-  projects.forEach((project, i) => {
-    gsap.set(project, { 
-      position: "absolute", 
-      top: 0,               
-      left: 0,              
-      width: "100%",        
-      height: "100%",       
-      autoAlpha: i === 0 ? 1 : 0, 
-      yPercent: i === 0 ? 0 : 100 
+  const projects = document.querySelectorAll(".project");
+  let currentIndex = 0;
+  let animating = false;
+
+  const wrap = (index) => Math.max(0, Math.min(index, projects.length - 1));
+
+  // Initiale Styles setzen
+  projects.forEach((p, i) => {
+    gsap.set(p, {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      autoAlpha: i === 0 ? 1 : 0,
+      yPercent: i === 0 ? 0 : 100,
+      zIndex: 0
     });
   });
 
-  // 3. Hauptfunktion für Projektwechsel mit Animationen
-  // =================================================
-  function gotoProject(index, direction) {
-    // Index überprüfen und ggf. korrigieren
+  function directTransition(index, direction) {
     index = wrap(index);
-    
-    // Keine Animation, wenn wir bereits auf dem Zielprojekt sind
-    if (index === currentIndex) return;
-    
-    // Animation beginnt - Sperren, um mehrfache Auslösungen zu verhindern
+    if (index === currentIndex || animating) return;
+
     animating = true;
-    
-    // Frühes Auslösen des Events, damit der Text sich schon aktualisiert
-    // während die Animation noch läuft (25% der Animationszeit)
-    setTimeout(() => {
-      dispatchProjectChangeEvent(index);
-    }, CONFIG.ANIMATION_DURATION * 250); 
-    
-    // Timeline für die Animation erstellen
+
     const tl = gsap.timeline({
-      defaults: { 
-        duration: CONFIG.ANIMATION_DURATION, 
-        ease: CONFIG.EASE 
+      defaults: {
+        duration: CONFIG.ANIMATION_DURATION,
+        ease: "power1.inOut"
       },
       onComplete: () => {
+        projects.forEach((p, i) => gsap.set(p, { autoAlpha: i === index ? 1 : 0 }));
         animating = false;
+        currentIndex = index;
       }
     });
-    
-    if (direction === 1) { // Nach unten scrollen (nächstes Projekt anzeigen)
-      if (currentIndex >= 0) {
-        // WICHTIG: Bei Abwärtsbewegung kommt das neue Projekt ÜBER das aktuelle
-        // Z-Index muss entsprechend gesetzt werden
-        gsap.set(projects[currentIndex], { zIndex: 0 });
-        gsap.set(projects[index], { zIndex: 1 });
-        
-        // Animation: Aktuelles Projekt sanft nach oben bewegen
-        tl.to(projects[currentIndex], { 
-          yPercent: -CONFIG.PARALLAX_AMOUNT
-        }, 0);
-      }
-      
-      // Nächstes Projekt vorbereiten
-      gsap.set(projects[index], { 
-        autoAlpha: 1,
-        yPercent: 100 
-      });
-      
-      // Animation: Nächstes Projekt von unten nach oben einschieben
-      tl.to(projects[index], { 
-        yPercent: 0 
-      }, 0);
-    } 
-    else { // Nach oben scrollen (vorheriges Projekt anzeigen)
-      if (currentIndex >= 0) {
-        // WICHTIG: Bei Aufwärtsbewegung muss das weggehende Projekt ÜBER dem neuen sein
-        // damit es nach unten aus dem Bild gleiten kann
-        gsap.set(projects[currentIndex], { zIndex: 1 });
-        gsap.set(projects[index], { zIndex: 0 });
-        
-        // Animation: Aktuelles Projekt nach unten aus dem Bild schieben
-        tl.to(projects[currentIndex], { 
-          yPercent: 100
-        }, 0);
-      }
-      
-      // Vorheriges Projekt vorbereiten
-      gsap.set(projects[index], { 
-        autoAlpha: 1,
-        yPercent: -CONFIG.PARALLAX_AMOUNT
-      });
-      
-      // Animation: Vorheriges Projekt in die Endposition bewegen
-      tl.to(projects[index], { 
-        yPercent: 0 
-      }, 0);
-    }
 
-    // Aktuellen Index aktualisieren
-    currentIndex = index;
-    
-    console.log(`Wechsel zu Projekt ${index}, ID: ${projects[index]?.getAttribute("data-project-id") || "unbekannt"}`);
+    gsap.set(projects[index], {
+      autoAlpha: 1,
+      yPercent: direction > 0 ? 100 : -CONFIG.PARALLAX_AMOUNT,
+      zIndex: direction > 0 ? 5 : 0
+    });
+
+    gsap.set(projects[currentIndex], { zIndex: direction > 0 ? 0 : 5 });
+
+    tl.to(projects[currentIndex], {
+      yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100
+    }, 0);
+
+    tl.to(projects[index], {
+      yPercent: 0
+    }, 0);
+
+    tl.call(() => {
+      dispatchProjectChangeEvent(index);
+    }, null, ">-0.3");
   }
 
-  // 4. Observer für Scroll-Events einrichten
-  // ======================================
+function navigateToProject(targetIndex) {
+  targetIndex = wrap(targetIndex);
+  if (targetIndex === currentIndex || animating) return;
+
+  const direction = targetIndex > currentIndex ? 1 : -1;
   
-  // Scroll-Kontrollvariablen
+  // Bei direkten Nachbarn die einfache Transition verwenden
+  if (Math.abs(targetIndex - currentIndex) === 1) {
+    return directTransition(targetIndex, direction);
+  }
+
+  animating = true;
+
+  // Projekte bestimmen und zurücksetzen
+  projects.forEach(p => gsap.set(p, { autoAlpha: 0, zIndex: 0 }));
+  gsap.set(projects[currentIndex], { autoAlpha: 1, yPercent: 0 });
+  
+  const projectIndices = direction > 0
+    ? Array.from({ length: targetIndex - currentIndex + 1 }, (_, i) => currentIndex + i)
+    : Array.from({ length: currentIndex - targetIndex + 1 }, (_, i) => currentIndex - i);
+
+  // Progressive Z-Indices setzen (wichtig für korrekte Überlagerung)
+  projectIndices.forEach((idx, i) => {
+    const zValue = direction > 0 ? 100 + i : 100 + (projectIndices.length - i);
+    gsap.set(projects[idx], { zIndex: zValue });
+  });
+  
+  // Timeline für die Animation
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Aufräumen
+      projects.forEach((p, i) => {
+        if (i !== targetIndex) gsap.set(p, { autoAlpha: 0 });
+      });
+      animating = false;
+      currentIndex = targetIndex;
+    }
+  });
+
+  // Aktuelles Projekt schnell ausblenden
+  tl.to(projects[currentIndex], {
+    yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100,
+    duration: 0.3,
+    ease: "power1.out"
+  }, 0);
+  
+  // Alle zu blätternden Projekte vorbereiten
+  const projectsToAnimate = projectIndices.slice(1).map(idx => {
+    // Projekte außerhalb des Sichtfelds positionieren
+    gsap.set(projects[idx], {
+      autoAlpha: 1,
+      yPercent: direction > 0 ? 100 : -CONFIG.PARALLAX_AMOUNT
+    });
+    return projects[idx];
+  });
+
+  // Die Gesamtdauer mit Verzögerung berechnen
+  const stageDuration = Math.min(0.5, 0.2 * (projectsToAnimate.length - 1) + 0.3);
+  
+  // Einblenden mit gestaffeltem Delay
+  tl.to(projectsToAnimate, {
+    yPercent: 0,
+    duration: 0.4,
+    ease: "power2.out",
+    stagger: {
+      each: 0.06,                // Festes Delay zwischen Elementen
+      ease: "power1.in",         // Easing für die Verzögerungsverteilung
+      from: "start"              // Vom ersten Element starten
+    }
+  }, 0.1);
+  
+  // Alle außer dem letzten wieder ausblenden
+  tl.to(projectsToAnimate.slice(0, -1), {
+    yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100,
+    duration: 0.3,
+    ease: "power1.in",
+    stagger: {
+      each: 0.05,
+      ease: "power1.in",
+      from: "start"
+    }
+  }, ">-0.25"); // Früher starten für flüssigeren Übergang
+  
+  // Event auslösen
+  tl.call(() => {
+    dispatchProjectChangeEvent(targetIndex);
+  }, null, ">-0.3");
+
+  return tl;
+}
+
+  function dispatchProjectChangeEvent(index) {
+    const projectElement = projects[index];
+    if (!projectElement) return;
+    uiState.setActiveProject(index);
+  }
+
+  // Scrollsteuerung via Observer
   let isScrolling = false;
   let lastScrollTime = 0;
-  const scrollDebounceTime = 800; // Erhöht für bessere Stabilität
+  const scrollDebounceTime = 800;
 
   Observer.create({
     type: "wheel,touch,pointer",
-    wheelSpeed: -0.3, // Reduzierte Empfindlichkeit
+    wheelSpeed: -0.3,
     onDown: (self) => {
       const now = Date.now();
-      
-      // Überprüfe Scroll-Geschwindigkeit und vermeide zu kleine Bewegungen
       if (!isScrolling && now - lastScrollTime > scrollDebounceTime && Math.abs(self.deltaY) > 5) {
         isScrolling = true;
         lastScrollTime = now;
-        
-        gotoProject(currentIndex - 1, -1);
-        
-        // Scroll-Sperre erst nach vollständiger Animation aufheben
-        gsap.delayedCall(CONFIG.ANIMATION_DURATION + 0.3, () => {
-          isScrolling = false;
-        });
+        directTransition(currentIndex - 1, -1);
+        gsap.delayedCall(CONFIG.ANIMATION_DURATION + 0.3, () => { isScrolling = false; });
       }
     },
     onUp: (self) => {
       const now = Date.now();
-      
       if (!isScrolling && now - lastScrollTime > scrollDebounceTime && Math.abs(self.deltaY) > 5) {
         isScrolling = true;
         lastScrollTime = now;
-        
-        gotoProject(currentIndex + 1, 1);
-        
-        gsap.delayedCall(CONFIG.ANIMATION_DURATION + 0.3, () => {
-          isScrolling = false;
-        });
+        directTransition(currentIndex + 1, 1);
+        gsap.delayedCall(CONFIG.ANIMATION_DURATION + 0.3, () => { isScrolling = false; });
       }
     },
     tolerance: CONFIG.SCROLL_TOLERANCE,
     lockAxis: true,
     preventDefault: true
   });
-  
-  // 5. Event-Weiterleitung an andere Module der Anwendung
-  // ===================================================
-  function dispatchProjectChangeEvent(index) {
-    const projectElement = projects[index];
-    
-    if (!projectElement) {
-      console.error(`Projekt mit Index ${index} nicht gefunden`);
-      return;
-    }
-    
-    console.log(`Projektwechsel: DOM-Index=${index}`);
-    
-    // WICHTIG: Konsistent den DOM-INDEX verwenden, nicht die Projekt-ID
-    uiState.setActiveProject(index);
-  }
 
-  // 6. Erste Initialisierung
-  // =====================
-  // Erstes Projekt sichtbar machen
-  gsap.set(projects[0], { 
+  // Erstes Projekt anzeigen
+  gsap.set(projects[0], {
     autoAlpha: 1,
-    zIndex: 1,
+    zIndex: 10,
     yPercent: 0
   });
-  
-  // Erstes Event auslösen - mit VERZÖGERUNG, damit der Rest der Anwendung bereit ist
+
   setTimeout(() => {
-    console.log("Initiales Projekt-Event wird ausgelöst");
     dispatchProjectChangeEvent(0);
   }, 300);
-  
-  // 7. API für andere Module bereitstellen
-  // ===================================
-  return {
-    // Zu einem bestimmten Projekt scrollen (anhand des DOM-Index)
-    // KORRIGIERT: Nutzt jetzt DOM-Index statt Projekt-ID
-    scrollToProjectByIndex: (index) => {
-      index = wrap(index);
-      const direction = index > currentIndex ? 1 : -1;
-      gotoProject(index, direction);
+
+  // Navigation API
+  const api = {
+    moveToNextProject: () => {
+      if (animating) return;
+      directTransition(currentIndex + 1, 1);
     },
-    
-    // BEACHTE: Diese Funktion konvertiert Projekt-IDs zu DOM-Indizes
-    // Dies ist eine Übergangslösung, bis alle Teile deines Projekts auf DOM-Indizes umgestellt sind
-    scrollToProject: (projectId) => {
-      // Suche den DOM-Index für die gegebene Projekt-ID
+    moveToPreviousProject: () => {
+      if (animating) return;
+      directTransition(currentIndex - 1, -1);
+    },
+    navigateToIndex: (index) => {
+      if (animating) return;
+      navigateToProject(index);
+    },
+    navigateToProject: (projectId) => {
+      if (animating) return;
       const index = Array.from(projects).findIndex(
-        project => project.getAttribute("data-project-id") === projectId.toString()
+        p => p.getAttribute("data-project-id") === projectId.toString()
       );
-      
-      if (index !== -1) {
-        const direction = index > currentIndex ? 1 : -1;
-        gotoProject(index, direction);
-      }
+      if (index !== -1) navigateToProject(index);
     },
-    
-    // Zum ersten Projekt scrollen
-    scrollToTop: () => {
-      if (currentIndex === 0) return;
-      gotoProject(0, -1);
+    navigateToTop: () => {
+      if (animating || currentIndex === 0) return;
+      navigateToProject(0);
     },
-    
-    // Zum nächsten Projekt scrollen
-    gotoNext: () => gotoProject(currentIndex + 1, 1),
-    
-    // Zum vorherigen Projekt scrollen
-    gotoPrevious: () => gotoProject(currentIndex - 1, -1),
-    
-    // Aktuellen Index zurückgeben
     getCurrentIndex: () => currentIndex
   };
+
+  registerNavigationAPI(api);
+  return api;
 }
