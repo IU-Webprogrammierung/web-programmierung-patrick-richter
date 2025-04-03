@@ -45,6 +45,7 @@ export function initializeSwiperSliders() {
       speed: 1000,
       direction: 'horizontal',
       loop: true,
+      loopedSlides: 1,
       
       // Eigene Navigationslösung verwenden, keine Swiper-Controls
       navigation: {
@@ -61,7 +62,9 @@ export function initializeSwiperSliders() {
 on: {
     slideChange: function() {
       if (projectIndex < 0) return;
-      
+      // Für Loop korrekten Index ermitteln
+      const realIndex = this.realIndex; // Gibt den Index des originalen Slides zurück
+
       
       // Zusätzlich zum imageId auch den Slide-Index (this.activeIndex) übermitteln
       const activeSlide = this.slides[this.activeIndex];
@@ -71,7 +74,7 @@ on: {
       const textColor = activeSlide.getAttribute('data-text-color') || 'black';
       
       // Den Slide-Index als zusätzlichen Parameter übergeben
-      uiState.setActiveImage(projectIndex, imageId, textColor, this.activeIndex);
+      uiState.setActiveImage(projectIndex, imageId, textColor, realIndex);
     }
   }
     });

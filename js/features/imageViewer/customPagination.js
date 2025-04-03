@@ -132,6 +132,11 @@ function updatePaginationForProject(projectIndex) {
  */
 export function updateActiveBullet(slideIndex) {
   console.log(`updateActiveBullet: Aktiviere Slide ${slideIndex}`);
+
+  // Für Loop Modus den Index anpassen (kann negativ sein)
+  if (slideIndex < 0) {
+    slideIndex = 0; // Standardwert setzen
+  }
   
   if (!paginationContainer) {
     console.warn('Pagination-Container nicht gefunden');
