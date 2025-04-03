@@ -1,20 +1,15 @@
 /**
  * projectNavigator.js
  * Hauptmodul für die Projekt-Navigation mit GSAP
- * 
- * Dieses Modul ist verantwortlich für:
- * - Initialisierung der Navigation
- * - Animation der Projektwechsel
- * - Verwaltung des Scroll-Verhaltens
- * - Koordination mit anderen Navigationsmodulen
  */
 
-
+import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
+import { setupHistoryRouting } from './navigationRouting.js';
 import uiState from "../../core/uiState.js";
-import { registerNavigationAPI } from "./navigationUtils.js";
+import { registerNavigationAPI, isFooter } from "./navigationUtils.js";
 
 export function setupProjectNavigation() {
-  // Konfiguration ohne bedingte Steuerung
+  // Konfiguration
   const CONFIG = {
     PARALLAX_AMOUNT: 15,
     ANIMATION_DURATION: 0.8,
@@ -61,6 +56,7 @@ export function setupProjectNavigation() {
     if (index === currentIndex || animating) return;
 
     animating = true;
+    console.log(`Navigiere zu Projekt ${index}, Richtung: ${direction}`);
 
     // UI-Update etwas früher auslösen für besseres Nutzergefühl
     gsap.delayedCall(CONFIG.ANIMATION_DURATION * 0.4, () => {
@@ -75,12 +71,12 @@ export function setupProjectNavigation() {
       onComplete: () => {
         // Aufräumen nach der Animation
         projects.forEach((p, i) => {
-          const isFooter = p.classList.contains('footer-container');
+          const projectIsFooter = isFooter(p);
           const isLastRegularProject = i === projects.length - 2; // Vorletztes Element = letztes reguläres Projekt
           const isFooterActive = index === projects.length - 1;
           
           if (i !== index) {
-            if (isFooter) {
+            if (projectIsFooter) {
               // Footer immer sichtbar
               gsap.set(p, { autoAlpha: 1, zIndex: 1 });
               p.setAttribute('aria-hidden', 'false');
@@ -102,6 +98,7 @@ export function setupProjectNavigation() {
         
         animating = false;
         currentIndex = index;
+        console.log(`Navigation zu Projekt ${index} abgeschlossen`);
       }
     });
 
@@ -136,14 +133,25 @@ export function setupProjectNavigation() {
   function dispatchProjectChangeEvent(index) {
     const projectElement = projects[index];
     if (!projectElement) return;
-    uiState.setActiveProject(index);
+    
+    // Prüfen, ob es sich um den Footer handelt
+    const projectIsFooter = isFooter(projectElement);
+    
+    // uiState aktualisieren mit zusätzlichen Informationen für den Footer
+    if (projectIsFooter) {
+      uiState.setActiveProject(index);
+      // Eigenes Event für Footer-Aktivierung dispatchen
+      dispatchCustomEvent('footerActivated', { index });
+    } else {
+      uiState.setActiveProject(index);
+    }
   }
 
   // Scroll/Touch-Handler mit Observer
   Observer.create({
     target: wrapper,
     type: "wheel,touch,pointer",
-    wheelSpeed: -0.3,  // Angepasste Empfindlichkeit
+    wheelSpeed: -0.3,
     onDown: (self) => {
       if (animating || Math.abs(self.deltaY) <= CONFIG.SCROLL_TOLERANCE) return;
       transitionToProject(currentIndex - 1, -1);
@@ -175,7 +183,16 @@ export function setupProjectNavigation() {
     yPercent: 0
   });
 
-
+  // Module initialisieren
+  setupKeyboardNavigation(transitionToProject, projects, () => animating);
+  
+  setupHistoryRouting({
+    projects,
+    transitionToProject,
+    getCurrentIndex: () => currentIndex,
+    dispatchProjectChangeEvent,
+    isFooter
+  });
 
   // Initialer Event-Dispatch
   setTimeout(() => {
@@ -211,22 +228,7 @@ export function setupProjectNavigation() {
       if (animating || currentIndex === 0) return;
       transitionToProject(0, -1);
     },
-    getCurrentIndex: () => currentIndex,
-    // Routing-Funktionen
-    disableRouting: () => {
-      // Hier könnte ein Cleanup-Code stehen
-    },
-    enableRouting: () => {
-      if (!CONFIG.ENABLE_ROUTING) {
-        CONFIG.ENABLE_ROUTING = true;
-        setupHistoryRouting({
-          projects,
-          transitionToProject,
-          getCurrentIndex: () => currentIndex,
-          dispatchProjectChangeEvent
-        });
-      }
-    }
+    getCurrentIndex: () => currentIndex
   };
 
   // API registrieren und zurückgeben
