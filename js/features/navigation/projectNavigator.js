@@ -186,13 +186,13 @@ export function setupProjectNavigation() {
   // Module initialisieren
   setupKeyboardNavigation(transitionToProject, projects, () => animating);
   
-  setupHistoryRouting({
+  /*setupHistoryRouting({
     projects,
     transitionToProject,
     getCurrentIndex: () => currentIndex,
     dispatchProjectChangeEvent,
     isFooter
-  });
+  });*/
 
   // Initialer Event-Dispatch
   setTimeout(() => {
