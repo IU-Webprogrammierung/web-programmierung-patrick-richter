@@ -4,14 +4,11 @@
  * Stellt einen interaktiven Tab bereit, der den aktuellen Projektindex anzeigt und
  * beim Klick ein Panel mit einem Index aller Projekte öffnet. Ermöglicht die direkte
  * Navigation zwischen Projekten.
- *
- * Funktionen: setupProjectIndicator(), togglePanel(), updateTabText(), handleProjectChange(),
- * updateActiveProjectInList(), setupProjectList()
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement, getValidatedElements } from "../../core/utils.js";
-import { getNavigationAPI } from "../navigation/navigationUtils.js";
+import { getValidatedElement } from '../../core/utils.js';
+import { getNavigationAPI, isFooter } from "../navigation/navigationUtils.js";
 import { removeHoverListeners } from "./hoverPreview.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
@@ -30,6 +27,12 @@ export function setupProjectIndicator() {
     EVENT_TYPES.ACTIVE_PROJECT_CHANGED,
     handleProjectChange
   );
+  
+  // Auch auf Footer-Aktivierung reagieren
+  document.addEventListener(
+    'footerActivated',
+    handleProjectChange
+  );
 }
 
 function updateTabText() {
@@ -38,8 +41,28 @@ function updateTabText() {
 
   // Nur anzeigen, wenn ein gültiger Index vorhanden ist
   if (uiState.activeProjectIndex >= 0 && uiState.projects.length > 0) {
-    const activeIndex = uiState.activeProjectIndex + 1;
-    const totalProjects = uiState.projects.length;
+    // Zähle reguläre Projekte (ohne Footer)
+    const regularProjects = Array.from(uiState.projects).filter(
+      p => !isFooter(p)
+    );
+    
+    // Ermitteln, ob das aktuelle Projekt der Footer ist
+    const currentProject = uiState.projects[uiState.activeProjectIndex];
+    const isFooterActive = isFooter(currentProject);
+    
+    // Bei Footer den Index des letzten regulären Projekts plus 1 anzeigen
+    // Dies sorgt dafür, dass der Footer nicht als zusätzliches Projekt gezählt wird
+    let activeIndex;
+    if (isFooterActive) {
+      activeIndex = regularProjects.length;
+    } else {
+      activeIndex = Array.from(uiState.projects)
+        .slice(0, uiState.activeProjectIndex + 1)
+        .filter(p => !isFooter(p))
+        .length;
+    }
+    
+    const totalProjects = regularProjects.length;
     tabText.textContent = `${activeIndex} / ${totalProjects}`;
   } else {
     // Keine Anzeige, wenn kein gültiger Index existiert
@@ -48,7 +71,6 @@ function updateTabText() {
 }
 
 // Verzögerte Aktualisierung für Events (damit synchron mit Farbwechsel)
-// TODO Ggf. hier Variable aus CSS auslesen
 function delayedUpdateTabText() {
   setTimeout(() => {
     updateTabText();
@@ -70,9 +92,22 @@ function updateActiveProjectInList() {
     console.log("Projektliste noch nicht bereit - überspringe Update");
     return;
   }
-
+  
+  // Ermitteln, ob das aktuelle Projekt der Footer ist
+  const currentProject = uiState.projects[uiState.activeProjectIndex];
+  const isFooterActive = currentProject && isFooter(currentProject);
+  
+  // Reguläre Projekte zählen (ohne Footer)
+  const regularProjects = Array.from(uiState.projects).filter(p => !isFooter(p));
+  
+  // Links aktualisieren
   links.forEach((link, index) => {
-    if (index === uiState.activeProjectIndex) {
+    // Bei Footer wird kein Link aktiv markiert, da der Footer nicht im Panel erscheint
+    if (isFooterActive) {
+      link.classList.remove("active");
+    } 
+    // Sonst das aktive Projekt markieren
+    else if (index === uiState.activeProjectIndex) {
       link.classList.add("active");
     } else {
       link.classList.remove("active");
@@ -81,7 +116,6 @@ function updateActiveProjectInList() {
 }
 
 // Erstellt die Projektliste im Panel
-
 function setupProjectList() {
   setTimeout(() => {
     const projectList = getValidatedElement(".project-list");
@@ -92,11 +126,14 @@ function setupProjectList() {
 
     projectList.innerHTML = "";
 
+    // Nur reguläre Projekte (ohne Footer) hinzufügen
     uiState.projects.forEach((project, index) => {
+      // Footer nicht in der Liste anzeigen
+      if (isFooter(project)) return;
+      
       const li = document.createElement("li");
       const a = document.createElement("a");
       const projectId = project.getAttribute("data-project-id");
-      const nav = getNavigationAPI();
 
       a.textContent = project.getAttribute("data-project-name");
       a.href = "#";
@@ -107,10 +144,10 @@ function setupProjectList() {
         a.classList.add("active");
       }
 
-      // Click-Handler mit zentraler Navigation
+      // Click-Handler mit API-Zugriff
       a.addEventListener("click", function (e) {
         e.preventDefault();
-
+        
         const navigation = getNavigationAPI();
         if (!navigation) {
           console.error("Navigation-API nicht verfügbar");

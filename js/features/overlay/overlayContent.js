@@ -10,9 +10,7 @@ import { getValidatedElement } from '../../core/utils.js';
 import { hideOverlay } from "./overlayController.js";
 import { getNavigationAPI } from "../navigation/navigationUtils.js";
 
-
 // Erstellt die About- und Imprint-Inhalte im Overlay
-
 export function createAboutImprintSection() {
   try {
     const aboutImprintData = dataStore.getAboutImprint();
@@ -41,7 +39,6 @@ export function createAboutImprintSection() {
 }
 
 // Erstellt den About-Intro-Bereich
-
 function createAboutIntro(container, aboutImprintData) {
   if (
     !aboutImprintData ||
@@ -71,7 +68,6 @@ function createAboutIntro(container, aboutImprintData) {
 }
 
 // Erstellt die Client-Liste
-
 function createClientsList(container, clientsData) {
   if (!clientsData || !clientsData.data || clientsData.data.length === 0) {
     console.warn("Keine Clients-Daten gefunden");
@@ -95,51 +91,51 @@ function createClientsList(container, clientsData) {
     a.name.localeCompare(b.name)
   );
 
- // Clients in die Liste einfügen
- sortedClients.forEach((client) => {
-  const li = document.createElement("li");
+  // Clients in die Liste einfügen
+  sortedClients.forEach((client) => {
+    const li = document.createElement("li");
 
-  // Prüfen, ob Client Projekte hat
-  if (client.projects && client.projects.length > 0) {
-    // Client mit Projekt(en) - als Link darstellen
-    const project = client.projects[0]; // Erstes Projekt nehmen
+    // Prüfen, ob Client Projekte hat
+    if (client.projects && client.projects.length > 0) {
+      // Client mit Projekt(en) - als Link darstellen
+      const project = client.projects[0]; // Erstes Projekt nehmen
 
-    // Link-Element erstellen mit einfachem ARIA-Label
-    const link = document.createElement("a");
-    link.href = "#";
-    link.className = "about-clients-project-link";
-    link.setAttribute("data-project-id", project.id);
-    link.textContent = client.name;
-    link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
+      // Link-Element erstellen mit einfachem ARIA-Label
+      const link = document.createElement("a");
+      link.href = "#";
+      link.className = "about-clients-project-link";
+      link.setAttribute("data-project-id", project.id);
+      link.textContent = client.name;
+      link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
 
-    // Event-Listener für Klick hinzufügen
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      hideOverlay(); // Overlay schließen
+      // Event-Listener für Klick hinzufügen mit Navigation-API
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        hideOverlay(); // Overlay schließen
 
-      // Zum Projekt scrollen (mit kurzer Verzögerung für Animation)
-      setTimeout(() => {
+        // Navigation-API abrufen und verwenden
         const navigation = getNavigationAPI();
         if (navigation) {
-          navigation.navigateToProject(project.id);
+          // Zum Projekt navigieren (mit kurzer Verzögerung für Animation)
+          setTimeout(() => {
+            navigation.navigateToProject(project.id);
+          }, 300);
         } else {
           console.error("Navigation-API nicht verfügbar");
         }
-      }, 300);
-    });
+      });
 
-    li.appendChild(link);
-  } else {
-    // Client ohne Projekte - als normaler Text
-    li.textContent = client.name;
-  }
+      li.appendChild(link);
+    } else {
+      // Client ohne Projekte - als normaler Text
+      li.textContent = client.name;
+    }
 
-  container.appendChild(li);
-});
+    container.appendChild(li);
+  });
 }
 
 // Erstellt den Imprint-Inhalt
-
 function createImprintContent(container, aboutImprintData) {
   if (
     !aboutImprintData ||

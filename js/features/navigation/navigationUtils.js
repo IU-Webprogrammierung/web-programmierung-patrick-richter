@@ -1,6 +1,6 @@
 /**
  * navigationUtils.js
- * Hilfsfunktionen für die Projekt-Navigation und Brücke zur neuen API
+ * Hilfsfunktionen für die Projekt-Navigation und API-Zugriff
  */
 
 // Speichert die API-Instanz zur Laufzeit
@@ -26,39 +26,42 @@ export function getNavigationAPI() {
   }
   return navigationAPI;
 }
-// TODO kann entfernt werden, wenn alle Module umgestellt sind
-/**
- * Brückenfunktion: Navigiert zu einem Projekt per ID (für Kompatibilität)
- * @param {string|number} projectId - Die ID des Projekts
- */
-export function navigateToProject(projectId) {
-  console.log(`navigateToProject aufgerufen mit ID: ${projectId}`);
-  
-  if (!navigationAPI) {
-    console.error('Navigation-API noch nicht initialisiert. Kann nicht zu Projekt navigieren.');
-    return;
-  }
-  
-  // Neue API-Funktion aufrufen
-  navigationAPI.navigateToProject(projectId);
-}
 
-// Hilfsfunktionen für die Navigation
+/**
+ * Prüft, ob ein Element der Footer ist
+ * @param {Element} element - Das zu prüfende Element
+ * @returns {boolean} True, wenn das Element der Footer ist
+ */
 export function isFooter(element) {
+  console.log('Footer-Element gefunden');
   return element && element.classList.contains('footer-container');
 }
 
+/**
+ * Findet das letzte reguläre Projekt (vor dem Footer)
+ * @param {NodeList|Array} projects - Die Liste aller Projekte
+ * @returns {Element} Das letzte reguläre Projekt
+ */
 export function getLastRegularProject(projects) {
+  // Footer ist normalerweise das letzte Element
   const lastIndex = projects.length - 1;
   const secondLastIndex = lastIndex - 1;
   
+  // Prüfen, ob das letzte Element der Footer ist
   if (isFooter(projects[lastIndex])) {
     return projects[secondLastIndex];
   }
   
+  // Fallback, falls Footer nicht gefunden wurde
   return projects[lastIndex];
 }
 
+/**
+ * Verzögert eine Funktion um eine bestimmte Zeit
+ * @param {Function} func - Die auszuführende Funktion
+ * @param {number} delay - Die Verzögerung in Millisekunden
+ * @returns {Function} Die verzögerte Funktion
+ */
 export function debounce(func, delay) {
   let timeout;
   return function(...args) {
@@ -67,6 +70,13 @@ export function debounce(func, delay) {
   };
 }
 
+/**
+ * Findet den nächsten oder vorherigen Projektindex
+ * @param {number} currentIndex - Der aktuelle Projektindex
+ * @param {number} direction - Die Richtung (1 = nächstes, -1 = vorheriges)
+ * @param {number} total - Gesamtzahl der Projekte
+ * @returns {number} Der neue Projektindex
+ */
 export function getAdjacentProjectIndex(currentIndex, direction, total) {
   const newIndex = currentIndex + direction;
   

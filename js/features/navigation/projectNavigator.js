@@ -9,8 +9,7 @@
  * - Koordination mit anderen Navigationsmodulen
  */
 
-import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
-import { setupHistoryRouting } from './navigationRouting.js';
+
 import uiState from "../../core/uiState.js";
 import { registerNavigationAPI } from "./navigationUtils.js";
 
@@ -176,16 +175,7 @@ export function setupProjectNavigation() {
     yPercent: 0
   });
 
-  // Keyboard Navigation initialisieren
-  setupKeyboardNavigation(transitionToProject, projects, () => animating);
 
-//Routing-Funktionen initialisieren
-  setupHistoryRouting({
-    projects,
-    transitionToProject,
-    getCurrentIndex: () => currentIndex,
-    dispatchProjectChangeEvent
-  });
 
   // Initialer Event-Dispatch
   setTimeout(() => {
