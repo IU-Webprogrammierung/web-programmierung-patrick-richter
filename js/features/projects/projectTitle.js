@@ -1,8 +1,13 @@
+/**
+ * @module projectTitle
+ * @description Verwaltet die Anzeige und Animation der Projekttitel.
+ * Reagiert auf Projektwechsel und aktualisiert den Titel entsprechend.
+ */
+
 import uiState from "../../core/uiState.js";
 import { getValidatedElement } from "../../core/utils.js";
 import { EVENT_TYPES } from "../../core/events.js";
-import { initialAppearAnimation } from "../../core/animationUtils.js";
-import TransitionController from "../../core/transitionController.js";
+import { isFooter } from "../navigation/navigationUtils.js";
 
 export function setupProjectTitle() {
   // DOM-Elemente für Titel und Beschreibungen
@@ -10,16 +15,13 @@ export function setupProjectTitle() {
   const mobileTitle = getValidatedElement(".project-title-mobile");
   const mobileDescription = getValidatedElement(".description-mobile");
   const desktopDescription = getValidatedElement(".description");
-  const paginationContainer = getValidatedElement(".pagination"); // Pagination hinzufügen
-
 
   // Alle zu animierenden Elemente
   const allElements = [
     headerTitle, 
     mobileTitle, 
     mobileDescription, 
-    desktopDescription,
-    paginationContainer
+    desktopDescription
   ].filter(el => el !== null);
 
   // Gemeinsame Funktion zum Setzen der Titel
@@ -33,45 +35,69 @@ export function setupProjectTitle() {
   // Inhalte aktualisieren
   function updateTitleContents() {
     const activeIndex = uiState.activeProjectIndex;
+    
     if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
       const activeProject = uiState.projects[activeIndex];
-      const projectName = activeProject.getAttribute("data-project-name");
-      const projectDesc = activeProject.getAttribute("data-project-description") || "";
-      setTitles(projectName, projectDesc);
+      
+      // Prüfen, ob der Footer aktiv ist
+      if (isFooter(activeProject)) {
+        // Speziellen Titel für den Footer setzen
+        setTitles("Say Hi!", "Get in touch to discuss your project");
+        console.log("Footer TITLE aktiv");
+      } else {
+        // Normalen Projekttitel setzen
+        const projectName = activeProject.getAttribute("data-project-name");
+        const projectDesc = activeProject.getAttribute("data-project-description") || "";
+        setTitles(projectName, projectDesc);
+      }
     }
   }
 
-  // Auf Phasenänderungen im Transition-Controller reagieren
-  document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
-    const { phase } = event.detail;
-    
-    // CSS-Klassen basierend auf Phase setzen
-    allElements.forEach(element => {
-      if (!element) return;
-      
-      if (phase === TransitionController.phases.FADE_OUT || 
-          phase === TransitionController.phases.BETWEEN) {
-           console.log("setupProjectTitle: fade-out wird gesetzt");
-        element.classList.add('fade-out');
-      } else if (phase === TransitionController.phases.FADE_IN) {
-        console.log("setupProjectTitle: fade-out wird entfernt");
-        element.classList.remove('fade-out');
+  // Auf Footer-Aktivierung reagieren
+  document.addEventListener('footerActivated', function() {
+    // Titel mit Verzögerung aktualisieren
+    setTimeout(() => {
+      // Prüfen, ob es wirklich der Footer ist
+      const activeIndex = uiState.activeProjectIndex;
+      if (activeIndex >= 0 && 
+          activeIndex < uiState.projects.length && 
+          isFooter(uiState.projects[activeIndex])) {
+        // Footer-Titel setzen
+        setTitles("Say Hi!", "Get in touch to discuss your project");
+        console.log("Footer TITLE aktiv");
       }
-    });
-  });
-
-  // Auf Content-Update-Event reagieren
-  document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
-    updateTitleContents();
+    }, 300);
   });
 
   // Event-Listener für Projektänderungen
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
-    console.log("setupProjectTitle: Event activeProjectChanged empfangen");
-    TransitionController.startTransition();
+  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, function() {
+    // Titel mit Animation aktualisieren
+    fadeOut();
+    
+    // Nach der Ausblendung: Inhalte aktualisieren
+    setTimeout(() => {
+      updateTitleContents();
+      
+      // Nach kurzer Pause wieder einblenden
+      setTimeout(() => {
+        fadeIn();
+      }, 200);
+    }, 300);
   });
 
-  // Initialen Zustand mit Animation anzeigen
+  // Hilfsfunktionen für die Animation
+  function fadeOut() {
+    allElements.forEach(element => {
+      if (element) element.classList.add('fade-out');
+    });
+  }
+  
+  function fadeIn() {
+    allElements.forEach(element => {
+      if (element) element.classList.remove('fade-out');
+    });
+  }
+
+  // Initialen Zustand anzeigen
   updateTitleContents();
-  initialAppearAnimation(allElements);
 }

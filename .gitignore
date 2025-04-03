@@ -32,4 +32,6 @@ strapi-cms/.env
 strapi-cms/
 package-lock.json
 package.json
-CLAUDE.md
+js/.DS_Store
+js/.DS_Store
+js/features/.DS_Store
