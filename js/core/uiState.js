@@ -13,7 +13,7 @@ const uiState = {
   // Methode zum Aktualisieren der Projekte
   updateProjects() {
     this.projects = Array.from(
-      document.querySelectorAll(".project:not(.footer-container)")
+      document.querySelectorAll(".project")
     );
   },
 

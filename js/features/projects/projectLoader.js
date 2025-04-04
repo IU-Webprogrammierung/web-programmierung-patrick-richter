@@ -4,17 +4,24 @@
  * Generiert Projekt-DOM-Elemente basierend auf den JSON-Daten.
  */
 
-import dataStore from "../../core/dataStore.js";
-import uiState from "../../core/uiState.js";
-import { getValidatedElement, fixImagePath } from "../../core/utils.js";
-import swiperInitializer from "../imageViewer/swiperInitializer.js";
-import customPagination from '../imageViewer/customPagination.js';
-import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
-import { setupScrollHandler } from "./projectNavigation.js";
-import { setupUIAnimations } from "../ui/uiAnimationsManager.js";
-import { setupProjectIndicator } from "./projectIndicator.js";
-import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
-import { setupProjectNavigation } from "../navigation/projectNavigator.js";
+import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
+import dataStore from '../../core/dataStore.js';
+import { fixImagePath } from '../../core/utils.js';
+
+// Auf Datenladung reagieren
+addEventListener(EVENT_TYPES.DATA_LOADED, async () => {
+  console.log("projectLoader: Erstelle DOM-Struktur");
+  
+  try {
+    // DOM-Struktur erstellen
+    await createProjectElements();
+    
+    // Nächste Phase signalisieren: DOM-Struktur bereit
+    dispatchCustomEvent(EVENT_TYPES.DOM_STRUCTURE_READY);
+  } catch (error) {
+    console.error("Fehler beim Erstellen der DOM-Struktur:", error);
+  }
+});
 
 /**
  * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
@@ -113,56 +120,6 @@ function createResponsiveImageHTML(imageData) {
 
 }
 
-// Erzeugt den Footer-HTML-Code aus den JSON-Daten
-function createFooterHTML() {
-  const footerData = dataStore.getFooter();
-
-  if (!footerData || !footerData.data || !footerData.data.getincontact) {
-    console.warn("Keine Footer-Daten gefunden!");
-    // Fallback für den Fall, dass keine Daten vorhanden sind
-    return `
-      <div class="footer-top" id="footerTop"></div>
-      <div class="footer">
-        <h1>Let's work together!</h1>
-        <p>Contact me via <a href="mailto:test@test.de">test@test.de</a></p>
-      </div>
-    `;
-  }
-
-  // Content aus der JSON-Datei verarbeiten
-  let footerContent = "";
-
-  // Die getincontact-Array durchlaufen und HTML generieren
-  footerData.data.getincontact.forEach((item) => {
-    if (item.type === "heading" && item.level === 1) {
-      // Überschrift
-      const headingText = item.children[0].text;
-      footerContent += `<h1>${headingText}</h1>\n`;
-    } else if (item.type === "paragraph") {
-      // Paragraph mit möglichen Links
-      let paragraphContent = "";
-
-      item.children.forEach((child) => {
-        if (child.type === "text") {
-          paragraphContent += child.text;
-        } else if (child.type === "link" && child.url) {
-          const linkText = child.children[0].text;
-          paragraphContent += `<a href="${child.url}">${linkText}</a>`;
-        }
-      });
-
-      footerContent += `<p>${paragraphContent}</p>\n`;
-    }
-  });
-
-  return `
-    <div class="footer-top" id="footerTop"></div>
-    <div class="footer">
-      ${footerContent}
-    </div>
-  `;
-}
-
 // Erstellt die DOM-Elemente für alle Projekte
 export async function createProjectElements() {
   const projectsData = dataStore.getProjects();
@@ -173,20 +130,15 @@ export async function createProjectElements() {
     return;
   }
 
-  // Scroll-Snap temporär deaktivieren
-  const originalSnapType = container.style.scrollSnapType;
-  container.style.scrollSnapType = "none";
-
   // Container komplett leeren
   container.innerHTML = "";
 
   if (projectsData && projectsData.data) {
     // HTML für alle Projekte erstellen
     for (const project of projectsData.data) {
-      // Bilder-HTML mit der integrierten Funktion erstellen
+      // Bilder-HTML erstellen
       let imagesHTML = "";
       if (project.project_images && project.project_images.length > 0) {
-        // Für jedes Bild des Projekts asynchron HTML erzeugen
         const imagePromises = project.project_images.map((img) =>
           createResponsiveImageHTML(img)
         );
@@ -205,47 +157,22 @@ export async function createProjectElements() {
           data-project-id="${project.id}"
           data-project-name="${project.name}"
           data-project-description="${project.description[0]?.children[0]?.text || ""}"
-        >  <div class="swiper">
-    <div class="swiper-wrapper">
-      ${imagesHTML}
-    </div>
-  </div>
-</article>
+        >  
+          <div class="swiper">
+            <div class="swiper-wrapper">
+              ${imagesHTML}
+            </div>
+          </div>
+        </article>
       `;
 
       container.insertAdjacentHTML("beforeend", projectHTML);
     }
   }
 
-  // WICHTIG: Kein Footer-Code mehr hier!
-
-  // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
-  setTimeout(() => {
-    // Scrolle zum Anfang
-    container.scrollTop = 0;
-
-    // Warte kurz für DOM-Updates
-    setTimeout(() => {
-      // Scroll-Snap wiederherstellen
-      container.style.scrollSnapType = originalSnapType;
-
-      // UI-Status aktualisieren
-      uiState.updateProjects();
-
-      // UI-Komponenten initialisieren
-      setupUIAnimations();
-      setupProjectIndicator();
-      setupImageColorHandler();
-      setupImageNavigation();
-      setupScrollHandler();
-      swiperInitializer.init();
-      customPagination.init();
-        
-      // Verzögerte Initialisierung des ScrollTriggers
-      setTimeout(() => {
-        setupProjectNavigation();
-      }, 300);  
-    }, 50);
-  }, 50);
+  // Wichtig: Scroll zum Anfang
+  container.scrollTop = 0;
+    
+  // UI-Status aktualisieren
+  return Promise.resolve();
 }
-2

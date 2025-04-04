@@ -3,7 +3,29 @@
  * @description Lädt und konfiguriert den Footer-Inhalt
  */
 
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import dataStore from "../../core/dataStore.js";
+
+// Auf DOM-Struktur-Bereitschaft reagieren
+addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
+  console.log("footerLoader: Initialisiere Footer");
+  
+  // Footer initial unsichtbar machen (wird von APP_INIT_COMPLETE sichtbar gemacht)
+  const footerElement = document.getElementById("site-footer");
+  if (footerElement) {
+    footerElement.style.visibility = 'hidden';
+  }
+  
+  // Inhalte laden
+  loadFooterContent();
+  
+  // Nach APP_INIT_COMPLETE Footer sichtbar machen
+  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
+    if (footerElement) {
+      footerElement.style.visibility = 'visible';
+    }
+  });
+});
 
 /**
  * Lädt Footer-Inhalte aus dem dataStore und aktualisiert das DOM
