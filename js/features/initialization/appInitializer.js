@@ -9,11 +9,14 @@ import { createProjectElements } from '../projects/projectLoader.js';
 import { setupHoverPreview } from '../projects/hoverPreview.js';
 import { createAboutImprintSection } from '../overlay/overlayContent.js';
 import { setupProjectIndicator } from '../projects/projectIndicator.js';
+import { loadFooterContent } from '../footer/footerLoader.js';
 
 
 /**
  * Initialisiert die gesamte Website
  */
+
+
 export async function initializeWebsite() {
   console.log("initializeWebsite: Initialize Website gestartet");
   
@@ -22,10 +25,13 @@ export async function initializeWebsite() {
     
     if (success) {
       console.log("initializeWebsite: Loading of projects and about successful!");
-      await createProjectElements(); // Jetzt mit await
+      await createProjectElements(); // Projektelemente erstellen
       createAboutImprintSection();
       setupProjectIndicator();
       setupHoverPreview();
+      
+      // Footer nach den Projekten initialisieren
+      loadFooterContent();
     } else {
       console.error("initializeWebsite: Loading failed - no data returned");
       showLoadingError();
@@ -48,4 +54,6 @@ function showLoadingError() {
       </div>
     `;
   }
+  
+  
 }

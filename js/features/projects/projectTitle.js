@@ -7,7 +7,8 @@
 import uiState from "../../core/uiState.js";
 import { getValidatedElement } from "../../core/utils.js";
 import { EVENT_TYPES } from "../../core/events.js";
-import { isFooter } from "../navigation/navigationUtils.js";
+import { initialAppearAnimation } from "../../core/animationUtils.js";
+import TransitionController from "../../core/transitionController.js";
 
 export function setupProjectTitle() {
   // DOM-Elemente für Titel und Beschreibungen
@@ -30,68 +31,88 @@ export function setupProjectTitle() {
     if (desktopDescription) desktopDescription.textContent = projectDesc;
     if (mobileTitle) mobileTitle.textContent = projectName;
     if (mobileDescription) mobileDescription.textContent = projectDesc;
+    console.log(`Titel gesetzt: "${projectName}"`);
   }
 
   // Inhalte aktualisieren
   function updateTitleContents() {
     const activeIndex = uiState.activeProjectIndex;
     
-    if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
-      const activeProject = uiState.projects[activeIndex];
+    // Alle navigierbaren Elemente (inkl. Footer)
+    const navigableElements = [
+      ...document.querySelectorAll(".project"), 
+      document.getElementById("site-footer")
+    ];
+    
+    if (activeIndex >= 0 && activeIndex < navigableElements.length) {
+      const activeElement = navigableElements[activeIndex];
       
-      // Prüfen, ob der Footer aktiv ist
-      if (isFooter(activeProject)) {
-        // Speziellen Titel für den Footer setzen
+      // Footer erkennen - einfach per ID
+      if (activeElement.id === "site-footer") {
         setTitles("Say Hi!", "Get in touch to discuss your project");
-        console.log("Footer TITLE aktiv");
+        console.log("Footer-Titel gesetzt");
       } else {
-        // Normalen Projekttitel setzen
-        const projectName = activeProject.getAttribute("data-project-name");
-        const projectDesc = activeProject.getAttribute("data-project-description") || "";
+        // Normaler Projekttitel
+        const projectName = activeElement.getAttribute("data-project-name");
+        const projectDesc = activeElement.getAttribute("data-project-description") || "";
         setTitles(projectName, projectDesc);
       }
     }
   }
 
-  // Auf Footer-Aktivierung reagieren
-// Auf Footer-Aktivierung reagieren - direkter und mit Priorität
-document.addEventListener(EVENT_TYPES.FOOTER_ACTIVATED, function(event) {
-  console.log('Footer-Event empfangen mit Index:', event.detail.index);
-  
-  // Sofort Titel setzen, ohne setTimeout
-  setTitles("Say Hi!", "Get in touch to discuss your project");
-  console.log('Footer-Titel direkt gesetzt');
-});
-
-  // Event-Listener für Projektänderungen
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, function() {
-    // Titel mit Animation aktualisieren
-    fadeOut();
+  // Auf Phasenänderungen im Transition-Controller reagieren
+  document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
+    const { phase } = event.detail;
     
-    // Nach der Ausblendung: Inhalte aktualisieren
-    setTimeout(() => {
-      updateTitleContents();
+    // CSS-Klassen basierend auf Phase setzen
+    allElements.forEach(element => {
+      if (!element) return;
       
-      // Nach kurzer Pause wieder einblenden
-      setTimeout(() => {
-        fadeIn();
-      }, 200);
-    }, 300);
+      if (phase === TransitionController.phases.FADE_OUT || 
+          phase === TransitionController.phases.BETWEEN) {
+        console.log("setupProjectTitle: fade-out wird gesetzt");
+        element.classList.add('fade-out');
+      } else if (phase === TransitionController.phases.FADE_IN) {
+        console.log("setupProjectTitle: fade-out wird entfernt");
+        element.classList.remove('fade-out');
+      }
+    });
   });
 
-  // Hilfsfunktionen für die Animation
-  function fadeOut() {
-    allElements.forEach(element => {
-      if (element) element.classList.add('fade-out');
-    });
-  }
-  
-  function fadeIn() {
-    allElements.forEach(element => {
-      if (element) element.classList.remove('fade-out');
-    });
-  }
+  // Auf Content-Update-Event reagieren
+  document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
+    updateTitleContents();
+  });
 
-  // Initialen Zustand anzeigen
+  // Event-Listener für Projektänderungen
+  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
+    console.log("setupProjectTitle: Event activeProjectChanged empfangen");
+    
+    // Nur Transition starten, wenn nicht bereits aktiv
+    if (!TransitionController.isActive()) {
+      TransitionController.startTransition();
+    }
+  });
+  
+  // Footer-Events mit TransitionController synchronisieren
+  document.addEventListener(EVENT_TYPES.FOOTER_ACTIVATED, () => {
+    console.log("Footer-Aktivierungs-Event empfangen");
+    window._isFooterActive = true;
+    
+    // Transition für konsistente Animation starten
+    if (!TransitionController.isActive()) {
+      TransitionController.startTransition();
+    }
+  });
+  
+  document.addEventListener(EVENT_TYPES.FOOTER_DEACTIVATED, () => {
+    console.log("Footer-Deaktivierungs-Event empfangen");
+    window._isFooterActive = false;
+    
+    // Keine explizite Transition hier notwendig, da sie von ACTIVE_PROJECT_CHANGED ausgelöst wird
+  });
+
+  // Initialen Zustand mit Animation anzeigen
   updateTitleContents();
+  initialAppearAnimation(allElements);
 }

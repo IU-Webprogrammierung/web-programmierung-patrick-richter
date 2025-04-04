@@ -4,10 +4,10 @@
  */
 
 import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
-import { setupHistoryRouting } from './navigationRouting.js';
-import { EVENT_TYPES, dispatchCustomEvent } from '../../core/events.js';
 import uiState from "../../core/uiState.js";
-import { registerNavigationAPI, isFooter } from "./navigationUtils.js";
+import { registerNavigationAPI } from "./navigationUtils.js";
+import { EVENT_TYPES, dispatchCustomEvent } from "../../core/events.js";
+import { loadFooterContent } from "../footer/footerLoader.js";
 
 export function setupProjectNavigation() {
   // Konfiguration
@@ -18,50 +18,78 @@ export function setupProjectNavigation() {
   };
 
   // DOM-Elemente und Zustandsverwaltung
-  const wrapper = document.querySelector(".project-scroll-wrapper") || document;
-  const projects = document.querySelectorAll(".project");
+  const wrapper = document.querySelector(".project-container") || document;
+  
+  // Alle navigierbaren Elemente in einer Collection
+  const navigableElements = [
+    ...document.querySelectorAll(".project"), 
+    document.getElementById("site-footer")
+  ];
+  
   let currentIndex = 0;
   let animating = false;
+  
+  // Footer initialisieren - Inhalt laden
+  const footerElement = document.getElementById("site-footer");
+  if (footerElement) {
+    const footerContent = footerElement.querySelector(".footer-content");
+    if (footerContent) {
+      loadFooterContent(footerContent);
+    }
+    
+    // Footer-Top Click-Handler
+    const footerTop = footerElement.querySelector(".footer-top");
+    if (footerTop) {
+      footerTop.addEventListener("click", () => {
+        if (!animating) {
+          // Zum vorletzten Element (reguläres letztes Projekt)
+          transitionToElement(navigableElements.length - 2, -1);
+        }
+      });
+    }
+  }
 
   // Sicherstellen, dass der Index im gültigen Bereich bleibt
-  const wrap = (index) => Math.max(0, Math.min(index, projects.length - 1));
+  const wrap = (index) => Math.max(0, Math.min(index, navigableElements.length - 1));
 
-  // Initiale Styles für alle Projekte setzen
-  projects.forEach((p, i) => {
-    gsap.set(p, {
-      position: "absolute",
+  // Initiale Styles für alle navigierbaren Elemente
+  navigableElements.forEach((el, i) => {
+    gsap.set(el, {
+      position: i === navigableElements.length - 1 ? "fixed" : "absolute", // Footer fixed
       top: 0,
       left: 0,
       width: "100%",
       height: "100%",
       autoAlpha: i === 0 ? 1 : 0,
-      yPercent: i === 0 ? 0 : 100,
-      zIndex: i === 0 ? 5 : 0 
+      yPercent: i === navigableElements.length - 1 ? 100 : i === 0 ? 0 : 100, // Footer unten
+      zIndex: i === 0 ? 5 : i === navigableElements.length - 1 ? 50 : 0  // Footer höheren z-index
     });
     
-    // Accessibility: ARIA-Attribute
-    p.setAttribute('aria-hidden', i !== 0 ? 'true' : 'false');
-    if (p.getAttribute('role') !== 'region') {
-      p.setAttribute('role', 'region');
+    // Accessibility
+    el.setAttribute('aria-hidden', i !== 0 ? 'true' : 'false');
+    if (el.getAttribute('role') !== 'region') {
+      el.setAttribute('role', 'region');
     }
   });
 
   /**
-   * Transition-Funktion für Projektwechsel
-   * @param {number} index - Ziel-Projektindex
-   * @param {number} direction - Richtung (1 = nach unten, -1 = nach oben)
-   * @returns {gsap.core.Timeline} - Die erstellte GSAP-Timeline
+   * Unified transition function for all elements
    */
-  function transitionToProject(index, direction) {
+  function transitionToElement(index, direction) {
     index = wrap(index);
     if (index === currentIndex || animating) return;
 
     animating = true;
-    console.log(`Navigiere zu Projekt ${index}, Richtung: ${direction}`);
+    console.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
+    
+    // Feststellen, ob wir zum/vom Footer navigieren
+    const isToFooter = index === navigableElements.length - 1;
+    const isFromFooter = currentIndex === navigableElements.length - 1;
+    const lastProjectIndex = navigableElements.length - 2;
 
-    // UI-Update etwas früher auslösen für besseres Nutzergefühl
+    // UI-Update mit Verzögerung
     gsap.delayedCall(CONFIG.ANIMATION_DURATION * 0.4, () => {
-      dispatchProjectChangeEvent(index);
+      dispatchElementChangeEvent(index);
     });
 
     const tl = gsap.timeline({
@@ -70,57 +98,77 @@ export function setupProjectNavigation() {
         ease: "power2.inOut"
       },
       onComplete: () => {
-        // Aufräumen nach der Animation
-        projects.forEach((p, i) => {
-          const projectIsFooter = isFooter(p);
-          const isLastRegularProject = i === projects.length - 2; // Vorletztes Element = letztes reguläres Projekt
-          const isFooterActive = index === projects.length - 1;
-          
+        // Aufräumen nach Animation
+        navigableElements.forEach((el, i) => {
           if (i !== index) {
-            if (projectIsFooter) {
-              // Footer immer sichtbar
-              gsap.set(p, { autoAlpha: 1, zIndex: 1 });
-              p.setAttribute('aria-hidden', 'false');
-            } else if (isLastRegularProject && isFooterActive) {
-              // Letztes Projekt sichtbar lassen, wenn Footer aktiv ist
-              gsap.set(p, { autoAlpha: 1, zIndex: 2 }); // Zwischen Footer und aktivem Projekt
-              p.setAttribute('aria-hidden', 'false');
+            // Spezialfall: Bei Footer-Aktivierung das letzte Projekt sichtbar lassen
+            if (isToFooter && i === lastProjectIndex) {
+              gsap.set(el, { 
+                autoAlpha: 0.8,  // Leicht transparent
+                zIndex: 4        // Unter Footer, über anderen Projekten
+              });
+              // Accessibility: Trotzdem als hidden markieren
+              el.setAttribute('aria-hidden', 'true');
             } else {
               // Andere Projekte ausblenden
-              gsap.set(p, { autoAlpha: 0, zIndex: 0 });
-              p.setAttribute('aria-hidden', 'true');
+              gsap.set(el, { autoAlpha: 0, zIndex: 0 });
+              el.setAttribute('aria-hidden', 'true');
             }
           } else {
-            // Aktives Projekt
-            gsap.set(p, { zIndex: 5 }); // Höchster z-index für aktives Projekt
-            p.setAttribute('aria-hidden', 'false');
+            // Aktives Element
+            gsap.set(el, { 
+              zIndex: i === navigableElements.length - 1 ? 50 : 5 // Footer höheren z-index
+            });
+            el.setAttribute('aria-hidden', 'false');
           }
         });
         
         animating = false;
         currentIndex = index;
-        console.log(`Navigation zu Projekt ${index} abgeschlossen`);
+        console.log(`Navigation zu Element ${index} abgeschlossen`);
       }
     });
 
-    // Zielprojekt vorbereiten
-    gsap.set(projects[index], {
+    // Ziel vorbereiten
+    gsap.set(navigableElements[index], {
       autoAlpha: 1,
       yPercent: direction > 0 ? 100 : -CONFIG.PARALLAX_AMOUNT,
-      zIndex: direction > 0 ? 5 : 0
+      zIndex: isToFooter ? 50 : 5
     });
 
-    // Z-Index für Überlagerungsverhalten setzen
-    gsap.set(projects[currentIndex], { 
+    // Z-Index für Überlagerung
+    gsap.set(navigableElements[currentIndex], { 
       zIndex: direction > 0 ? 0 : 5 
     });
 
-    // Gleichzeitige Animation beider Projekte
-    tl.to(projects[currentIndex], {
+    // Speziallogik für Footer-Übergänge
+    if (isToFooter) {
+      // Letztes Projekt beim Wechsel zum Footer sichtbar und mit Parallax
+      gsap.to(navigableElements[lastProjectIndex], {
+        yPercent: -CONFIG.PARALLAX_AMOUNT,
+        autoAlpha: 0.8,
+        zIndex: 4,
+        duration: CONFIG.ANIMATION_DURATION,
+        ease: "power2.inOut"
+      });
+    } else if (isFromFooter) {
+      // Beim Verlassen des Footers das letzte Projekt ggf. normalisieren
+      if (index !== lastProjectIndex) {
+        gsap.to(navigableElements[lastProjectIndex], {
+          yPercent: 0,
+          autoAlpha: 0,
+          duration: CONFIG.ANIMATION_DURATION,
+          ease: "power2.inOut"
+        });
+      }
+    }
+
+    // Normale Transition für aktuelle/neue Elemente
+    tl.to(navigableElements[currentIndex], {
       yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100
     }, 0);
 
-    tl.to(projects[index], {
+    tl.to(navigableElements[index], {
       yPercent: 0
     }, 0);
 
@@ -128,111 +176,85 @@ export function setupProjectNavigation() {
   }
 
   /**
-   * Benachrichtigt uiState über Projektwechsel
-   * @param {number} index - Index des neuen aktiven Projekts
+   * Benachrichtigt über Elementwechsel - erkennt automatisch den Footer
    */
-  function dispatchProjectChangeEvent(index) {
-    const projectElement = projects[index];
-    if (!projectElement) return;
+  function dispatchElementChangeEvent(index) {
+    const element = navigableElements[index];
+    if (!element) return;
     
-    // Prüfen, ob es sich um den Footer handelt
-    const projectIsFooter = isFooter(projectElement);
+    // Footer erkennen
+    const isFooter = element.id === "site-footer";
     
-    // uiState aktualisieren mit zusätzlichen Informationen für den Footer
-    if (projectIsFooter) {
-      uiState.setActiveProject(index);
-      // Standardisiertes Event verwenden
+    // Standard-Event für alle Elemente
+    uiState.setActiveProject(index);
+    
+    // Zusätzliches Event für Footer
+    if (isFooter) {
+      console.log("Footer-Element aktiviert");
+      window._isFooterActive = true;
       dispatchCustomEvent(EVENT_TYPES.FOOTER_ACTIVATED, { index });
-    } else {
-      uiState.setActiveProject(index);
+    } else if (window._isFooterActive) {
+      // Footer wurde deaktiviert
+      window._isFooterActive = false;
+      dispatchCustomEvent(EVENT_TYPES.FOOTER_DEACTIVATED, { index });
     }
   }
 
-  // Scroll/Touch-Handler mit Observer
+  // Observer für Scroll/Touch
   Observer.create({
     target: wrapper,
     type: "wheel,touch,pointer",
     wheelSpeed: -0.3,
     onDown: (self) => {
       if (animating || Math.abs(self.deltaY) <= CONFIG.SCROLL_TOLERANCE) return;
-      transitionToProject(currentIndex - 1, -1);
+      transitionToElement(currentIndex - 1, -1);
     },
     onUp: (self) => {
       if (animating || Math.abs(self.deltaY) <= CONFIG.SCROLL_TOLERANCE) return;
-      transitionToProject(currentIndex + 1, 1);
+      transitionToElement(currentIndex + 1, 1);
     },
     lockAxis: true,
     preventDefault: true
   });
 
-  // Klick auf oberen Footer-Bereich zum vorherigen Projekt
-  const footerTop = document.querySelector('.footer-top');
-  if (footerTop) {
-    footerTop.addEventListener('click', () => {
-      if (!animating) {
-        // Zum letzten regulären Projekt scrollen
-        const lastRegularProjectIndex = projects.length - 2;
-        transitionToProject(lastRegularProjectIndex, -1);
-      }
-    });
-  }
-
-  // Erstes Projekt anzeigen
-  gsap.set(projects[0], {
-    autoAlpha: 1,
-    zIndex: 5,
-    yPercent: 0
-  });
-
-  // Module initialisieren
-  setupKeyboardNavigation(transitionToProject, projects, () => animating);
-  
-  /*setupHistoryRouting({
-    projects,
-    transitionToProject,
-    getCurrentIndex: () => currentIndex,
-    dispatchProjectChangeEvent,
-    isFooter
-  });*/
-
-  // Initialer Event-Dispatch
+  // Initialisierung
   setTimeout(() => {
-    dispatchProjectChangeEvent(0);
+    dispatchElementChangeEvent(0);
   }, 300);
 
-  // Navigation-API für externe Nutzung
+  // Navigation-API
   const api = {
-    moveToNextProject: () => {
+    moveToNextElement: () => {
       if (animating) return;
-      transitionToProject(currentIndex + 1, 1);
+      transitionToElement(currentIndex + 1, 1);
     },
-    moveToPreviousProject: () => {
+    moveToPreviousElement: () => {
       if (animating) return;
-      transitionToProject(currentIndex - 1, -1);
+      transitionToElement(currentIndex - 1, -1);
     },
     navigateToIndex: (index) => {
       if (animating) return;
       const direction = index > currentIndex ? 1 : -1;
-      transitionToProject(index, direction);
+      transitionToElement(index, direction);
     },
     navigateToProject: (projectId) => {
       if (animating) return;
-      const index = Array.from(projects).findIndex(
-        p => p.getAttribute("data-project-id") === projectId.toString()
+      const index = Array.from(navigableElements).findIndex(
+        el => el.getAttribute("data-project-id") === projectId.toString()
       );
       if (index !== -1) {
         const direction = index > currentIndex ? 1 : -1;
-        transitionToProject(index, direction);
+        transitionToElement(index, direction);
       }
     },
     navigateToTop: () => {
       if (animating || currentIndex === 0) return;
-      transitionToProject(0, -1);
+      transitionToElement(0, -1);
     },
-    getCurrentIndex: () => currentIndex
+    getCurrentIndex: () => currentIndex,
+    isFooterActive: () => navigableElements[currentIndex]?.id === "site-footer"
   };
 
-  // API registrieren und zurückgeben
   registerNavigationAPI(api);
   return api;
 }

@@ -104,13 +104,25 @@ function setupProjectChangeHandler() {
     const { projectIndex } = event.detail;
     console.log(`SwiperJS: Projektwechsel zu ${projectIndex} erkannt`);
     
-    // Finde die zum Projekt gehörende Swiper-Instanz
-    const swiperInfo = swiperInstances.find(info => info.projectIndex === projectIndex);
-    if (!swiperInfo) {
+    // Prüfen ob ein Footer oder ein ungültiger Index
+    const isFooter = projectIndex >= 0 && 
+                    projectIndex < uiState.projects.length && 
+                    uiState.projects[projectIndex].id === "site-footer";
+    
+    if (isFooter || projectIndex < 0 || projectIndex >= uiState.projects.length) {
+      console.log("SwiperJS: Footer oder ungültiger Index erkannt, keine Aktualisierung");
+      return;
+    }
+    
+    // Sichere Suche nach der Swiper-Instanz
+    const matchingSwiperInfo = swiperInstances.find(info => info && info.projectIndex === projectIndex);
+    
+    if (!matchingSwiperInfo) {
       console.warn(`SwiperJS: Keine Swiper-Instanz für Projekt ${projectIndex} gefunden`);
       return;
     }
     
+    const swiperInfo = matchingSwiperInfo; // Jetzt sicher definiert
     const swiper = swiperInfo.swiper;
     
     // Aktiven Slide identifizieren

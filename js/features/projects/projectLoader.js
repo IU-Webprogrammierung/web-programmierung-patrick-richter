@@ -13,7 +13,6 @@ import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 import { setupScrollHandler } from "./projectNavigation.js";
 import { setupProjectTitle } from "./projectTitle.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
-import { closeFooter } from "./projectNavigation.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupProjectNavigation } from "../navigation/projectNavigator.js";
 
@@ -218,22 +217,7 @@ export async function createProjectElements() {
     }
   }
 
-  // Neuen dynamischen Footer erstellen und einfügen
-  const footerInnerHTML = createFooterHTML();
-  const footerHTML = `
-  <footer class="project footer-container" aria-label="Footer with Email Link">
-    ${footerInnerHTML}
-  </footer>
-`;
-  container.insertAdjacentHTML("beforeend", footerHTML);
-
-  // Event-Listener für den Footer-Top-Bereich neu hinzufügen
-  const footerTopElement = getValidatedElement("#footerTop");
-  if (footerTopElement) {
-    footerTopElement.addEventListener("click", closeFooter);
-  }
-
-  // TODO hier Logging für erweitere Bildanalyse einfügen
+  // WICHTIG: Kein Footer-Code mehr hier!
 
   // Am Ende: Zum ersten Projekt scrollen und dann Snap wiederherstellen
   setTimeout(() => {
@@ -256,18 +240,12 @@ export async function createProjectElements() {
       setupScrollHandler();
       swiperInitializer.init();
       customPagination.init();
-        // ScrollTrigger-Test ausführen
-      
-      // Verzögerte Initialisierung des ScrollTriggers, um sicherzustellen,
-      // dass alle anderen UI-Komponenten vollständig initialisiert sind
-      setTimeout(() => {
-        // Projekt-Navigation initialisieren - wird automatisch registriert
-        setupProjectNavigation();
         
-        // Event-Listener für Projektänderungen registrieren
-        window.scrollController = scrollController; // Für Debugging
+      // Verzögerte Initialisierung des ScrollTriggers
+      setTimeout(() => {
+        setupProjectNavigation();
       }, 300);  
-  
     }, 50);
   }, 50);
 }
+2

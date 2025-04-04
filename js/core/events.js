@@ -10,18 +10,20 @@
 export const EVENT_TYPES = {
   ACTIVE_PROJECT_CHANGED: 'activeProjectChanged',
   ACTIVE_IMAGE_CHANGED: 'activeImageChanged',
-  FOOTER_ACTIVATED: 'footerActivated'  // Neues standardisiertes Event
+  // Neue Footer-spezifische Events
+  FOOTER_ACTIVATED: 'footerActivated',
+  FOOTER_DEACTIVATED: 'footerDeactivated'
 };
-  
-  // Hilfsfunktionen für Event-Handling
-  export function dispatchCustomEvent(eventName, detail) {
-    document.dispatchEvent(new CustomEvent(eventName, { detail }));
-  }
-  
-  export function addEventListener(eventName, handler) {
-    document.addEventListener(eventName, handler);
-  }
-  
-  export function removeEventListener(eventName, handler) {
-    document.removeEventListener(eventName, handler);
-  }
+
+// Hilfsfunktionen für Event-Handling
+export function dispatchCustomEvent(eventName, detail) {
+  document.dispatchEvent(new CustomEvent(eventName, { detail }));
+}
+
+export function addEventListener(eventName, handler) {
+  document.addEventListener(eventName, handler);
+}
+
+export function removeEventListener(eventName, handler) {
+  document.removeEventListener(eventName, handler);
+}
