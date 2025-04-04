@@ -9,12 +9,15 @@ import dataStore from '../../core/dataStore.js';
 import { fixImagePath } from '../../core/utils.js';
 
 // Auf Datenladung reagieren
-addEventListener(EVENT_TYPES.DATA_LOADED, async () => {
-  console.log("projectLoader: Erstelle DOM-Struktur");
+addEventListener(EVENT_TYPES.DATA_LOADED, async (event) => {
+  console.log("projectLoader: EVENT DATA_LOADED empfangen", event);
   
   try {
     // DOM-Struktur erstellen
     await createProjectElements();
+    
+    // Explizit loggen
+    console.log("projectLoader: DOM-Struktur erstellt, sende DOM_STRUCTURE_READY");
     
     // Nächste Phase signalisieren: DOM-Struktur bereit
     dispatchCustomEvent(EVENT_TYPES.DOM_STRUCTURE_READY);
@@ -22,6 +25,62 @@ addEventListener(EVENT_TYPES.DATA_LOADED, async () => {
     console.error("Fehler beim Erstellen der DOM-Struktur:", error);
   }
 });
+
+/**
+ * Erstellt die DOM-Elemente für alle Projekte
+ */
+export async function createProjectElements() {
+  const projectsData = dataStore.getProjects();
+  const container = document.querySelector(".project-container");
+
+  if (!container) {
+    console.error("Fehler: Project-Container nicht gefunden");
+    return false;
+  }
+
+  // Container komplett leeren
+  container.innerHTML = "";
+
+  // Projekte erstellen
+  if (projectsData && projectsData.data) {
+    // HTML für alle Projekte erstellen
+    for (const project of projectsData.data) {
+      // Bilder-HTML erstellen
+      let imagesHTML = "";
+      if (project.project_images && project.project_images.length > 0) {
+        const imagePromises = project.project_images.map((img) =>
+          createResponsiveImageHTML(img)
+        );
+        const imageHTMLs = await Promise.all(imagePromises);
+        imagesHTML = imageHTMLs.join("");
+      }
+
+      // Eindeutige IDs für Accessibility
+      const projectTitleId = `project-title-${project.id}`;
+
+      // Gesamtes Projekt-HTML
+      const projectHTML = `
+        <article 
+          class="project" 
+          aria-labelledby="${projectTitleId}"
+          data-project-id="${project.id}"
+          data-project-name="${project.name}"
+          data-project-description="${project.description[0]?.children[0]?.text || ""}"
+        >  
+          <div class="swiper">
+            <div class="swiper-wrapper">
+              ${imagesHTML}
+            </div>
+          </div>
+        </article>
+      `;
+
+      container.insertAdjacentHTML("beforeend", projectHTML);
+    }
+  }
+  
+  return true;
+}
 
 /**
  * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
@@ -113,66 +172,10 @@ function createResponsiveImageHTML(imageData) {
           src="${fullImageUrl}" 
           alt="${altText}" 
           onerror="this.onerror=null; this.src='images/placeholder.png';"
+          loading="lazy"
         />
       </picture>
     </div>
   `;
 
-}
-
-// Erstellt die DOM-Elemente für alle Projekte
-export async function createProjectElements() {
-  const projectsData = dataStore.getProjects();
-  const container = document.querySelector(".project-container");
-
-  if (!container) {
-    console.error("Fehler: Project-Container nicht gefunden");
-    return;
-  }
-
-  // Container komplett leeren
-  container.innerHTML = "";
-
-  if (projectsData && projectsData.data) {
-    // HTML für alle Projekte erstellen
-    for (const project of projectsData.data) {
-      // Bilder-HTML erstellen
-      let imagesHTML = "";
-      if (project.project_images && project.project_images.length > 0) {
-        const imagePromises = project.project_images.map((img) =>
-          createResponsiveImageHTML(img)
-        );
-        const imageHTMLs = await Promise.all(imagePromises);
-        imagesHTML = imageHTMLs.join("");
-      }
-
-      // Eindeutige IDs für Accessibility
-      const projectTitleId = `project-title-${project.id}`;
-
-      // Gesamtes Projekt-HTML
-      const projectHTML = `
-        <article 
-          class="project" 
-          aria-labelledby="${projectTitleId}"
-          data-project-id="${project.id}"
-          data-project-name="${project.name}"
-          data-project-description="${project.description[0]?.children[0]?.text || ""}"
-        >  
-          <div class="swiper">
-            <div class="swiper-wrapper">
-              ${imagesHTML}
-            </div>
-          </div>
-        </article>
-      `;
-
-      container.insertAdjacentHTML("beforeend", projectHTML);
-    }
-  }
-
-  // Wichtig: Scroll zum Anfang
-  container.scrollTop = 0;
-    
-  // UI-Status aktualisieren
-  return Promise.resolve();
 }

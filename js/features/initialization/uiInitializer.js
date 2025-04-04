@@ -9,16 +9,17 @@ import { setupUIAnimations } from '../ui/uiAnimationManager.js';
 import swiperInitializer from '../imageViewer/swiperInitializer.js';
 import customPagination from '../imageViewer/customPagination.js';
 import { setupImageColorHandler } from '../imageViewer/imageColorHandler.js';
-import { setupImageNavigation } from '../imageViewer/imageNavigation.js';
+import { setupProjectIndicator } from '../projects/projectIndicator.js';
 
 // Auf DOM-Struktur reagieren
 addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
-  console.log("uiInitializer: Beginne UI-Initialisierung");
+  console.log("uiInitializer: DOM-Struktur bereit - initialisiere UI-Komponenten");
   
-  // Erst den UI-State aktualisieren
+  // UI-State mit den DOM-Elementen aktualisieren
   uiState.updateProjects();
+  console.log(`uiInitializer: ${uiState.projects.length} Projekte im DOM gefunden`);
   
-  // Dann UI-Komponenten initialisieren
+  // UI-Komponenten initialisieren
   initializeUIComponents()
     .then(() => {
       console.log("uiInitializer: UI-Komponenten initialisiert");
@@ -35,23 +36,25 @@ addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
  * Initialisiert alle UI-Komponenten in der richtigen Reihenfolge
  */
 async function initializeUIComponents() {
-    // 1. Zentrale Animation für Titel, Description, etc.
-    setupUIAnimations();
-    
-    // TODO generell die init functions harmonisieren - bestes Vorgehen: alles soll "export function init()" haben
-    // 2. Swiper für Bildergalerien initialisieren und warten
-    await swiperInitializer.init();
-    
-    // 3. Pagination erst danach einrichten (setzt Swiper-Instanzen voraus)
-    customPagination.init();
+  console.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");
   
-  // 4. Weitere UI-Komponenten
+  // 1. Zentrale Animation für Titel, Description, etc.
+  setupUIAnimations();
+  
+  // 2. Projekt-Indikator einrichten
+  setupProjectIndicator();
+  
+  // 3. Swiper für Bildergalerien initialisieren
+  await swiperInitializer.init();
+  console.log("uiInitializer: Swiper initialisiert");
+  
+  // 4. Pagination für die Bilder einrichten
+  customPagination.init();
+  console.log("uiInitializer: Pagination initialisiert");
+  
+  // 5. Weitere UI-Komponenten
   setupImageColorHandler();
   
-  // Kurze Pause, um DOM-Updates zu ermöglichen
-  return new Promise(resolve => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(resolve); // Doppeltes RAF für beste Kompatibilität
-    });
-  });
+  console.log("uiInitializer: Alle UI-Komponenten initialisiert");
+  return true;
 }

@@ -1,17 +1,17 @@
 /**
  * @module interactionManager
- * @description Verwaltet die Initialisierung aller Interaktionen
+ * @description Verwaltet die Initialisierung aller Benutzerinteraktionen
  */
 
 import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
 import { setupProjectNavigation } from '../navigation/projectNavigator.js';
-import { setupProjectIndicator } from '../projects/projectIndicator.js';
+import { setupImageNavigation } from '../imageViewer/imageNavigation.js';
 
 // Auf UI-Komponenten reagieren
 addEventListener(EVENT_TYPES.UI_COMPONENTS_READY, () => {
-  console.log("interactionManager: Initialisiere Interaktionen");
+  console.log("interactionManager: UI-Komponenten bereit - initialisiere Interaktionen");
   
-  // UI-Interaktionen initialisieren
+  // Interaktionen initialisieren
   initializeInteractions()
     .then(() => {
       console.log("interactionManager: Interaktionen initialisiert");
@@ -28,18 +28,16 @@ addEventListener(EVENT_TYPES.UI_COMPONENTS_READY, () => {
  * Initialisiert alle Interaktionskomponenten
  */
 async function initializeInteractions() {
-  // Projekt-Navigation (ScrollTrigger, Touch-Events)
-  setupProjectNavigation();
+  console.log("interactionManager: Starte Interaktions-Initialisierung");
   
-  // Projektindikator sichtbar machen
-  const projectIndicatorTab = document.querySelector(".project-indicator-tab");
-  if (projectIndicatorTab) {
-    // Erst nach Animation-Frame sichtbar machen für sanfte Animation
-    setTimeout(() => {
-      projectIndicatorTab.classList.add("visible");
-    }, 500);
-  }
+  // 1. Bildnavigation (zuvor in uiInitializer)
+  setupImageNavigation();
+  console.log("interactionManager: Bildnavigation initialisiert");
+  
+  // 2. Projekt-Navigation (ScrollTrigger, Touch-Events)
+  const navigation = setupProjectNavigation();
+  console.log("interactionManager: Projektnavigation initialisiert");
   
   // Kurze Pause für Animation
-  return new Promise(resolve => setTimeout(resolve, 300));
+  return new Promise(resolve => setTimeout(resolve, 100));
 }

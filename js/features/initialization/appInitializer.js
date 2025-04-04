@@ -1,10 +1,12 @@
-import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../core/events.js';
-import dataStore from '../core/dataStore.js';
-
 /**
- * Zentrale Initialisierungsfunktion der Anwendung
- * Reagiert auf das APP_INIT_STARTED-Event
+ * @module appInitializer
+ * @description Verantwortlich für die initiale Datenladung der Anwendung
  */
+
+import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
+import dataStore from '../../core/dataStore.js';
+
+// Auf App-Initialisierung reagieren
 addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
   console.log("appInitializer: Starte Datenladung");
   
@@ -46,8 +48,8 @@ function showLoadingError() {
   }
 }
 
-// Initialisierungsfunktion exportieren, um sie in der ursprünglichen Weise verfügbar zu machen
+// Alte Export-Funktion für Rückwärtskompatibilität
 export async function initializeWebsite() {
-  console.log("Altmethoden-Aufruf: initializeWebsite ist veraltet");
+  console.log("appInitializer: Direkter Aufruf von initializeWebsite");
   dispatchCustomEvent(EVENT_TYPES.APP_INIT_STARTED);
 }

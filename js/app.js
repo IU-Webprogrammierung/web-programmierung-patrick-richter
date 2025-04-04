@@ -1,6 +1,14 @@
 import { dispatchCustomEvent, EVENT_TYPES } from './core/events.js';
 import { setupEventListeners } from './setup.js';
 
+// Frühzeitiges Importieren aller Module für Event-Listener-Registrierung
+// Diese Importe müssen vor der Verwendung der Events erfolgen!
+import './features/initialization/appInitializer.js';
+import './features/projects/projectLoader.js';
+import './features/initialization/uiInitializer.js';
+import './features/initialization/interactionManager.js';
+import './features/footer/footerLoader.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   // GSAP Plugins registrieren
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -10,9 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event-Listener für die Grundfunktionalität
   setupEventListeners();
   
-  // Initialisierungsprozess starten
+  // Initialisierungsprozess starten - jetzt sind alle Event-Listener registriert!
   dispatchCustomEvent(EVENT_TYPES.APP_INIT_STARTED);
-
   
   // Auf den Abschluss der Initialisierung hören
   document.addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
@@ -21,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hauptinhalt sichtbar machen
     document.querySelector('main').style.visibility = 'visible';
     
-    // TODO check : Lade-Anzeige entfernen (falls vorhanden)  
+    // Lade-Anzeige entfernen
     document.documentElement.classList.add('loaded');
   });
 });
