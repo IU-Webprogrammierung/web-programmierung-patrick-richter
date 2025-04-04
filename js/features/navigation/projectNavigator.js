@@ -17,8 +17,6 @@ export function setupProjectNavigation() {
     SCROLL_TOLERANCE: 15
   };
 
-  // DOM-Elemente und Zustandsverwaltung
-  const wrapper = document.querySelector(".project-container") || document;
   
   // Alle navigierbaren Elemente in einer Collection
   const navigableElements = [
@@ -52,128 +50,136 @@ export function setupProjectNavigation() {
   // Sicherstellen, dass der Index im gültigen Bereich bleibt
   const wrap = (index) => Math.max(0, Math.min(index, navigableElements.length - 1));
 
-  // Initiale Styles für alle navigierbaren Elemente
-  navigableElements.forEach((el, i) => {
-    gsap.set(el, {
-      position: i === navigableElements.length - 1 ? "fixed" : "absolute", // Footer fixed
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      autoAlpha: i === 0 ? 1 : 0,
-      yPercent: i === navigableElements.length - 1 ? 100 : i === 0 ? 0 : 100, // Footer unten
-      zIndex: i === 0 ? 5 : i === navigableElements.length - 1 ? 50 : 0  // Footer höheren z-index
-    });
-    
-    // Accessibility
-    el.setAttribute('aria-hidden', i !== 0 ? 'true' : 'false');
-    if (el.getAttribute('role') !== 'region') {
-      el.setAttribute('role', 'region');
+ // Initiale Styles für alle navigierbaren Elemente
+navigableElements.forEach((el, i) => {
+  gsap.set(el, {
+    position: "absolute", // Alle Elemente einheitlich als absolute
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    autoAlpha: i === 0 ? 1 : 0,
+    yPercent: i === 0 ? 0 : 100,
+    zIndex: i === 0 ? 5 : 0 // Einfache Hierarchie - aktives Element oben
+  });
+  
+  // Accessibility
+  el.setAttribute('aria-hidden', i !== 0 ? 'true' : 'false');
+  if (el.getAttribute('role') !== 'region') {
+    el.setAttribute('role', 'region');
+  }
+});
+
+/**
+ * Unified transition function for all elements
+ */
+function transitionToElement(index, direction) {
+  index = wrap(index);
+  if (index === currentIndex || animating) return;
+
+  animating = true;
+  console.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
+  
+  // Feststellen, ob wir zum/vom Footer navigieren
+  const isToFooter = index === navigableElements.length - 1;
+  const isFromFooter = currentIndex === navigableElements.length - 1;
+  const lastProjectIndex = navigableElements.length - 2;
+  
+  // UI-Update mit Verzögerung
+  gsap.delayedCall(CONFIG.ANIMATION_DURATION * 0.4, () => {
+    dispatchElementChangeEvent(index);
+  });
+
+  const tl = gsap.timeline({
+    defaults: {
+      duration: CONFIG.ANIMATION_DURATION,
+      ease: "power2.inOut"
+    },
+    onComplete: () => {
+      // Aufräumen nach Animation
+      navigableElements.forEach((el, i) => {
+        if (i !== index) {
+          // Spezialfall: Bei Footer-Aktivierung das letzte Projekt sichtbar lassen
+          if (isToFooter && i === lastProjectIndex) {
+            gsap.set(el, { 
+              autoAlpha: 1,  // Vollständig sichtbar
+              zIndex: 4      // Unter Footer, über anderen Projekten
+            });
+            // Accessibility: Trotzdem als hidden markieren
+            el.setAttribute('aria-hidden', 'true');
+          } else {
+            // Andere Projekte ausblenden
+            gsap.set(el, { autoAlpha: 0, zIndex: 0 });
+            el.setAttribute('aria-hidden', 'true');
+          }
+        } else {
+          // Aktives Element
+          gsap.set(el, { 
+            zIndex: i === navigableElements.length - 1 ? 50 : 5 // Footer höheren z-index
+          });
+          el.setAttribute('aria-hidden', 'false');
+        }
+      });
+      
+      animating = false;
+      currentIndex = index;
+      console.log(`Navigation zu Element ${index} abgeschlossen`);
     }
   });
 
-  /**
-   * Unified transition function for all elements
-   */
-  function transitionToElement(index, direction) {
-    index = wrap(index);
-    if (index === currentIndex || animating) return;
+  // Ziel vorbereiten
+  gsap.set(navigableElements[index], {
+    autoAlpha: 1,
+    yPercent: direction > 0 ? 100 : -CONFIG.PARALLAX_AMOUNT,
+    zIndex: isToFooter ? 50 : 5  // Höherer z-index für Footer
+  });
 
-    animating = true;
-    console.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
-    
-    // Feststellen, ob wir zum/vom Footer navigieren
-    const isToFooter = index === navigableElements.length - 1;
-    const isFromFooter = currentIndex === navigableElements.length - 1;
-    const lastProjectIndex = navigableElements.length - 2;
+  // Z-Index für Überlagerung
+  gsap.set(navigableElements[currentIndex], { 
+    zIndex: currentIndex === navigableElements.length - 1 ? 50 : (direction > 0 ? 0 : 5)
+  });
 
-    // UI-Update mit Verzögerung
-    gsap.delayedCall(CONFIG.ANIMATION_DURATION * 0.4, () => {
-      dispatchElementChangeEvent(index);
+  // Speziallogik für Footer-Übergänge
+  if (isToFooter) {
+    // Letztes Projekt beim Wechsel zum Footer sichtbar und mit Parallax
+    gsap.to(navigableElements[lastProjectIndex], {
+      yPercent: -CONFIG.PARALLAX_AMOUNT,
+      autoAlpha: 1,  // Vollständig sichtbar, nicht transparent
+      zIndex: 4,
+      duration: CONFIG.ANIMATION_DURATION,
+      ease: "power2.inOut"
     });
-
-    const tl = gsap.timeline({
-      defaults: {
-        duration: CONFIG.ANIMATION_DURATION,
-        ease: "power2.inOut"
-      },
-      onComplete: () => {
-        // Aufräumen nach Animation
-        navigableElements.forEach((el, i) => {
-          if (i !== index) {
-            // Spezialfall: Bei Footer-Aktivierung das letzte Projekt sichtbar lassen
-            if (isToFooter && i === lastProjectIndex) {
-              gsap.set(el, { 
-                autoAlpha: 0.8,  // Leicht transparent
-                zIndex: 4        // Unter Footer, über anderen Projekten
-              });
-              // Accessibility: Trotzdem als hidden markieren
-              el.setAttribute('aria-hidden', 'true');
-            } else {
-              // Andere Projekte ausblenden
-              gsap.set(el, { autoAlpha: 0, zIndex: 0 });
-              el.setAttribute('aria-hidden', 'true');
-            }
-          } else {
-            // Aktives Element
-            gsap.set(el, { 
-              zIndex: i === navigableElements.length - 1 ? 50 : 5 // Footer höheren z-index
-            });
-            el.setAttribute('aria-hidden', 'false');
-          }
-        });
-        
-        animating = false;
-        currentIndex = index;
-        console.log(`Navigation zu Element ${index} abgeschlossen`);
-      }
-    });
-
-    // Ziel vorbereiten
-    gsap.set(navigableElements[index], {
-      autoAlpha: 1,
-      yPercent: direction > 0 ? 100 : -CONFIG.PARALLAX_AMOUNT,
-      zIndex: isToFooter ? 50 : 5
-    });
-
-    // Z-Index für Überlagerung
-    gsap.set(navigableElements[currentIndex], { 
-      zIndex: direction > 0 ? 0 : 5 
-    });
-
-    // Speziallogik für Footer-Übergänge
-    if (isToFooter) {
-      // Letztes Projekt beim Wechsel zum Footer sichtbar und mit Parallax
+  } else if (isFromFooter) {
+    // Beim Verlassen des Footers das letzte Projekt nur ausblenden,
+    // wenn wir nicht zum letzten Projekt navigieren
+    if (index !== lastProjectIndex) {
       gsap.to(navigableElements[lastProjectIndex], {
-        yPercent: -CONFIG.PARALLAX_AMOUNT,
-        autoAlpha: 0.8,
-        zIndex: 4,
+        yPercent: 0,
+        autoAlpha: 0,
         duration: CONFIG.ANIMATION_DURATION,
         ease: "power2.inOut"
       });
-    } else if (isFromFooter) {
-      // Beim Verlassen des Footers das letzte Projekt ggf. normalisieren
-      if (index !== lastProjectIndex) {
-        gsap.to(navigableElements[lastProjectIndex], {
-          yPercent: 0,
-          autoAlpha: 0,
-          duration: CONFIG.ANIMATION_DURATION,
-          ease: "power2.inOut"
-        });
+    }
+  }
+
+  // Normale Transition für aktuelle/neue Elemente
+  tl.to(navigableElements[currentIndex], {
+    yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100,
+    // NICHT den z-index während der Animation ändern für Footer
+    onStart: () => {
+      // Bei Footer-Animation z-index erhalten
+      if (currentIndex === navigableElements.length - 1) {
+        gsap.set(navigableElements[currentIndex], { zIndex: 50 });
       }
     }
+  }, 0);
 
-    // Normale Transition für aktuelle/neue Elemente
-    tl.to(navigableElements[currentIndex], {
-      yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100
-    }, 0);
+  tl.to(navigableElements[index], {
+    yPercent: 0
+  }, 0);
 
-    tl.to(navigableElements[index], {
-      yPercent: 0
-    }, 0);
-
-    return tl;
-  }
+  return tl;
+}
 
   /**
    * Benachrichtigt über Elementwechsel - erkennt automatisch den Footer
@@ -202,7 +208,7 @@ export function setupProjectNavigation() {
 
   // Observer für Scroll/Touch
   Observer.create({
-    target: wrapper,
+    target: document.body, // Target auf body für bessere Erkennung von allen Elementen
     type: "wheel,touch,pointer",
     wheelSpeed: -0.3,
     onDown: (self) => {
@@ -216,6 +222,17 @@ export function setupProjectNavigation() {
     lockAxis: true,
     preventDefault: true
   });
+
+  // Module initialisieren
+  setupKeyboardNavigation(transitionToElement, navigableElements, () => animating);
+  
+  /*setupHistoryRouting({
+    projects: navigableElements,
+    transitionToProject: transitionToElement,
+    getCurrentIndex: () => currentIndex,
+    dispatchProjectChangeEvent,
+    isFooter: (el) => el && el.id === "site-footer"
+  });*/
 
   // Initialisierung
   setTimeout(() => {

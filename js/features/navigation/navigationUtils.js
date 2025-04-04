@@ -28,10 +28,24 @@ export function getNavigationAPI() {
 }
 
 /**
- * Prüft, ob ein Element der Footer ist
- * @param {Element} element - Das zu prüfende Element
- * @returns {boolean} True, wenn das Element der Footer ist
+ * Prüft, ob ein Element oder ein Index zum Footer gehört
+ * @param {Element|number} elementOrIndex - Element oder Index zu prüfen
+ * @param {Array} [elements] - Optional: Array von Elementen für Index-Zugriff
+ * @returns {boolean} True, wenn es sich um den Footer handelt
  */
-export function isFooter(element) {
-  return element && element.id === "site-footer";
+export function isFooter(elementOrIndex, elements) {
+  // Wenn ein Index übergeben wurde und elements vorhanden ist
+  if (typeof elementOrIndex === 'number' && Array.isArray(elements)) {
+    // Prüfen, ob der Index auf den Footer verweist (letztes Element)
+    return elementOrIndex === elements.length - 1 && 
+           elements[elementOrIndex]?.id === "site-footer";
+  }
+  
+  // Wenn ein Element übergeben wurde
+  if (elementOrIndex instanceof Element) {
+    return elementOrIndex.id === "site-footer";
+  }
+  
+  // In allen anderen Fällen: kein Footer
+  return false;
 }

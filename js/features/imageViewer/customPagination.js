@@ -1,7 +1,4 @@
-/**
- * Bietet benutzerdefinierte Pagination für Swiper mit konsistenter uiState-Integration
- */
-
+import { isFooter } from '../navigation/navigationUtils.js';
 import uiState from '../../core/uiState.js';
 import { EVENT_TYPES } from '../../core/events.js';
 import { getValidatedElement } from '../../core/utils.js';
@@ -30,6 +27,16 @@ export function setupCustomPagination() {
     if (phase === TransitionController.phases.BETWEEN) {
       const projectIndex = uiState.activeProjectIndex;
       
+      // Prüfen, ob der Footer aktiv ist
+      if (isFooter(projectIndex, uiState.projects)) {
+        // Pagination für Footer ausblenden
+        paginationContainer.style.display = 'none';
+        return;
+      } else {
+        // Pagination für normale Projekte einblenden
+        paginationContainer.style.display = '';
+      }
+      
       // Pagination aktualisieren und dann in separatem Rendering-Zyklus den Bullet
       updatePaginationForProject(projectIndex, false);
       
@@ -44,17 +51,23 @@ export function setupCustomPagination() {
 
   // Initial für das aktuell aktive Projekt einrichten
   if (uiState.activeProjectIndex >= 0) {
-    console.log(`Pagination: Initiale Erstellung für Projekt ${uiState.activeProjectIndex}`);
-    updatePaginationForProject(uiState.activeProjectIndex);
-    
-    // Initial das aktive Bild markieren
-    if (uiState.activeSlideIndex !== undefined && uiState.activeSlideIndex >= 0) {
-      updateActiveBullet(uiState.activeSlideIndex);
+    // Prüfen, ob der Footer aktiv ist
+    if (isFooter(uiState.activeProjectIndex, uiState.projects)) {
+      paginationContainer.style.display = 'none';
     } else {
-      updateActiveBullet(0);
+      console.log(`Pagination: Initiale Erstellung für Projekt ${uiState.activeProjectIndex}`);
+      updatePaginationForProject(uiState.activeProjectIndex);
+      
+      // Initial das aktive Bild markieren
+      if (uiState.activeSlideIndex !== undefined && uiState.activeSlideIndex >= 0) {
+        updateActiveBullet(uiState.activeSlideIndex);
+      } else {
+        updateActiveBullet(0);
+      }
     }
   }
 }
+
 
 /**
  * Aktualisiert die Pagination für ein bestimmtes Projekt
@@ -62,13 +75,22 @@ export function setupCustomPagination() {
 function updatePaginationForProject(projectIndex) {
   console.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
   
+  // Prüfen, ob der Footer aktiv ist
+  if (isFooter(projectIndex, uiState.projects)) {
+    if (paginationContainer) {
+      paginationContainer.innerHTML = '';
+      paginationContainer.style.display = 'none';
+    }
+    return;
+  }
+  
   // Projekt im DOM finden
   const project = uiState.projects[projectIndex];
   if (!project) {
     console.warn(`Projekt mit Index ${projectIndex} nicht gefunden`);
     return;
   }
-
+  
   // Swiper-Element für dieses Projekt finden
   const swiperElement = project.querySelector('.swiper');
   if (!swiperElement) {

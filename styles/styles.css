@@ -381,12 +381,10 @@ header > * {
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 50 !important; /* Höherer z-index */
   display: flex;
   flex-direction: column;
   pointer-events: auto; /* Wichtig: Interaktionen ermöglichen */
   will-change: transform; /* Optimierung für Animation */
-  transform: translateY(100%); /* Initial versteckt */
 }
 
 .site-footer .footer-top {

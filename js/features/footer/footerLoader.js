@@ -7,13 +7,13 @@ import dataStore from "../../core/dataStore.js";
 
 /**
  * Lädt Footer-Inhalte aus dem dataStore und aktualisiert das DOM
- * @param {Element} container - Der Container für Footer-Inhalte
  */
-export function loadFooterContent(container) {
+export function loadFooterContent() {
   console.log("Lade Footer-Inhalte...");
   
+  const container = document.querySelector(".footer-content");
   if (!container) {
-    console.error("Footer-Container nicht gefunden");
+    console.error("Footer-Container nicht gefunden - keine .footer-content im DOM");
     return;
   }
   

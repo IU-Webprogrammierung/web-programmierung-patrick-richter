@@ -34,31 +34,41 @@ export function setupProjectTitle() {
     console.log(`Titel gesetzt: "${projectName}"`);
   }
 
-  // Inhalte aktualisieren
-  function updateTitleContents() {
-    const activeIndex = uiState.activeProjectIndex;
+// Inhalte aktualisieren
+function updateTitleContents() {
+  const activeIndex = uiState.activeProjectIndex;
+  
+  // Alle navigierbaren Elemente (inkl. Footer)
+  const navigableElements = [
+    ...document.querySelectorAll(".project"), 
+    document.getElementById("site-footer")
+  ];
+  
+  if (activeIndex >= 0 && activeIndex < navigableElements.length) {
+    const activeElement = navigableElements[activeIndex];
     
-    // Alle navigierbaren Elemente (inkl. Footer)
-    const navigableElements = [
-      ...document.querySelectorAll(".project"), 
-      document.getElementById("site-footer")
-    ];
-    
-    if (activeIndex >= 0 && activeIndex < navigableElements.length) {
-      const activeElement = navigableElements[activeIndex];
+    // Footer erkennen - einfach per ID
+    if (activeElement.id === "site-footer") {
+      // Für Footer: Titel setzen, aber Description leeren
+      setTitles("Say Hi!", "");
       
-      // Footer erkennen - einfach per ID
-      if (activeElement.id === "site-footer") {
-        setTitles("Say Hi!", "Get in touch to discuss your project");
-        console.log("Footer-Titel gesetzt");
-      } else {
-        // Normaler Projekttitel
-        const projectName = activeElement.getAttribute("data-project-name");
-        const projectDesc = activeElement.getAttribute("data-project-description") || "";
-        setTitles(projectName, projectDesc);
-      }
+      // Description-Elemente ausblenden
+      if (desktopDescription) desktopDescription.style.display = 'none';
+      if (mobileDescription) mobileDescription.style.display = 'none';
+      
+      console.log("Footer-Titel gesetzt, Description ausgeblendet");
+    } else {
+      // Normaler Projekttitel
+      const projectName = activeElement.getAttribute("data-project-name");
+      const projectDesc = activeElement.getAttribute("data-project-description") || "";
+      setTitles(projectName, projectDesc);
+      
+      // Description-Elemente wieder einblenden
+      if (desktopDescription) desktopDescription.style.display = '';
+      if (mobileDescription) mobileDescription.style.display = '';
     }
   }
+}
 
   // Auf Phasenänderungen im Transition-Controller reagieren
   document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
