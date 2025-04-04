@@ -3,7 +3,7 @@
  * @description Verwaltet Inhaltsaktualisierungen für Titel und Beschreibungen
  */
 
-import { isFooter } from '../navigation/navigationUtils.js';
+import { checkFooter } from '../navigation/navigationUtils.js';
 import { getValidatedElement } from '../../core/utils.js';
 import uiState from '../../core/uiState.js';
 
@@ -36,7 +36,7 @@ export function updateContents() {
     const activeElement = projects[activeIndex];
     
     // Footer-Spezialbehandlung
-    if (isFooter(activeElement)) {
+    if (checkFooter(activeElement)) {
       // Für Footer: Titel setzen, aber Description leeren
       setTitles("Say Hi!", "");
       

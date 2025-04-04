@@ -8,7 +8,7 @@
 
 import uiState from "../../core/uiState.js";
 import { getValidatedElement } from '../../core/utils.js';
-import { getNavigationAPI, isFooter } from "../navigation/navigationUtils.js";
+import { getNavigationAPI, checkFooter } from "../navigation/navigationUtils.js";
 import { removeHoverListeners } from "./hoverPreview.js";
 import { EVENT_TYPES } from "../../core/events.js";
 
@@ -43,12 +43,12 @@ function updateTabText() {
   if (uiState.activeProjectIndex >= 0 && uiState.projects.length > 0) {
     // Zähle reguläre Projekte (ohne Footer)
     const regularProjects = Array.from(uiState.projects).filter(
-      p => !isFooter(p)
+      p => !checkFooter(p)
     );
     
     // Ermitteln, ob das aktuelle Projekt der Footer ist
     const currentProject = uiState.projects[uiState.activeProjectIndex];
-    const isFooterActive = isFooter(currentProject);
+    const isFooterActive = checkFooter(currentProject);
     
     // Bei Footer den Index des letzten regulären Projekts plus 1 anzeigen
     // Dies sorgt dafür, dass der Footer nicht als zusätzliches Projekt gezählt wird
@@ -58,7 +58,7 @@ function updateTabText() {
     } else {
       activeIndex = Array.from(uiState.projects)
         .slice(0, uiState.activeProjectIndex + 1)
-        .filter(p => !isFooter(p))
+        .filter(p => !checkFooter(p))
         .length;
     }
     
@@ -95,10 +95,10 @@ function updateActiveProjectInList() {
   
   // Ermitteln, ob das aktuelle Projekt der Footer ist
   const currentProject = uiState.projects[uiState.activeProjectIndex];
-  const isFooterActive = currentProject && isFooter(currentProject);
+  const isFooterActive = currentProject && checkFooter(currentProject);
   
   // Reguläre Projekte zählen (ohne Footer)
-  const regularProjects = Array.from(uiState.projects).filter(p => !isFooter(p));
+  const regularProjects = Array.from(uiState.projects).filter(p => !checkFooter(p));
   
   // Links aktualisieren
   links.forEach((link, index) => {
@@ -129,7 +129,7 @@ function setupProjectList() {
     // Nur reguläre Projekte (ohne Footer) hinzufügen
     uiState.projects.forEach((project, index) => {
       // Footer nicht in der Liste anzeigen
-      if (isFooter(project)) return;
+      if (checkFooter(project)) return;
       
       const li = document.createElement("li");
       const a = document.createElement("a");

@@ -8,7 +8,7 @@ import uiState from "../../core/uiState.js";
 import { registerNavigationAPI } from "./navigationUtils.js";
 import { EVENT_TYPES, dispatchCustomEvent } from "../../core/events.js";
 import { loadFooterContent } from "../footer/footerLoader.js";
-
+import { checkFooter } from '../navigation/navigationUtils.js';
 export function setupProjectNavigation() {
   // Konfiguration
   const CONFIG = {
@@ -81,8 +81,8 @@ function transitionToElement(index, direction) {
   console.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
   
   // Feststellen, ob wir zum/vom Footer navigieren
-  const isToFooter = index === navigableElements.length - 1;
-  const isFromFooter = currentIndex === navigableElements.length - 1;
+  const isToFooter = checkFooter(index, navigableElements);
+  const isFromFooter = checkFooter(currentIndex, navigableElements);
   const lastProjectIndex = navigableElements.length - 2;
   
   // UI-Update mit Verzögerung
@@ -115,7 +115,7 @@ function transitionToElement(index, direction) {
         } else {
           // Aktives Element
           gsap.set(el, { 
-            zIndex: i === navigableElements.length - 1 ? 50 : 5 // Footer höheren z-index
+            zIndex: checkFooter(i, navigableElements) ? 50 : (i === 0 ? 5 : 0) // Footer höheren z-index
           });
           el.setAttribute('aria-hidden', 'false');
         }
@@ -168,7 +168,7 @@ function transitionToElement(index, direction) {
     // NICHT den z-index während der Animation ändern für Footer
     onStart: () => {
       // Bei Footer-Animation z-index erhalten
-      if (currentIndex === navigableElements.length - 1) {
+      if (checkFooter(currentIndex, navigableElements)) {
         gsap.set(navigableElements[currentIndex], { zIndex: 50 });
       }
     }
@@ -189,22 +189,23 @@ function transitionToElement(index, direction) {
     if (!element) return;
     
     // Footer erkennen
-    const isFooter = element.id === "site-footer";
+    const isFooterElement = checkFooter(element);
     
     // Standard-Event für alle Elemente
     uiState.setActiveProject(index);
     
-    // Zusätzliches Event für Footer
-    if (isFooter) {
-      console.log("Footer-Element aktiviert");
-      window._isFooterActive = true;
-      dispatchCustomEvent(EVENT_TYPES.FOOTER_ACTIVATED, { index });
-    } else if (window._isFooterActive) {
-      // Footer wurde deaktiviert
-      window._isFooterActive = false;
-      dispatchCustomEvent(EVENT_TYPES.FOOTER_DEACTIVATED, { index });
-    }
+  // Zusätzliches Event für Footer
+  if (isFooterElement) {
+    console.log("Footer-Element aktiviert");
+    window._isFooterActive = true;
+    dispatchCustomEvent(EVENT_TYPES.FOOTER_ACTIVATED, { index });
+  } else if (window._isFooterActive) {
+    // Footer wurde deaktiviert
+    window._isFooterActive = false;
+    dispatchCustomEvent(EVENT_TYPES.FOOTER_DEACTIVATED, { index });
   }
+}
+
 
   // Observer für Scroll/Touch
   Observer.create({
@@ -269,7 +270,7 @@ function transitionToElement(index, direction) {
       transitionToElement(0, -1);
     },
     getCurrentIndex: () => currentIndex,
-    isFooterActive: () => navigableElements[currentIndex]?.id === "site-footer"
+    isFooterActive: () => checkFooter(navigableElements[currentIndex])
   };
 
   registerNavigationAPI(api);

@@ -1,4 +1,4 @@
-import { isFooter } from '../navigation/navigationUtils.js';
+import { checkFooter } from '../navigation/navigationUtils.js';
 import uiState from '../../core/uiState.js';
 import { EVENT_TYPES } from '../../core/events.js';
 import { getValidatedElement } from '../../core/utils.js';
@@ -28,7 +28,7 @@ export function setupCustomPagination() {
       const projectIndex = uiState.activeProjectIndex;
       
       // Prüfen, ob der Footer aktiv ist
-      if (isFooter(projectIndex, uiState.projects)) {
+      if (checkFooter(projectIndex, uiState.projects)) {
         // Pagination für Footer ausblenden
         paginationContainer.style.display = 'none';
         return;
@@ -52,7 +52,7 @@ export function setupCustomPagination() {
   // Initial für das aktuell aktive Projekt einrichten
   if (uiState.activeProjectIndex >= 0) {
     // Prüfen, ob der Footer aktiv ist
-    if (isFooter(uiState.activeProjectIndex, uiState.projects)) {
+    if (checkFooter(uiState.activeProjectIndex, uiState.projects)) {
       paginationContainer.style.display = 'none';
     } else {
       console.log(`Pagination: Initiale Erstellung für Projekt ${uiState.activeProjectIndex}`);
@@ -76,7 +76,7 @@ function updatePaginationForProject(projectIndex) {
   console.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
   
   // Prüfen, ob der Footer aktiv ist
-  if (isFooter(projectIndex, uiState.projects)) {
+  if (checkFooter(projectIndex, uiState.projects)) {
     if (paginationContainer) {
       paginationContainer.innerHTML = '';
       paginationContainer.style.display = 'none';
@@ -90,7 +90,7 @@ function updatePaginationForProject(projectIndex) {
     console.warn(`Projekt mit Index ${projectIndex} nicht gefunden`);
     return;
   }
-  
+
   // Swiper-Element für dieses Projekt finden
   const swiperElement = project.querySelector('.swiper');
   if (!swiperElement) {

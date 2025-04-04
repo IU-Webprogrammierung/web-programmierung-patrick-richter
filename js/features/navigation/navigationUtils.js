@@ -33,7 +33,7 @@ export function getNavigationAPI() {
  * @param {Array} [elements] - Optional: Array von Elementen für Index-Zugriff
  * @returns {boolean} True, wenn es sich um den Footer handelt
  */
-export function isFooter(elementOrIndex, elements) {
+export function checkFooter(elementOrIndex, elements) {
   // Wenn ein Index übergeben wurde und elements vorhanden ist
   if (typeof elementOrIndex === 'number' && Array.isArray(elements)) {
     // Prüfen, ob der Index auf den Footer verweist (letztes Element)

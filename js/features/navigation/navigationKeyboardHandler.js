@@ -8,7 +8,7 @@
  * - Home/End zum ersten/letzten Projekt
  */
 
-import { isFooter } from './navigationUtils.js';
+import { checkFooter } from './navigationUtils.js';
 
 export function setupKeyboardNavigation(transitionToProject, projects, getAnimating) {
   console.log('Keyboard-Navigation wird initialisiert');
@@ -55,7 +55,7 @@ export function setupKeyboardNavigation(transitionToProject, projects, getAnimat
   function getCurrentIndex() {
     for (let i = 0; i < projects.length; i++) {
       if (projects[i].getAttribute('aria-hidden') === 'false' && 
-          !isFooter(projects[i])) {
+          !checkFooter(projects[i])) {
         return i;
       }
     }
