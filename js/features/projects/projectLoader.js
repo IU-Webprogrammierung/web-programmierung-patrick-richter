@@ -11,7 +11,7 @@ import swiperInitializer from "../imageViewer/swiperInitializer.js";
 import customPagination from '../imageViewer/customPagination.js';
 import { setupImageNavigation } from "../imageViewer/imageNavigation.js";
 import { setupScrollHandler } from "./projectNavigation.js";
-import { setupProjectTitle } from "./projectTitle.js";
+import { setupUIAnimations } from "../ui/uiAnimationsManager.js";
 import { setupProjectIndicator } from "./projectIndicator.js";
 import { setupImageColorHandler } from "../imageViewer/imageColorHandler.js";
 import { setupProjectNavigation } from "../navigation/projectNavigator.js";
@@ -233,7 +233,7 @@ export async function createProjectElements() {
       uiState.updateProjects();
 
       // UI-Komponenten initialisieren
-      setupProjectTitle();
+      setupUIAnimations();
       setupProjectIndicator();
       setupImageColorHandler();
       setupImageNavigation();
