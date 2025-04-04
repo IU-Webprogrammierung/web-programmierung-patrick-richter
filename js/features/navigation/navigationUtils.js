@@ -33,8 +33,11 @@ export function getNavigationAPI() {
  * @returns {boolean} True, wenn das Element der Footer ist
  */
 export function isFooter(element) {
-  console.log('Footer-Element gefunden');
-  return element && element.classList.contains('footer-container');
+  const isFooterElement = element && element.classList.contains('footer-container');
+  if (isFooterElement) {
+    console.log('Footer-Element erkannt');
+  }
+  return isFooterElement;
 }
 
 /**

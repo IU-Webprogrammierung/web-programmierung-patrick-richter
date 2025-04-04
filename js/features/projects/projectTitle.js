@@ -54,20 +54,14 @@ export function setupProjectTitle() {
   }
 
   // Auf Footer-Aktivierung reagieren
-  document.addEventListener('footerActivated', function() {
-    // Titel mit Verzögerung aktualisieren
-    setTimeout(() => {
-      // Prüfen, ob es wirklich der Footer ist
-      const activeIndex = uiState.activeProjectIndex;
-      if (activeIndex >= 0 && 
-          activeIndex < uiState.projects.length && 
-          isFooter(uiState.projects[activeIndex])) {
-        // Footer-Titel setzen
-        setTitles("Say Hi!", "Get in touch to discuss your project");
-        console.log("Footer TITLE aktiv");
-      }
-    }, 300);
-  });
+// Auf Footer-Aktivierung reagieren - direkter und mit Priorität
+document.addEventListener(EVENT_TYPES.FOOTER_ACTIVATED, function(event) {
+  console.log('Footer-Event empfangen mit Index:', event.detail.index);
+  
+  // Sofort Titel setzen, ohne setTimeout
+  setTitles("Say Hi!", "Get in touch to discuss your project");
+  console.log('Footer-Titel direkt gesetzt');
+});
 
   // Event-Listener für Projektänderungen
   document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, function() {

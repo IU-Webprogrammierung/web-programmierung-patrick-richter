@@ -5,6 +5,7 @@
 
 import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
 import { setupHistoryRouting } from './navigationRouting.js';
+import { EVENT_TYPES, dispatchCustomEvent } from '../../core/events.js';
 import uiState from "../../core/uiState.js";
 import { registerNavigationAPI, isFooter } from "./navigationUtils.js";
 
@@ -140,8 +141,8 @@ export function setupProjectNavigation() {
     // uiState aktualisieren mit zusätzlichen Informationen für den Footer
     if (projectIsFooter) {
       uiState.setActiveProject(index);
-      // Eigenes Event für Footer-Aktivierung dispatchen
-      dispatchCustomEvent('footerActivated', { index });
+      // Standardisiertes Event verwenden
+      dispatchCustomEvent(EVENT_TYPES.FOOTER_ACTIVATED, { index });
     } else {
       uiState.setActiveProject(index);
     }
