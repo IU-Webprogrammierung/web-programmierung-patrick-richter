@@ -6,12 +6,13 @@
 import { EVENT_TYPES } from '../../core/events.js';
 import { initialAppearAnimation } from '../../core/animationUtils.js';
 import TransitionController from '../../core/transitionController.js';
-import { contentElements, updateContents } from './contentManager.js';
+import { contentElements } from './contentManager.js';
 import { getValidatedElement } from '../../core/utils.js';
 
 // Zusätzliche UI-Elemente
 const pagination = getValidatedElement('.pagination');
-const projectIndicator = getValidatedElement('.project-indicator-tab');
+// TODO hier nochmal checken ob tab-text oder project-indicator-tab
+const projectIndicator = getValidatedElement('.tab-text');
 
 /**
  * Liste aller animierbaren UI-Elemente
@@ -28,7 +29,7 @@ const uiElements = [
 /**
  * Initialisiert alle UI-Animationen und Event-Listener
  */
-export function setupUIAnimations() {
+function init() {
   // Phasenänderungen im TransitionController abfangen
   document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
     const { phase } = event.detail;
@@ -48,11 +49,6 @@ export function setupUIAnimations() {
     });
   });
 
-  // Auf Content-Update-Event reagieren
-  document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
-    updateContents();
-  });
-
   // Event-Listener für Projektänderungen
   document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
     console.log("uiAnimationManager: Event activeProjectChanged empfangen");
@@ -63,6 +59,7 @@ export function setupUIAnimations() {
     }
   });
   
+  // TODO hier checken ob die Einzelbehandlung von Footer notwendig ist
   // Footer-Events mit TransitionController synchronisieren
   document.addEventListener(EVENT_TYPES.FOOTER_ACTIVATED, () => {
     console.log("Footer-Aktivierungs-Event empfangen");
@@ -74,12 +71,14 @@ export function setupUIAnimations() {
     }
   });
   
+    // TODO hier checken ob die Einzelbehandlung von Footer notwendig ist
   document.addEventListener(EVENT_TYPES.FOOTER_DEACTIVATED, () => {
     console.log("Footer-Deaktivierungs-Event empfangen");
     window._isFooterActive = false;
   });
-
-  // Initialen Zustand anzeigen und UI-Elemente synchron animieren
-  updateContents();
+  
+  // TODO in initial Appear Animation auch project indicator aufnehmen
   initialAppearAnimation(uiElements);
 }
+
+export default init;

@@ -13,7 +13,8 @@ export const EVENT_TYPES = {
   
   // Initialisierungs-Events
   APP_INIT_STARTED: 'appInitStarted',
-  DATA_LOADED: 'dataLoaded',
+  PROJECT_DATA_LOADED: 'projectDataLoaded',
+  ALL_DATA_LOADED: 'allDataLoaded',
   DOM_STRUCTURE_READY: 'domStructureReady',
   UI_COMPONENTS_READY: 'uiComponentsReady',
   APP_INIT_COMPLETE: 'appInitComplete'

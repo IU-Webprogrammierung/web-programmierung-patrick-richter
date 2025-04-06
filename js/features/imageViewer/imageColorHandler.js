@@ -17,7 +17,7 @@ let debounceColorTimer = null;
 /**
  * Richtet Event-Listener für Farbänderungen ein
  */
-export function setupImageColorHandler() {
+function init() {
   // Registriere den Haupt-Event-Handler für koordinierte Updates
   document.addEventListener(
     EVENT_TYPES.ACTIVE_IMAGE_CHANGED,
@@ -26,6 +26,7 @@ export function setupImageColorHandler() {
   
   // Neuer Listener für synchronisierten Farbwechsel während Transitionen
   document.addEventListener(
+    // TODO Warum aus transitionController und nicht EVENT_TYPES?
     TransitionController.events.PHASE_CHANGED,
     handleTransitionPhase
   );
@@ -125,3 +126,5 @@ function updateCursorStyle(textColor) {
     }
   }
 }
+
+export default init;

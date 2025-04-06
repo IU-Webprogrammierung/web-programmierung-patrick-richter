@@ -1,35 +1,45 @@
 /**
  * @module projectLoader
  * @description Verantwortlich für das Erstellen und Rendern der Projektinhalte.
- * Generiert Projekt-DOM-Elemente basierend auf den JSON-Daten.
+ * 
+ * @listens DATA_LOADED - Registriert mit init()
+ * @fires DOM_STRUCTURE_READY - Signalisiert fertige DOM-Struktur
  */
 
-import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
+import { EVENT_TYPES, dispatchCustomEvent } from '../../core/events.js';
 import dataStore from '../../core/dataStore.js';
 import { fixImagePath } from '../../core/utils.js';
 
-// Auf Datenladung reagieren
-addEventListener(EVENT_TYPES.DATA_LOADED, async (event) => {
-  console.log("projectLoader: EVENT DATA_LOADED empfangen", event);
+/**
+ * Initialisiert den projectLoader
+ * Registriert Event-Listener für DATA_LOADED
+ */
+function init() {
+  console.log("projectLoader: Initialisierung");
   
-  try {
-    // DOM-Struktur erstellen
-    await createProjectElements();
+  // Auf Datenladung reagieren
+  document.addEventListener(EVENT_TYPES.PROJECT_DATA_LOADED, async (event) => {
+    console.log("projectLoader: EVENT DATA_LOADED empfangen", event);
     
-    // Explizit loggen
-    console.log("projectLoader: DOM-Struktur erstellt, sende DOM_STRUCTURE_READY");
-    
-    // Nächste Phase signalisieren: DOM-Struktur bereit
-    dispatchCustomEvent(EVENT_TYPES.DOM_STRUCTURE_READY);
-  } catch (error) {
-    console.error("Fehler beim Erstellen der DOM-Struktur:", error);
-  }
-});
+    try {
+      // DOM-Struktur erstellen
+      await createProjectElements();
+      
+      // Explizit loggen
+      console.log("projectLoader: DOM-Struktur erstellt, sende DOM_STRUCTURE_READY");
+      
+      // Nächste Phase signalisieren: DOM-Struktur bereit
+      dispatchCustomEvent(EVENT_TYPES.DOM_STRUCTURE_READY);
+    } catch (error) {
+      console.error("Fehler beim Erstellen der DOM-Struktur:", error);
+    }
+  });
+}
 
 /**
  * Erstellt die DOM-Elemente für alle Projekte
  */
-export async function createProjectElements() {
+async function createProjectElements() {
   const projectsData = dataStore.getProjects();
   const container = document.querySelector(".project-container");
 
@@ -179,3 +189,8 @@ function createResponsiveImageHTML(imageData) {
   `;
 
 }
+
+// Öffentliche API des Moduls
+export default {
+  init
+};

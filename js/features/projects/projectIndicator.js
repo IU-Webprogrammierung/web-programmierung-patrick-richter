@@ -1,64 +1,80 @@
 /**
  * @module projectIndicator
  * @description Verwaltet den Projekt-Indikator und das Navigations-Panel für den Index.
- * Stellt einen interaktiven Tab bereit, der den aktuellen Projektindex anzeigt und
- * beim Klick ein Panel mit einem Index aller Projekte öffnet. Ermöglicht die direkte
- * Navigation zwischen Projekten.
+ * 
+ * @listens ACTIVE_PROJECT_CHANGED - Aktualisiert den Indikator bei Projektwechseln
+ * @listens DOM_STRUCTURE_READY - Erstellt die Projektliste nach DOM-Erstellung
+ * @listens APP_INIT_COMPLETE - Zeigt den Tab nach vollständiger Initialisierung an
  */
 
 import uiState from "../../core/uiState.js";
-import { getValidatedElement } from '../../core/utils.js';
+import { getValidatedElement } from "../../core/utils.js";
 import { getNavigationAPI, checkFooter } from "../navigation/navigationUtils.js";
 import { removeHoverListeners } from "./hoverPreview.js";
-import { EVENT_TYPES } from "../../core/events.js";
+import { EVENT_TYPES, addEventListener } from "../../core/events.js";
+import TransitionController from "../../core/transitionController.js";
 
-export function setupProjectIndicator() {
-  // Projektliste im Panel erstellen
-  setupProjectList();
+// Speicher für DOM-Elemente
+let projectList, indicator, tabElement;
 
-  // Initial den Tab-Text aktualisieren
-  setTimeout(() => {
-    updateTabText();
-    getValidatedElement(".project-indicator-tab")?.classList.add("visible");
-  }, 300);
-
-  // Auf Projektänderungen reagieren
-  document.addEventListener(
-    EVENT_TYPES.ACTIVE_PROJECT_CHANGED,
-    handleProjectChange
-  );
+/**
+ * Initialisiert den Projekt-Indikator
+ */
+function init() {
+  // DOM-Elemente referenzieren
+  tabElement = getValidatedElement(".project-indicator-tab");
+  indicator = getValidatedElement(".project-indicator");
   
-  // Auch auf Footer-Aktivierung reagieren
-  document.addEventListener(
-    'footerActivated',
-    handleProjectChange
-  );
+  // Event-Listener registrieren
+  // Auf CONTENT_UPDATE_NEEDED reagieren, um Tab-Text und aktive Projektmarkierung zu aktualisieren
+  document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
+    updateTabText();
+    updateActiveProjectInList();
+    console.log("ProjectIndicator: Tab-Text und aktuelles Projekt aktualisiert");
+  });
+  
+  // DOM-Struktur für die Projektliste initial erstellen
+  createProjectList();
+  
+  // TODO in initial appear integrieren
+  // Tab sichtbar machen nach vollständiger Initialisierung
+  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
+    if (tabElement) {
+      updateTabText();
+      tabElement.classList.add("visible");
+    }
+  });
 }
 
-function updateTabText() {
-  const tabText = getValidatedElement(".tab-text");
+/**
+ * Aktualisiert den Tab-Text im Projekt-Indikator.
+ * Berechnet den aktiven Index unter Berücksichtigung des Footers.
+ */
+export function updateTabText() {
+  if (!tabElement) return;
+  
+  const tabText = tabElement.querySelector(".tab-text");
   if (!tabText) return;
 
   // Nur anzeigen, wenn ein gültiger Index vorhanden ist
   if (uiState.activeProjectIndex >= 0 && uiState.projects.length > 0) {
-    // Zähle reguläre Projekte (ohne Footer)
+    // Filtere alle regulären Projekte (ohne Footer) mithilfe der Hilfsfunktion
     const regularProjects = Array.from(uiState.projects).filter(
-      p => !checkFooter(p)
+      (p, index) => !checkFooter(index, uiState.projects)
     );
     
-    // Ermitteln, ob das aktuelle Projekt der Footer ist
-    const currentProject = uiState.projects[uiState.activeProjectIndex];
-    const isFooterActive = checkFooter(currentProject);
+    // Prüfe, ob der aktive Index den Footer repräsentiert
+    const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
     
-    // Bei Footer den Index des letzten regulären Projekts plus 1 anzeigen
-    // Dies sorgt dafür, dass der Footer nicht als zusätzliches Projekt gezählt wird
+    // Berechne den effektiven aktiven Index:
     let activeIndex;
     if (isFooterActive) {
+      // Wenn der Footer aktiv ist, entspricht der aktive Index der Anzahl der regulären Projekte
       activeIndex = regularProjects.length;
     } else {
       activeIndex = Array.from(uiState.projects)
         .slice(0, uiState.activeProjectIndex + 1)
-        .filter(p => !checkFooter(p))
+        .filter((p, index) => !checkFooter(index, uiState.projects))
         .length;
     }
     
@@ -70,19 +86,10 @@ function updateTabText() {
   }
 }
 
-// Verzögerte Aktualisierung für Events (damit synchron mit Farbwechsel)
-function delayedUpdateTabText() {
-  setTimeout(() => {
-    updateTabText();
-  }, 400);
-}
-
-// Behandelt Projektänderungen (aktualisiert Tab und aktives Projekt in der Liste)
-function handleProjectChange() {
-  delayedUpdateTabText();
-  updateActiveProjectInList();
-}
-
+/**
+ * Aktualisiert die aktive Projektmarkierung in der Projektliste.
+ * Verwendet die gleiche Footer-Prüfung wie in updateTabText.
+ */
 function updateActiveProjectInList() {
   // Direkt querySelectorAll verwenden für besseres Fehlerhandling
   const links = document.querySelectorAll(".project-list a");
@@ -93,21 +100,24 @@ function updateActiveProjectInList() {
     return;
   }
   
-  // Ermitteln, ob das aktuelle Projekt der Footer ist
-  const currentProject = uiState.projects[uiState.activeProjectIndex];
-  const isFooterActive = currentProject && checkFooter(currentProject);
+  // Prüfe, ob der aktive Index den Footer repräsentiert
+  const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
   
-  // Reguläre Projekte zählen (ohne Footer)
-  const regularProjects = Array.from(uiState.projects).filter(p => !checkFooter(p));
+  if (isFooterActive) {
+    // Wenn der Footer aktiv ist, entferne "active" von allen Links
+    links.forEach(link => link.classList.remove("active"));
+    return;
+  }
+  
+  // Berechne den effektiven Index des aktiven Projekts unter Ausschluss des Footers:
+  const effectiveIndex = Array.from(uiState.projects)
+    .slice(0, uiState.activeProjectIndex + 1)
+    .filter((p, index) => !checkFooter(index, uiState.projects))
+    .length - 1;
   
   // Links aktualisieren
   links.forEach((link, index) => {
-    // Bei Footer wird kein Link aktiv markiert, da der Footer nicht im Panel erscheint
-    if (isFooterActive) {
-      link.classList.remove("active");
-    } 
-    // Sonst das aktive Projekt markieren
-    else if (index === uiState.activeProjectIndex) {
+    if (index === effectiveIndex) {
       link.classList.add("active");
     } else {
       link.classList.remove("active");
@@ -115,79 +125,92 @@ function updateActiveProjectInList() {
   });
 }
 
-// Erstellt die Projektliste im Panel
-function setupProjectList() {
-  setTimeout(() => {
-    const projectList = getValidatedElement(".project-list");
-    const indicator = getValidatedElement(".project-indicator");
-    const tab = getValidatedElement(".project-indicator-tab");
+/**
+ * Erstellt die Projektliste im Panel.
+ * Fügt nur reguläre Projekte (ohne Footer) hinzu, basierend auf der Hilfsfunktion.
+ */
+function createProjectList() {
+  projectList = getValidatedElement(".project-list");
+  
+  if (!projectList || !uiState.projects.length) {
+    console.warn("Projektliste oder Projekte nicht verfügbar");
+    return;
+  }
 
-    if (!projectList || !uiState.projects.length) return;
+  projectList.innerHTML = "";
 
-    projectList.innerHTML = "";
+  // Nur reguläre Projekte (ohne Footer) hinzufügen
+  uiState.projects.forEach((project, index) => {
+    // Footer nicht in der Liste anzeigen – prüfe mit Index und Array
+    if (checkFooter(index, uiState.projects)) return;
+    
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    const projectId = project.getAttribute("data-project-id");
 
-    // Nur reguläre Projekte (ohne Footer) hinzufügen
-    uiState.projects.forEach((project, index) => {
-      // Footer nicht in der Liste anzeigen
-      if (checkFooter(project)) return;
+    a.textContent = project.getAttribute("data-project-name");
+    a.href = "#";
+    a.setAttribute("data-project-id", projectId);
+
+    // Aktives Projekt markieren
+    if (index === uiState.activeProjectIndex) {
+      a.classList.add("active");
+    }
+
+    // Click-Handler mit API-Zugriff
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
       
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      const projectId = project.getAttribute("data-project-id");
-
-      a.textContent = project.getAttribute("data-project-name");
-      a.href = "#";
-      a.setAttribute("data-project-id", projectId);
-
-      // Aktives Projekt markieren
-      if (index === uiState.activeProjectIndex) {
-        a.classList.add("active");
+      const navigation = getNavigationAPI();
+      if (!navigation) {
+        console.error("Navigation-API nicht verfügbar");
+        return;
       }
 
-      // Click-Handler mit API-Zugriff
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        
-        const navigation = getNavigationAPI();
-        if (!navigation) {
-          console.error("Navigation-API nicht verfügbar");
-          return;
-        }
+      // Panel schließen
+      if (indicator && indicator.classList.contains("open")) {
+        indicator.classList.remove("open");
+        tabElement?.setAttribute("aria-expanded", "false");
 
-        // Panel schließen
-        if (indicator && indicator.classList.contains("open")) {
-          indicator.classList.remove("open");
-          tab?.setAttribute("aria-expanded", "false");
-
-          // Auf Animation warten, bevor navigiert wird
-          setTimeout(function () {
-            navigation.navigateToProject(projectId);
-          }, 300);
-        } else {
-          // Direkt navigieren, wenn Panel nicht offen ist
+        // Transition mit Animation synchronisieren
+        requestAnimationFrame(() => {
           navigation.navigateToProject(projectId);
-        }
-      });
-
-      li.appendChild(a);
-      projectList.appendChild(li);
+        });
+      } else {
+        // Direkt navigieren, wenn Panel nicht offen ist
+        navigation.navigateToProject(projectId);
+      }
     });
-  }, 500);
+
+    li.appendChild(a);
+    projectList.appendChild(li);
+  });
+  
+  console.log("Projektliste erstellt mit", projectList.children.length, "Einträgen");
 }
 
-// Toggle-Funktion für das Panel (exportiert für setup.js)
-export function togglePanel() {
-  const indicator = getValidatedElement(".project-indicator");
-  const tab = getValidatedElement(".project-indicator-tab");
-
-  if (!indicator || !tab) return;
+/**
+ * Toggle-Funktion für das Panel
+ */
+function togglePanel() {
+  if (!indicator || !tabElement) return;
 
   indicator.classList.toggle("open");
+  
   // Prüfen, ob das Panel geschlossen wird
   if (indicator.classList.contains("open")) {
     // Hover-Listener entfernen
     removeHoverListeners();
   }
+  
   const isOpen = indicator.classList.contains("open");
-  tab.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  tabElement.setAttribute("aria-expanded", isOpen ? "true" : "false");
 }
+
+// Öffentliche API des Moduls
+export default {
+  init,
+  togglePanel,
+  updateTabText,
+  updateActiveProjectInList
+};

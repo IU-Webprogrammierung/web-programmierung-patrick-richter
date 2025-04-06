@@ -3,58 +3,76 @@
  * @description Koordiniert die Initialisierung aller UI-Komponenten
  */
 
-import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
-import uiState from '../../core/uiState.js';
-import { setupUIAnimations } from '../ui/uiAnimationManager.js';
-import swiperInitializer from '../imageViewer/swiperInitializer.js';
-import customPagination from '../imageViewer/customPagination.js';
-import { setupImageColorHandler } from '../imageViewer/imageColorHandler.js';
-import { setupProjectIndicator } from '../projects/projectIndicator.js';
+import {
+  EVENT_TYPES,
+  dispatchCustomEvent,
+  addEventListener,
+} from "../../core/events.js";
+import uiState from "../../core/uiState.js";
+import uiAnimationManager from "../../core/uiAnimationManager.js";
+import swiperInitializer from "../imageViewer/swiperInitializer.js";
+import customPagination from "../imageViewer/customPagination.js";
+import imageColorHandler from "../imageViewer/imageColorHandler.js";
+import projectIndicator from "../projects/projectIndicator.js";
+import contentManager from "./contentManager.js";
 
-// Auf DOM-Struktur reagieren
-addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
-  console.log("uiInitializer: DOM-Struktur bereit - initialisiere UI-Komponenten");
-  
-  // UI-State mit den DOM-Elementen aktualisieren
-  uiState.updateProjects();
-  console.log(`uiInitializer: ${uiState.projects.length} Projekte im DOM gefunden`);
-  
-  // UI-Komponenten initialisieren
-  initializeUIComponents()
-    .then(() => {
+function init() {
+  // Auf DOM-Struktur reagieren
+  addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, async () => {
+    console.log(
+      "uiInitializer: DOM-Struktur bereit - initialisiere UI-Komponenten"
+    );
+
+    // UI-State mit den DOM-Elementen aktualisieren
+    uiState.updateProjects();
+    console.log(
+      `uiInitializer: ${uiState.projects.length} Projekte im DOM gefunden`
+    );
+
+    try {
+      // UI-Komponenten initialisieren
+      initializeUIComponents();
       console.log("uiInitializer: UI-Komponenten initialisiert");
-      
+
       // Nächste Phase signalisieren: UI-Komponenten bereit
       dispatchCustomEvent(EVENT_TYPES.UI_COMPONENTS_READY);
-    })
-    .catch(error => {
-      console.error("Fehler bei der UI-Initialisierung:", error);
-    });
-});
+    } catch (error) {
+      console.error("uiInitializer: Fehler bei der Initialisierung:", error);
+    }
+  });
+}
 
 /**
  * Initialisiert alle UI-Komponenten in der richtigen Reihenfolge
  */
-async function initializeUIComponents() {
+function initializeUIComponents() {
   console.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");
-  
+
   // 1. Zentrale Animation für Titel, Description, etc.
-  setupUIAnimations();
-  
+  uiAnimationManager.init();
+  console.log("uiInitializer: UI-Animation initialisiert");
+
+  // 2. Content-Manager für Texte etc. in Titel, Description, etc.
+  contentManager.init();
+  console.log("uiInitializer: Content-Manager initialisiert");
+
   // 2. Projekt-Indikator einrichten
-  setupProjectIndicator();
-  
+  projectIndicator.init();
+  console.log("uiInitializer: Projekt-Indikator initialisiert");
+
   // 3. Swiper für Bildergalerien initialisieren
-  await swiperInitializer.init();
+  swiperInitializer.init();
   console.log("uiInitializer: Swiper initialisiert");
-  
+
   // 4. Pagination für die Bilder einrichten
   customPagination.init();
   console.log("uiInitializer: Pagination initialisiert");
-  
+
   // 5. Weitere UI-Komponenten
-  setupImageColorHandler();
-  
+  imageColorHandler.init();
   console.log("uiInitializer: Alle UI-Komponenten initialisiert");
+
   return true;
 }
+
+export default init;

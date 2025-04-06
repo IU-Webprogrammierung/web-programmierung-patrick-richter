@@ -165,6 +165,8 @@ function transitionToElement(index, direction) {
   // Normale Transition für aktuelle/neue Elemente
   tl.to(navigableElements[currentIndex], {
     yPercent: direction > 0 ? -CONFIG.PARALLAX_AMOUNT : 100,
+    force3D: true,
+    overwrite: "auto",
     // NICHT den z-index während der Animation ändern für Footer
     onStart: () => {
       // Bei Footer-Animation z-index erhalten

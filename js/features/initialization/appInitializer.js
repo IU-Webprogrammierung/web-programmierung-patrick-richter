@@ -1,35 +1,42 @@
 /**
  * @module appInitializer
  * @description Verantwortlich für die initiale Datenladung der Anwendung
+ * 
+ * @listens APP_INIT_STARTED - Startet die Initialisierungskette
  */
 
-import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/events.js';
+import { EVENT_TYPES } from '../../core/events.js';
 import dataStore from '../../core/dataStore.js';
+import projectLoader from '../projects/projectLoader.js';
+import uiInitializer from './uiInitializer.js';
 
-// Auf App-Initialisierung reagieren
-addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
-  console.log("appInitializer: Starte Datenladung");
+/**
+ * Initialisiert die App
+ * Registriert den Event-Listener für APP_INIT_STARTED
+ */
+function init() {
+  console.log("appInitializer: Initialisierung");
   
-  try {
-    // Daten laden
-    const success = await dataStore.loadData();
+  // Event-Listener für App-Start registrieren
+  document.addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
+    console.log("appInitializer: Start des Initialisierungsprozesses");
     
-    if (success) {
-      console.log("appInitializer: Daten erfolgreich geladen");
+    try {
+      // ProjectLoader initialisieren
+      // Dies registriert den Listener für DATA_LOADED
+      projectLoader.init();
       
-      // Nächste Phase signalisieren: Daten geladen
-      dispatchCustomEvent(EVENT_TYPES.DATA_LOADED, { 
-        projectsCount: dataStore.getProjects()?.data?.length || 0 
-      });
-    } else {
-      console.error("appInitializer: Datenladung fehlgeschlagen");
+      // Datenspeicher initialisieren
+      // Dies löst automatisch loadData() aus, das wiederum
+      // das DATA_LOADED Event auslöst, sobald die Projektdaten geladen sind
+      dataStore.init();
+      uiInitializer.init();
+    } catch (error) {
+      console.error("appInitializer: Fehler bei der Initialisierung:", error);
       showLoadingError();
     }
-  } catch (error) {
-    console.error("Initialization error:", error);
-    showLoadingError();
-  }
-});
+  });
+}
 
 /**
  * Zeigt eine benutzerfreundliche Fehlermeldung an
@@ -48,8 +55,7 @@ function showLoadingError() {
   }
 }
 
-// Alte Export-Funktion für Rückwärtskompatibilität
-export async function initializeWebsite() {
-  console.log("appInitializer: Direkter Aufruf von initializeWebsite");
-  dispatchCustomEvent(EVENT_TYPES.APP_INIT_STARTED);
-}
+// Öffentliche API des Moduls
+export default {
+  init
+};
