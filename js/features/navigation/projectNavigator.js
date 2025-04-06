@@ -9,7 +9,9 @@ import { registerNavigationAPI } from "./navigationUtils.js";
 import { EVENT_TYPES, dispatchCustomEvent } from "../../core/events.js";
 import { loadFooterContent } from "../footer/footerLoader.js";
 import { checkFooter } from '../navigation/navigationUtils.js';
-export function setupProjectNavigation() {
+
+
+function init () {
   // Konfiguration
   const CONFIG = {
     PARALLAX_AMOUNT: 15,
@@ -69,6 +71,7 @@ navigableElements.forEach((el, i) => {
     el.setAttribute('role', 'region');
   }
 });
+
 
 /**
  * Unified transition function for all elements
@@ -190,22 +193,9 @@ function transitionToElement(index, direction) {
     const element = navigableElements[index];
     if (!element) return;
     
-    // Footer erkennen
-    const isFooterElement = checkFooter(element);
-    
-    // Standard-Event für alle Elemente
+    // Standard-Event für alle Elemente inkl. Footer
     uiState.setActiveProject(index);
     
-  // Zusätzliches Event für Footer
-  if (isFooterElement) {
-    console.log("Footer-Element aktiviert");
-    window._isFooterActive = true;
-    dispatchCustomEvent(EVENT_TYPES.FOOTER_ACTIVATED, { index });
-  } else if (window._isFooterActive) {
-    // Footer wurde deaktiviert
-    window._isFooterActive = false;
-    dispatchCustomEvent(EVENT_TYPES.FOOTER_DEACTIVATED, { index });
-  }
 }
 
 
@@ -278,3 +268,7 @@ function transitionToElement(index, direction) {
   registerNavigationAPI(api);
   return api;
 }
+
+export default {
+  init
+};

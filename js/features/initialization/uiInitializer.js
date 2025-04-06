@@ -9,12 +9,13 @@ import {
   addEventListener,
 } from "../../core/events.js";
 import uiState from "../../core/uiState.js";
-import uiAnimationManager from "../../core/uiAnimationManager.js";
+import uiAnimationManager from "../ui/uiAnimationManager.js";
 import swiperInitializer from "../imageViewer/swiperInitializer.js";
 import customPagination from "../imageViewer/customPagination.js";
 import imageColorHandler from "../imageViewer/imageColorHandler.js";
 import projectIndicator from "../projects/projectIndicator.js";
-import contentManager from "./contentManager.js";
+import contentManager from "../ui/contentManager.js";
+import interactionInitializer from "./interactionInitializer.js";
 
 function init() {
   // Auf DOM-Struktur reagieren
@@ -33,6 +34,10 @@ function init() {
       // UI-Komponenten initialisieren
       initializeUIComponents();
       console.log("uiInitializer: UI-Komponenten initialisiert");
+
+      // Interaction Initialisierung starten
+      interactionInitializer.init();
+      console.log("uiInitializer: Interaktionen initialisiert");
 
       // Nächste Phase signalisieren: UI-Komponenten bereit
       dispatchCustomEvent(EVENT_TYPES.UI_COMPONENTS_READY);
@@ -75,4 +80,6 @@ function initializeUIComponents() {
   return true;
 }
 
-export default init;
+export default {
+  init
+};

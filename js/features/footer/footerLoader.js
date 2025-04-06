@@ -6,15 +6,12 @@
 import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import dataStore from "../../core/dataStore.js";
 
+function init () {
+
 // Auf DOM-Struktur-Bereitschaft reagieren
-addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
+addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
   console.log("footerLoader: Initialisiere Footer");
   
-  // Footer initial unsichtbar machen (wird von APP_INIT_COMPLETE sichtbar gemacht)
-  const footerElement = document.getElementById("site-footer");
-  if (footerElement) {
-    footerElement.style.visibility = 'hidden';
-  }
   
   // Inhalte laden
   loadFooterContent();
@@ -26,6 +23,7 @@ addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, () => {
     }
   });
 });
+}
 
 /**
  * Lädt Footer-Inhalte aus dem dataStore und aktualisiert das DOM
@@ -83,3 +81,7 @@ export function loadFooterContent() {
   container.innerHTML = footerContent;
   console.log("Footer-Inhalte erfolgreich geladen");
 }
+
+export default {
+  init
+};

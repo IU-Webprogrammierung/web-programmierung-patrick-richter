@@ -9,6 +9,7 @@ import { EVENT_TYPES } from '../../core/events.js';
 import dataStore from '../../core/dataStore.js';
 import projectLoader from '../projects/projectLoader.js';
 import uiInitializer from './uiInitializer.js';
+import footerLoader from '../footer/footerLoader.js';
 
 /**
  * Initialisiert die App
@@ -25,6 +26,8 @@ function init() {
       // ProjectLoader initialisieren
       // Dies registriert den Listener für DATA_LOADED
       projectLoader.init();
+      footerLoader.init();
+      console.log("appInitializer: ProjectLoader initialisiert");
       
       // Datenspeicher initialisieren
       // Dies löst automatisch loadData() aus, das wiederum

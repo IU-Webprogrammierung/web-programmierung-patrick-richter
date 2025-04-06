@@ -94,11 +94,11 @@ const dataStore = {
 
       if (projectsLoaded) {
         console.log(
-          "dataStore: Projektdaten erfolgreich geladen, sende DATA_LOADED Event"
+          "dataStore: Projektdaten erfolgreich geladen, sende PROJECT_DATA_LOADED Event"
         );
 
         // WICHTIG: Event sofort nach dem Laden der Projektdaten auslösen
-        dispatchCustomEvent(EVENT_TYPES.DATA_LOADED, {
+        dispatchCustomEvent(EVENT_TYPES.PROJECT_DATA_LOADED, {
           projectsCount: this.projectsData?.data?.length || 0,
         });
       } else {

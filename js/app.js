@@ -1,17 +1,16 @@
 import { dispatchCustomEvent, EVENT_TYPES } from './core/events.js';
+import appInitializer from './features/initialization/appInitializer.js';
 import { setupEventListeners } from './setup.js';
 
 // Frühzeitiges Importieren aller Module für Event-Listener-Registrierung
 // Diese Importe müssen vor der Verwendung der Events erfolgen!
-import './features/initialization/appInitializer.js';
-import './features/projects/projectLoader.js';
-import './features/initialization/uiInitializer.js';
-import './features/initialization/interactionManager.js';
-import './features/footer/footerLoader.js';
+
 
 document.addEventListener("DOMContentLoaded", () => {
   // GSAP Plugins registrieren
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+  appInitializer.init();
   
   console.log("App-Initialisierung gestartet");
   

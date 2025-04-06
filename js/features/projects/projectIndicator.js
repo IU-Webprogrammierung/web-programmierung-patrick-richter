@@ -1,10 +1,6 @@
 /**
  * @module projectIndicator
  * @description Verwaltet den Projekt-Indikator und das Navigations-Panel für den Index.
- * 
- * @listens ACTIVE_PROJECT_CHANGED - Aktualisiert den Indikator bei Projektwechseln
- * @listens DOM_STRUCTURE_READY - Erstellt die Projektliste nach DOM-Erstellung
- * @listens APP_INIT_COMPLETE - Zeigt den Tab nach vollständiger Initialisierung an
  */
 
 import uiState from "../../core/uiState.js";
@@ -25,7 +21,6 @@ function init() {
   tabElement = getValidatedElement(".project-indicator-tab");
   indicator = getValidatedElement(".project-indicator");
   
-  // Event-Listener registrieren
   // Auf CONTENT_UPDATE_NEEDED reagieren, um Tab-Text und aktive Projektmarkierung zu aktualisieren
   document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
     updateTabText();
@@ -36,7 +31,6 @@ function init() {
   // DOM-Struktur für die Projektliste initial erstellen
   createProjectList();
   
-  // TODO in initial appear integrieren
   // Tab sichtbar machen nach vollständiger Initialisierung
   addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
     if (tabElement) {
@@ -48,7 +42,7 @@ function init() {
 
 /**
  * Aktualisiert den Tab-Text im Projekt-Indikator.
- * Berechnet den aktiven Index unter Berücksichtigung des Footers.
+ * Verwendet checkFooter für einheitliche Footer-Erkennung.
  */
 export function updateTabText() {
   if (!tabElement) return;
@@ -58,24 +52,28 @@ export function updateTabText() {
 
   // Nur anzeigen, wenn ein gültiger Index vorhanden ist
   if (uiState.activeProjectIndex >= 0 && uiState.projects.length > 0) {
-    // Filtere alle regulären Projekte (ohne Footer) mithilfe der Hilfsfunktion
-    const regularProjects = Array.from(uiState.projects).filter(
-      (p, index) => !checkFooter(index, uiState.projects)
+    // Filtere alle regulären Projekte (ohne Footer)
+    const regularProjects = uiState.projects.filter(
+      (project, index) => !checkFooter(index, uiState.projects)
     );
     
     // Prüfe, ob der aktive Index den Footer repräsentiert
     const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
     
-    // Berechne den effektiven aktiven Index:
+    // Berechne den effektiven aktiven Index
     let activeIndex;
     if (isFooterActive) {
       // Wenn der Footer aktiv ist, entspricht der aktive Index der Anzahl der regulären Projekte
       activeIndex = regularProjects.length;
     } else {
-      activeIndex = Array.from(uiState.projects)
-        .slice(0, uiState.activeProjectIndex + 1)
-        .filter((p, index) => !checkFooter(index, uiState.projects))
-        .length;
+      // Berechne den regulären Projektindex (ohne Footer-Projekte zu zählen)
+      let countBeforeActive = 0;
+      for (let i = 0; i <= uiState.activeProjectIndex; i++) {
+        if (!checkFooter(i, uiState.projects)) {
+          countBeforeActive++;
+        }
+      }
+      activeIndex = countBeforeActive;
     }
     
     const totalProjects = regularProjects.length;
@@ -88,32 +86,31 @@ export function updateTabText() {
 
 /**
  * Aktualisiert die aktive Projektmarkierung in der Projektliste.
- * Verwendet die gleiche Footer-Prüfung wie in updateTabText.
+ * Verwendet ebenfalls checkFooter für Footer-Erkennung.
  */
 function updateActiveProjectInList() {
-  // Direkt querySelectorAll verwenden für besseres Fehlerhandling
   const links = document.querySelectorAll(".project-list a");
-
-  // Sicherheitsprüfung vor der forEach-Schleife
-  if (!links || links.length === 0) {
-    console.log("Projektliste noch nicht bereit - überspringe Update");
-    return;
-  }
+  if (!links || links.length === 0) return;
   
   // Prüfe, ob der aktive Index den Footer repräsentiert
   const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
   
   if (isFooterActive) {
-    // Wenn der Footer aktiv ist, entferne "active" von allen Links
+    // Bei Footer alle Markierungen entfernen
     links.forEach(link => link.classList.remove("active"));
     return;
   }
   
-  // Berechne den effektiven Index des aktiven Projekts unter Ausschluss des Footers:
-  const effectiveIndex = Array.from(uiState.projects)
-    .slice(0, uiState.activeProjectIndex + 1)
-    .filter((p, index) => !checkFooter(index, uiState.projects))
-    .length - 1;
+  // Berechne den effektiven Index des aktiven Projekts unter Ausschluss des Footers
+  let effectiveIndex = -1;
+  let regularCounter = -1;
+  
+  for (let i = 0; i <= uiState.activeProjectIndex; i++) {
+    if (!checkFooter(i, uiState.projects)) {
+      regularCounter++;
+    }
+  }
+  effectiveIndex = regularCounter;
   
   // Links aktualisieren
   links.forEach((link, index) => {
@@ -127,7 +124,7 @@ function updateActiveProjectInList() {
 
 /**
  * Erstellt die Projektliste im Panel.
- * Fügt nur reguläre Projekte (ohne Footer) hinzu, basierend auf der Hilfsfunktion.
+ * Filtert den Footer aus der Liste.
  */
 function createProjectList() {
   projectList = getValidatedElement(".project-list");
@@ -139,9 +136,9 @@ function createProjectList() {
 
   projectList.innerHTML = "";
 
-  // Nur reguläre Projekte (ohne Footer) hinzufügen
+  // Nur reguläre Projekte hinzufügen
   uiState.projects.forEach((project, index) => {
-    // Footer nicht in der Liste anzeigen – prüfe mit Index und Array
+    // Footer nicht in der Liste anzeigen
     if (checkFooter(index, uiState.projects)) return;
     
     const li = document.createElement("li");

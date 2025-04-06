@@ -8,7 +8,7 @@
 import { getValidatedElement } from '../../core/utils.js';
 import swiperInitializer from './swiperInitializer.js';
 
-export function setupImageNavigation() {
+function init() {
   const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
@@ -91,3 +91,5 @@ export function setupImageNavigation() {
     swiperInitializer.navigateSlide(slider, e.clientX);
 });
 }
+
+export default { init };

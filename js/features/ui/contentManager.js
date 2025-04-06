@@ -6,7 +6,7 @@
 import { checkFooter } from '../navigation/navigationUtils.js';
 import { getValidatedElement } from '../../core/utils.js';
 import uiState from '../../core/uiState.js';
-import { updateTabText } from '../projects/projectIndicator.js';
+import TransitionController from '../../core/transitionController.js';
 
 // DOM-Elemente für Titel und Beschreibungen
 const headerTitle = getValidatedElement(".project-title");
@@ -85,4 +85,6 @@ function setTitles(projectName, projectDesc) {
 }
 
 
-export default init;
+export default {
+  init
+};

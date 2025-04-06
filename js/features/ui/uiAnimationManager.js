@@ -6,22 +6,24 @@
 import { EVENT_TYPES } from '../../core/events.js';
 import { initialAppearAnimation } from '../../core/animationUtils.js';
 import TransitionController from '../../core/transitionController.js';
-import { contentElements } from './contentManager.js';
 import { getValidatedElement } from '../../core/utils.js';
 
-// Zusätzliche UI-Elemente
+// Alle zu animierenden UI-Elemente
+const headerTitle = getValidatedElement(".project-title");
+const mobileTitle = getValidatedElement(".project-title-mobile");
+const mobileDescription = getValidatedElement(".description-mobile");
+const desktopDescription = getValidatedElement(".description");
 const pagination = getValidatedElement('.pagination');
-// TODO hier nochmal checken ob tab-text oder project-indicator-tab
-const projectIndicator = getValidatedElement('.tab-text');
+const projectIndicator = getValidatedElement('.project-indicator-tab');
 
 /**
  * Liste aller animierbaren UI-Elemente
  */
 const uiElements = [
-  contentElements.headerTitle,
-  contentElements.mobileTitle,
-  contentElements.mobileDescription, 
-  contentElements.desktopDescription,
+  headerTitle,
+  mobileTitle,
+  mobileDescription, 
+  desktopDescription,
   pagination,
   projectIndicator
 ].filter(el => el !== null);
@@ -59,26 +61,10 @@ function init() {
     }
   });
   
-  // TODO hier checken ob die Einzelbehandlung von Footer notwendig ist
-  // Footer-Events mit TransitionController synchronisieren
-  document.addEventListener(EVENT_TYPES.FOOTER_ACTIVATED, () => {
-    console.log("Footer-Aktivierungs-Event empfangen");
-    window._isFooterActive = true;
-    
-    // Transition für konsistente Animation starten
-    if (!TransitionController.isActive()) {
-      TransitionController.startTransition();
-    }
-  });
-  
-    // TODO hier checken ob die Einzelbehandlung von Footer notwendig ist
-  document.addEventListener(EVENT_TYPES.FOOTER_DEACTIVATED, () => {
-    console.log("Footer-Deaktivierungs-Event empfangen");
-    window._isFooterActive = false;
-  });
-  
-  // TODO in initial Appear Animation auch project indicator aufnehmen
+  // Initiale Erscheinungsanimation
   initialAppearAnimation(uiElements);
 }
 
-export default init;
+export default {
+  init
+};

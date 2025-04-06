@@ -8,8 +8,6 @@ export const EVENT_TYPES = {
   // Bestehende Events
   ACTIVE_PROJECT_CHANGED: 'activeProjectChanged',
   ACTIVE_IMAGE_CHANGED: 'activeImageChanged',
-  FOOTER_ACTIVATED: 'footerActivated',
-  FOOTER_DEACTIVATED: 'footerDeactivated',
   
   // Initialisierungs-Events
   APP_INIT_STARTED: 'appInitStarted',
