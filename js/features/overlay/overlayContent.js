@@ -6,37 +6,41 @@
  */
 
 import dataStore from "../../core/dataStore.js";
-import { getValidatedElement } from '../../core/utils.js';
+import { getValidatedElement } from "../../core/utils.js";
 import { hideOverlay } from "./overlayController.js";
 import { getNavigationAPI } from "../navigation/navigationUtils.js";
+import { EVENT_TYPES } from "../../core/events.js"; 
 
 // Erstellt die About- und Imprint-Inhalte im Overlay
-export function createAboutImprintSection() {
-  try {
-    const aboutImprintData = dataStore.getAboutImprint();
-    const clientsData = dataStore.getClients();
+function init() {
+  document.addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
+    console.log("overlayContent: Initialisiere About/Imprint-Inhalte");
+    try {
+      const aboutImprintData = dataStore.getAboutImprint();
+      const clientsData = dataStore.getClients();
 
-    const aboutIntro = getValidatedElement(".about-intro");
-    const clientsList = getValidatedElement(".about-clients ul");
-    const imprintContent = getValidatedElement(".imprint-content");
+      const aboutIntro = getValidatedElement(".about-intro");
+      const clientsList = getValidatedElement(".about-clients ul");
+      const imprintContent = getValidatedElement(".imprint-content");
 
-    if (!aboutIntro || !clientsList || !imprintContent) {
-      console.error("Fehler: About/Imprint-Elemente nicht gefunden");
-      return;
+      if (!aboutIntro || !clientsList || !imprintContent) {
+        console.error("Fehler: About/Imprint-Elemente nicht gefunden");
+        return;
+      }
+
+      // About-Intro erstellen
+      createAboutIntro(aboutIntro, aboutImprintData);
+
+      // Client-Liste erstellen
+      createClientsList(clientsList, clientsData);
+
+      // Imprint-Inhalt erstellen
+      createImprintContent(imprintContent, aboutImprintData);
+    } catch (error) {
+      console.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
     }
-
-    // About-Intro erstellen
-    createAboutIntro(aboutIntro, aboutImprintData);
-
-    // Client-Liste erstellen
-    createClientsList(clientsList, clientsData);
-
-    // Imprint-Inhalt erstellen
-    createImprintContent(imprintContent, aboutImprintData);
-  } catch (error) {
-    console.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
-  }
-}
+  });
+} 
 
 // Erstellt den About-Intro-Bereich
 function createAboutIntro(container, aboutImprintData) {
@@ -59,7 +63,6 @@ function createAboutIntro(container, aboutImprintData) {
           return child.text;
         })
         .join("");
-
       return `<p>${content}</p>`;
     })
     .join("");
@@ -160,15 +163,12 @@ function createImprintContent(container, aboutImprintData) {
           if (child.type === "link") {
             return `<a href="${child.url}">${child.children[0].text}</a>`;
           }
-
           // Normaler Text (mit oder ohne bold)
           return child.text;
         })
         .join("");
-
       // Wenn einer der Children bold ist, als h2 darstellen
       const isBold = children.some((child) => child.bold === true);
-
       if (isBold) {
         return `<h2>${content}</h2>`;
       } else {
@@ -180,3 +180,7 @@ function createImprintContent(container, aboutImprintData) {
   // HTML einfügen
   container.innerHTML = imprintHtml;
 }
+
+export default {
+  init,
+};

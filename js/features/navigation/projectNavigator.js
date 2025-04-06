@@ -6,8 +6,6 @@
 import { setupKeyboardNavigation } from './navigationKeyboardHandler.js';
 import uiState from "../../core/uiState.js";
 import { registerNavigationAPI } from "./navigationUtils.js";
-import { EVENT_TYPES, dispatchCustomEvent } from "../../core/events.js";
-import { loadFooterContent } from "../footer/footerLoader.js";
 import { checkFooter } from '../navigation/navigationUtils.js';
 
 
@@ -29,15 +27,10 @@ function init () {
   let currentIndex = 0;
   let animating = false;
   
-  // Footer initialisieren - Inhalt laden
+  // Footer nur visuell initialisieren, Inhalt wird über Events geladen
   const footerElement = document.getElementById("site-footer");
   if (footerElement) {
-    const footerContent = footerElement.querySelector(".footer-content");
-    if (footerContent) {
-      loadFooterContent(footerContent);
-    }
-    
-    // Footer-Top Click-Handler
+    // Footer-Top Click-Handler behalten
     const footerTop = footerElement.querySelector(".footer-top");
     if (footerTop) {
       footerTop.addEventListener("click", () => {
@@ -268,7 +261,6 @@ function transitionToElement(index, direction) {
   registerNavigationAPI(api);
   return api;
 }
-
 export default {
   init
 };

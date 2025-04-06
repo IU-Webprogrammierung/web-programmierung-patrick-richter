@@ -9,26 +9,19 @@ import dataStore from "../../core/dataStore.js";
 function init () {
 
 // Auf DOM-Struktur-Bereitschaft reagieren
-addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
+document.addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
   console.log("footerLoader: Initialisiere Footer");
-  
   
   // Inhalte laden
   loadFooterContent();
   
-  // Nach APP_INIT_COMPLETE Footer sichtbar machen
-  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
-    if (footerElement) {
-      footerElement.style.visibility = 'visible';
-    }
-  });
 });
 }
 
 /**
  * Lädt Footer-Inhalte aus dem dataStore und aktualisiert das DOM
  */
-export function loadFooterContent() {
+function loadFooterContent() {
   console.log("Lade Footer-Inhalte...");
   
   const container = document.querySelector(".footer-content");

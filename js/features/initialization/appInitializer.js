@@ -10,6 +10,7 @@ import dataStore from '../../core/dataStore.js';
 import projectLoader from '../projects/projectLoader.js';
 import uiInitializer from './uiInitializer.js';
 import footerLoader from '../footer/footerLoader.js';
+import overlayContent from '../overlay/overlayContent.js';
 
 /**
  * Initialisiert die App
@@ -27,6 +28,7 @@ function init() {
       // Dies registriert den Listener für DATA_LOADED
       projectLoader.init();
       footerLoader.init();
+      overlayContent.init();
       console.log("appInitializer: ProjectLoader initialisiert");
       
       // Datenspeicher initialisieren
