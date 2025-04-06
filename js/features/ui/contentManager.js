@@ -43,36 +43,33 @@ function init() {
 /**
  * Aktualisiert Titel und Beschreibungen basierend auf dem aktiven Projekt
  */
+/**
+ * Aktualisiert Titel und Beschreibungen basierend auf dem aktiven Projekt
+ */
 export function updateContents() {
   const activeIndex = uiState.activeProjectIndex;
   
-  // Alle navigierbaren Elemente (inkl. Footer)
-  const projects = uiState.projects;
+  // Bestimmen ob der Footer aktiv ist (ohne direkten Array-Zugriff)
+  const isFooterActive = checkFooter(activeIndex);
   
-  if (activeIndex >= 0 && activeIndex < projects.length) {
-    const activeElement = projects[activeIndex];
-    
+  if (isFooterActive) {
     // Footer-Spezialbehandlung
-    if (checkFooter(activeElement)) {
-      // Für Footer: Titel setzen, aber Description leeren
-      setTitles("Say Hi!", "");
-      
-      // Description-Elemente ausblenden
-      if (desktopDescription) desktopDescription.style.display = 'none';
-      if (mobileDescription) mobileDescription.style.display = 'none';
-      
-      console.log("Footer-Titel gesetzt, Description ausgeblendet");
-    } else {
-      // Normaler Projekttitel
-      const projectName = activeElement.getAttribute("data-project-name");
-      const projectDesc = activeElement.getAttribute("data-project-description") || "";
-      setTitles(projectName, projectDesc);
-      updateTabText();
-      
-      // Description-Elemente wieder einblenden
-      if (desktopDescription) desktopDescription.style.display = '';
-      if (mobileDescription) mobileDescription.style.display = '';
-    }
+    setTitles("Say Hi!", "");
+    
+    // Description-Elemente ausblenden
+    if (desktopDescription) desktopDescription.style.display = 'none';
+    if (mobileDescription) mobileDescription.style.display = 'none';
+  } else if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
+    // Normales Projekt
+    const activeElement = uiState.projects[activeIndex];
+    const projectName = activeElement.getAttribute("data-project-name");
+    const projectDesc = activeElement.getAttribute("data-project-description") || "";
+    
+    setTitles(projectName, projectDesc);
+    
+    // Description-Elemente einblenden
+    if (desktopDescription) desktopDescription.style.display = '';
+    if (mobileDescription) mobileDescription.style.display = '';
   }
 }
 
@@ -88,4 +85,4 @@ function setTitles(projectName, projectDesc) {
 }
 
 
-export default init
+export default init;

@@ -33,19 +33,35 @@ export function getNavigationAPI() {
  * @param {Array} [elements] - Optional: Array von Elementen für Index-Zugriff
  * @returns {boolean} True, wenn es sich um den Footer handelt
  */
+/**
+ * Prüft ob ein Element oder Index den Footer repräsentiert
+ * Berücksichtigt die besondere Beziehung zwischen navigableElements und uiState.projects
+ */
 export function checkFooter(elementOrIndex, elements) {
-  // Wenn ein Index übergeben wurde und elements vorhanden ist
-  if (typeof elementOrIndex === 'number' && Array.isArray(elements)) {
-    // Prüfen, ob der Index auf den Footer verweist (letztes Element)
-    return elementOrIndex === elements.length - 1 && 
-           elements[elementOrIndex]?.id === "site-footer";
-  }
-  
-  // Wenn ein Element übergeben wurde
+  // Element-direkte Prüfung
   if (elementOrIndex instanceof Element) {
     return elementOrIndex.id === "site-footer";
   }
   
-  // In allen anderen Fällen: kein Footer
+  // Index-basierte Prüfung
+  if (typeof elementOrIndex === 'number') {
+    // Fall 1: Der Footer ist das letzte Element in navigableElements
+    // (wird durch index === navigableElements.length - 1 identifiziert)
+    const navigableElements = [
+      ...document.querySelectorAll(".project"),
+      document.getElementById("site-footer")
+    ];
+    
+    if (elementOrIndex === navigableElements.length - 1) {
+      return true;
+    }
+    
+    // Fall 2: Wenn ein elements-Array übergeben wurde, prüfe ob der Index
+    // auf ein existierendes Element verweist und ob dieses der Footer ist
+    if (Array.isArray(elements) && elementOrIndex < elements.length) {
+      return elements[elementOrIndex]?.id === "site-footer";
+    }
+  }
+  
   return false;
 }
