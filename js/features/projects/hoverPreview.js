@@ -106,12 +106,13 @@ export function removeHoverListeners() {
 /**
  * Initialisiert die Hover-Vorschau
  */
-export function setupHoverPreview() {
-  // Auf Mobilgeräten nicht ausführen
+function init() {
+  // Auf Mobilgeräten nicht ausführe
   if (/Mobi|Android/i.test(navigator.userAgent)) return;
 
   previewEl = getValidatedElement(".project-hover-preview");
   if (!previewEl) return;
+
 
   // Vorschaubilder für alle Projekte vorbereiten
   const projects = dataStore.getProjects();
@@ -126,11 +127,20 @@ export function setupHoverPreview() {
 
   // Event-Listener für Project Indicator
   const projectIndicatorTab = getValidatedElement(".project-indicator-tab");
+
   if (projectIndicatorTab) {
+    console.log("HoverPreview initialisiert");
+
     projectIndicatorTab.addEventListener("click", () => {
+      console.log("HoverPreview initialisiert LISTENER AUSGELÖST");
+
+      console.log("HoverPreview initialisiert");
+
       const projectLinks = document.querySelectorAll(".project-list a[data-project-id]");
       addHoverListeners(projectLinks);
     });
+  } else {
+    console.warn("projectIndicatorTab nicht gefunden");
   }
 
   // Event-Listener für About-Overlay
@@ -143,3 +153,7 @@ export function setupHoverPreview() {
     });
   }
 }
+
+export default {
+  init
+};
