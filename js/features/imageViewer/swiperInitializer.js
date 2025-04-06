@@ -7,7 +7,7 @@
 
 import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs';
 import uiState from '../../core/uiState.js';
-import { EVENT_TYPES } from '../../core/events.js';
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import TransitionController from '../../core/transitionController.js';
 
 // Speichert Swiper-Instanzen für späteren Zugriff
@@ -98,7 +98,7 @@ on: {
  * Richtet einen Event-Listener für Projektwechsel ein
  */
 function setupProjectChangeHandler() {
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
+  addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
     if (!event || !event.detail) return;
     
     const { projectIndex } = event.detail;

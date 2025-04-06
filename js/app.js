@@ -1,4 +1,4 @@
-import { dispatchCustomEvent, EVENT_TYPES } from './core/events.js';
+import { dispatchCustomEvent, addEventListener, EVENT_TYPES } from './core/events.js';
 import appInitializer from './features/initialization/appInitializer.js';
 import { setupEventListeners } from './setup.js';
 
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   dispatchCustomEvent(EVENT_TYPES.APP_INIT_STARTED);
   
   // Auf den Abschluss der Initialisierung hören
-  document.addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
+  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
     console.log("App vollständig initialisiert");
     
     // Hauptinhalt sichtbar machen

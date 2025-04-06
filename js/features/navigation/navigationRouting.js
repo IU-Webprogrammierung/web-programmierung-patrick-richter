@@ -3,7 +3,7 @@
  * Implementiert URL-Routing für die Projekt-Navigation
  */
 
-import { EVENT_TYPES } from "../../core/events.js";
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 
 export function setupHistoryRouting(options) {
   const { 
@@ -97,7 +97,7 @@ export function setupHistoryRouting(options) {
   );
   
   // Event-Listener für Projektwechsel
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
+  addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
     const index = event.detail.projectIndex;
     const project = projects[index];
     

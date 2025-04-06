@@ -9,7 +9,7 @@ import dataStore from "../../core/dataStore.js";
 function init () {
 
 // Auf DOM-Struktur-Bereitschaft reagieren
-document.addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
+addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
   console.log("footerLoader: Initialisiere Footer");
   
   // Inhalte laden

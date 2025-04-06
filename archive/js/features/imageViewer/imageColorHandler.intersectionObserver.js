@@ -8,8 +8,7 @@
  */
 
 import uiState from "../../core/uiState.js";
-import { EVENT_TYPES } from "../../core/events.js";
-import { validateElement } from "../../core/utils.js";
+import { addEventListener, EVENT_TYPES } from '../../core/events.js';import { validateElement } from "../../core/utils.js";
 import { getValidatedElement } from "../../core/utils.js";
 
 // Timer für Debouncing der Farbänderungen
@@ -73,13 +72,13 @@ export function setupImageColorHandler() {
   }
 
   // Bei Projektwechsel neue Observer einrichten
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
+  addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
     const { projectIndex } = event.detail;
     setupImageObserversForProject(projectIndex);
   });
 
   // Event-Listener für Farbänderungen
-  document.addEventListener(
+  addEventListener(
     EVENT_TYPES.ACTIVE_IMAGE_CHANGED,
     handleColorChange
   );

@@ -3,8 +3,7 @@
  * @description Steuert synchronisierte Animationen für alle UI-Elemente
  */
 
-import { EVENT_TYPES } from '../../core/events.js';
-import { initialAppearAnimation } from '../../core/animationUtils.js';
+import { addEventListener, EVENT_TYPES } from '../../core/events.js';import { initialAppearAnimation } from '../../core/animationUtils.js';
 import TransitionController from '../../core/transitionController.js';
 import { getValidatedElement } from '../../core/utils.js';
 
@@ -14,7 +13,7 @@ const mobileTitle = getValidatedElement(".project-title-mobile");
 const mobileDescription = getValidatedElement(".description-mobile");
 const desktopDescription = getValidatedElement(".description");
 const pagination = getValidatedElement('.pagination');
-const projectIndicator = getValidatedElement('.project-indicator-tab');
+const projectIndicator = getValidatedElement('.tab-text');
 
 /**
  * Liste aller animierbaren UI-Elemente
@@ -52,7 +51,7 @@ function init() {
   });
 
   // Event-Listener für Projektänderungen
-  document.addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
+  addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
     console.log("uiAnimationManager: Event activeProjectChanged empfangen");
     
     // Nur Transition starten, wenn nicht bereits aktiv

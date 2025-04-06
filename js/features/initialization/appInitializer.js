@@ -5,7 +5,7 @@
  * @listens APP_INIT_STARTED - Startet die Initialisierungskette
  */
 
-import { EVENT_TYPES } from '../../core/events.js';
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import dataStore from '../../core/dataStore.js';
 import projectLoader from '../projects/projectLoader.js';
 import uiInitializer from './uiInitializer.js';
@@ -20,7 +20,7 @@ function init() {
   console.log("appInitializer: Initialisierung");
   
   // Event-Listener für App-Start registrieren
-  document.addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
+  addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
     console.log("appInitializer: Start des Initialisierungsprozesses");
     
     try {

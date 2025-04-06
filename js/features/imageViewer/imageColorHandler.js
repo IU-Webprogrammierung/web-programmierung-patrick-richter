@@ -3,7 +3,7 @@
  * Steuert die synchronisierte Aktualisierung der UI-Elemente bei Bildwechseln
  */
 
-import { EVENT_TYPES } from "../../core/events.js";
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import { getValidatedElement } from "../../core/utils.js";
 import uiState from "../../core/uiState.js";
 import TransitionController from "../../core/transitionController.js";
@@ -19,13 +19,13 @@ let debounceColorTimer = null;
  */
 function init() {
   // Registriere den Haupt-Event-Handler für koordinierte Updates
-  document.addEventListener(
+  addEventListener(
     EVENT_TYPES.ACTIVE_IMAGE_CHANGED,
     coordinateVisualUpdates
   );
   
   // Neuer Listener für synchronisierten Farbwechsel während Transitionen
-  document.addEventListener(
+addEventListener(
     // TODO Warum aus transitionController und nicht EVENT_TYPES?
     TransitionController.events.PHASE_CHANGED,
     handleTransitionPhase

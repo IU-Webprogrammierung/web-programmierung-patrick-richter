@@ -260,7 +260,8 @@ h1 {
 .project-title-mobile,
 .description-mobile,
 .description,
-.pagination {
+.pagination,
+.tab-text {
   opacity: 1;
   color: var(--active-text-color);
   transition: 
@@ -478,7 +479,6 @@ header > * {
 .tab-text {
   writing-mode: vertical-rl;
   color: var(--active-text-color);
-  transition: color var(--transition-fast);
   white-space: nowrap;
   width: 1.5rem;
   text-align: center;

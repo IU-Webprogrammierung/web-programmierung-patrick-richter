@@ -1,6 +1,6 @@
 import { checkFooter } from '../navigation/navigationUtils.js';
 import uiState from '../../core/uiState.js';
-import { EVENT_TYPES } from '../../core/events.js';
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 import { getValidatedElement } from '../../core/utils.js';
 import swiperInitializer from './swiperInitializer.js';
 import TransitionController from '../../core/transitionController.js';

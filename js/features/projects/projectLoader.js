@@ -6,7 +6,7 @@
  * @fires DOM_STRUCTURE_READY - Signalisiert fertige DOM-Struktur
  */
 
-import { EVENT_TYPES, dispatchCustomEvent } from '../../core/events.js';
+import { EVENT_TYPES, addEventListener, dispatchCustomEvent } from '../../core/events.js';
 import dataStore from '../../core/dataStore.js';
 import { fixImagePath } from '../../core/utils.js';
 
@@ -18,7 +18,7 @@ function init() {
   console.log("projectLoader: Initialisierung");
   
   // Auf Datenladung reagieren
-  document.addEventListener(EVENT_TYPES.PROJECT_DATA_LOADED, async (event) => {
+  addEventListener(EVENT_TYPES.PROJECT_DATA_LOADED, async (event) => {
     console.log("projectLoader: EVENT DATA_LOADED empfangen", event);
     
     try {

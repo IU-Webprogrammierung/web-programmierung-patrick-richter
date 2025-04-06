@@ -9,11 +9,11 @@ import dataStore from "../../core/dataStore.js";
 import { getValidatedElement } from "../../core/utils.js";
 import { hideOverlay } from "./overlayController.js";
 import { getNavigationAPI } from "../navigation/navigationUtils.js";
-import { EVENT_TYPES } from "../../core/events.js"; 
+import { EVENT_TYPES, addEventListener } from '../../core/events.js';
 
 // Erstellt die About- und Imprint-Inhalte im Overlay
 function init() {
-  document.addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
+  addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
     console.log("overlayContent: Initialisiere About/Imprint-Inhalte");
     try {
       const aboutImprintData = dataStore.getAboutImprint();
