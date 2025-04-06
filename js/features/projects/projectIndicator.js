@@ -31,13 +31,6 @@ function init() {
   // DOM-Struktur für die Projektliste initial erstellen
   createProjectList();
   
-  // Tab sichtbar machen nach vollständiger Initialisierung
-  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
-    if (tabElement) {
-      updateTabText();
-      tabElement.classList.add("visible");
-    }
-  });
 }
 
 /**

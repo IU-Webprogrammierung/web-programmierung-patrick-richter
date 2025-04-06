@@ -11,7 +11,7 @@ let paginationContainer;
 /**
  * Initialisiert die benutzerdefinierte Pagination
  */
-export function setupCustomPagination() {
+export function init() {
   // Container für die Pagination finden
   paginationContainer = getValidatedElement('.pagination');
   if (!paginationContainer) {
@@ -198,6 +198,5 @@ function navigateToSlide(swiperIndex, slideIndex) {
 }
 
 export default {
-  init: setupCustomPagination,
-  update: updatePaginationForProject
+  init
 };

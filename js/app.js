@@ -2,10 +2,6 @@ import { dispatchCustomEvent, addEventListener, EVENT_TYPES } from './core/event
 import appInitializer from './features/initialization/appInitializer.js';
 import { setupEventListeners } from './setup.js';
 
-// Frühzeitiges Importieren aller Module für Event-Listener-Registrierung
-// Diese Importe müssen vor der Verwendung der Events erfolgen!
-
-
 document.addEventListener("DOMContentLoaded", () => {
   // GSAP Plugins registrieren
   gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -24,10 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
     console.log("App vollständig initialisiert");
     
-    // Hauptinhalt sichtbar machen
-    document.querySelector('main').style.visibility = 'visible';
-    
-    // Lade-Anzeige entfernen
-    document.documentElement.classList.add('loaded');
+
   });
 });

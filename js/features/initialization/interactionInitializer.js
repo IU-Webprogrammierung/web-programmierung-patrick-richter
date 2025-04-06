@@ -1,5 +1,5 @@
 /**
- * @module interactionManager
+ * @module interactionInitializer
  * @description Verwaltet die Initialisierung aller Benutzerinteraktionen
  */
 
@@ -39,11 +39,12 @@ function initializeInteractions() {
   // 2. Projekt-Navigation (ScrollTrigger, Touch-Events) in GSAP
   projectNavigator.init ();
   console.log("interactionManager: Projektnavigation initialisiert");
-  }
+  
 
   // 3. HoverImage (Project Indicator & About Overlay)
   hoverPreview.init();
   console.log("interactionManager: Hover-Interaktionen initialisiert");
+}
 
 export default {
   init,

@@ -113,7 +113,6 @@ function init() {
   previewEl = getValidatedElement(".project-hover-preview");
   if (!previewEl) return;
 
-
   // Vorschaubilder für alle Projekte vorbereiten
   const projects = dataStore.getProjects();
   if (projects?.data) {
@@ -133,9 +132,6 @@ function init() {
 
     projectIndicatorTab.addEventListener("click", () => {
       console.log("HoverPreview initialisiert LISTENER AUSGELÖST");
-
-      console.log("HoverPreview initialisiert");
-
       const projectLinks = document.querySelectorAll(".project-list a[data-project-id]");
       addHoverListeners(projectLinks);
     });

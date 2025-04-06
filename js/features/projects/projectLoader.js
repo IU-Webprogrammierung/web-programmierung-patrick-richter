@@ -12,14 +12,14 @@ import { fixImagePath } from '../../core/utils.js';
 
 /**
  * Initialisiert den projectLoader
- * Registriert Event-Listener für DATA_LOADED
+ * Registriert Event-Listener für PROEJCT_DATA_LOADED
  */
 function init() {
   console.log("projectLoader: Initialisierung");
   
   // Auf Datenladung reagieren
   addEventListener(EVENT_TYPES.PROJECT_DATA_LOADED, async (event) => {
-    console.log("projectLoader: EVENT DATA_LOADED empfangen", event);
+    console.log("projectLoader: EVENT PROJECT_DATA_LOADED empfangen", event);
     
     try {
       // DOM-Struktur erstellen

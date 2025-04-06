@@ -262,7 +262,7 @@ h1 {
 .description,
 .pagination,
 .tab-text {
-  opacity: 1;
+  visibility: hidden;
   color: var(--active-text-color);
   transition: 
     opacity var(--title-fade-duration) ease-out,
@@ -281,10 +281,11 @@ h1 {
 }
 
 .fade-out {
-  opacity: 0
+  opacity: 0;
 }
 
 .initial-appear {
+  visibility: visible;
   animation: initialFadeIn var(--title-initial-duration) ease-out;
 }
 

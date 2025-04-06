@@ -60,8 +60,13 @@ function init() {
     }
   });
   
-  // Initiale Erscheinungsanimation
-  initialAppearAnimation(uiElements);
+  addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
+    console.log("UI-Animation wird gestartet nach App-Initialisierung");
+    
+    // Alle UI-Elemente gemeinsam animieren
+    initialAppearAnimation(uiElements);
+
+  });
 }
 
 export default {
