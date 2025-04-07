@@ -149,8 +149,8 @@
 
   --title-fade-duration: 300ms;
   --title-between-pause: 200ms;
-  --title-initial-delay: 200ms;
-  --title-initial-duration: 800ms;
+  --title-initial-delay: 1000ms;
+  --title-initial-duration: 300ms;
 
   /* Layout */
   --overlay-width: 50vw;
@@ -287,16 +287,13 @@ h1 {
 }
 
 
-/* Animation für initiales Erscheinen */
+.initial-appear {
+  animation: initialFadeIn var(--title-initial-duration) ease-out var(--title-initial-delay) both;
+}
 @keyframes initialFadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
-.initial-appear {
-  animation: initialFadeIn var(--title-initial-duration) ease-out forwards;
-}
-
 
 
 .navbar {
@@ -902,7 +899,6 @@ dialog::backdrop {
    ----------------------------- */
 
 /* Animationen für Bouncing Image */
-
 @keyframes appear {
   to {
     opacity: 1;

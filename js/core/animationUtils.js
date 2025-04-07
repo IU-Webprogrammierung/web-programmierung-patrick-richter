@@ -122,7 +122,6 @@ export function animateElementTransition({
  */
 
 export function initialAppearAnimation() {
-
   const uiElements = Array.from(getValidatedElements(".initial-hidden") || []);
   console.log("initialAppearAnimation wird aufgerufen mit:", uiElements);
   
@@ -132,16 +131,20 @@ export function initialAppearAnimation() {
       console.log("Element:", el, "hat initial-hidden:", el.classList.contains('initial-hidden'));
     }
   });
+  
   // Event auslösen, dass Animation startet
   dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_STARTED);
-  console.log("INITIAL_ANIMATION_COMPLETED ausgelöst")
-
-
-
-  const duration = getCSSTimeVariable("--title-initial-duration", 8000);
+  console.log("INITIAL_ANIMATION_STARTED ausgelöst");
+  
+  // Lese Dauer und Delay aus den CSS-Variablen
+  const duration = getCSSTimeVariable("--title-initial-duration", 300);
+  const delay = getCSSTimeVariable("--title-initial-delay", 6000);
+  console.log("INITIAL APPEAR: duration:", duration, "delay:", delay);
+  
+  // Stelle sicher, dass uiElements ein Array ist
   const elementsArray = Array.isArray(uiElements) ? uiElements : [uiElements];
   console.log("INITIAL APPEAR: elementsArray:", elementsArray);
-  const validElements = elementsArray.filter(el => el instanceof HTMLElement);
+  const validElements = elementsArray.filter(el => el && el instanceof HTMLElement);
   console.log("INITIAL APPEAR: validElements:", validElements);
   
   if (validElements.length === 0) return Promise.resolve();
@@ -154,21 +157,22 @@ export function initialAppearAnimation() {
         el.classList.add('initial-appear');
         console.log("initial-appear wird hinzugefügt zu:", el);
       });
-
-      console.log("initialAppearAnimation wird Promise auflösen nach", duration, "ms");
-
+  
+      // Gesamtdauer (Delay + Animationsdauer + Puffer) abwarten
+      const totalTime = duration + delay + 50;
+      console.log("initialAppearAnimation wird Promise auflösen nach", totalTime, "ms");
       
-      // Animation-Abschluss abwarten
       setTimeout(() => {
-        // Aufräumen
+        // Aufräumen: Entferne initial-appear-Klasse, damit der Endzustand übernommen wird
         validElements.forEach(el => el.classList.remove('initial-appear'));
         console.log("INITIAL_ANIMATION_COMPLETED wird jetzt ausgelöst");
-
+  
         // Event auslösen, dass Animation abgeschlossen ist
         dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_COMPLETED);
-        
         resolve();
-      }, 5000);
+      }, totalTime);
     });
   });
-} 
+}
+
+
