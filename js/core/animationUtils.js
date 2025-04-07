@@ -117,25 +117,29 @@ export function parseTimeValue(timeStr, defaultValue) {
    * @param {string} [className='initial-appear'] - CSS-Klasse für die Animation
    * @returns {Promise} - Promise, das erfüllt wird, wenn die Animation abgeschlossen ist
    */
-  export function initialAppearAnimation(elements, className = 'initial-appear') {
-    // CSS-Variable für die Dauer lesen
-    const duration = getCSSTimeVariable("--title-initial-duration", 800);
-    
-    const elementsArray = Array.isArray(elements) ? elements : [elements];
-    const validElements = elementsArray.filter(el => el instanceof HTMLElement);
-    
-    if (validElements.length === 0) {
-      return Promise.resolve();
-    }
-    
-    // Animation anwenden
-    validElements.forEach(el => el.classList.add(className));
-    
-    // Promise für den Abschluss
-    return new Promise(resolve => {
-      setTimeout(() => {
-        validElements.forEach(el => el.classList.remove(className));
-        resolve();
-      }, duration);
-    });
+export function initialAppearAnimation(elements, className = 'initial-appear') {
+  // CSS-Variable für die Dauer lesen
+  const duration = getCSSTimeVariable("--title-initial-duration", 800);
+  
+  const elementsArray = Array.isArray(elements) ? elements : [elements];
+  const validElements = elementsArray.filter(el => el instanceof HTMLElement);
+  
+  if (validElements.length === 0) {
+    return Promise.resolve();
   }
+  
+  // Animation anwenden
+  validElements.forEach(el => el.classList.add(className));
+  
+  return new Promise(resolve => {
+    setTimeout(() => {
+      
+      // Optional: Nach Animation den Elementen zusätzlich opacity:1 geben
+      validElements.forEach(el => {
+        el.style.opacity = "1";
+      });
+      
+      resolve();
+    }, duration);
+  });
+}
