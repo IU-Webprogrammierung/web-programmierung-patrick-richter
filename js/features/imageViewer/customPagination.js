@@ -119,6 +119,7 @@ function updatePaginationForProject(projectIndex) {
   // Semantisch korrekte Liste für Accessibility
   const bulletList = document.createElement('ul');
   bulletList.className = 'custom-pagination-list';
+  bulletList.classList.add('animate-on-transition');
   bulletList.setAttribute('role', 'tablist');
   bulletList.setAttribute('aria-label', 'Bildauswahl');
   
@@ -129,6 +130,7 @@ function updatePaginationForProject(projectIndex) {
     
     const bullet = document.createElement('button');
     bullet.className = 'custom-pagination-bullet';
+    bullet.classList.add('animate-on-transition');
     bullet.setAttribute('type', 'button');
     bullet.setAttribute('role', 'tab');
     bullet.setAttribute('aria-label', `Bild ${i+1} von ${slideCount}`);

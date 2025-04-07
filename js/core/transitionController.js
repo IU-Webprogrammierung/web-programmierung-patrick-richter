@@ -51,14 +51,22 @@ const TransitionController = {
    * Startet einen neuen Übergang
    */
   startTransition() {
-    // Verhindere gleichzeitige Übergänge
     if (this.isTransitioning) {
-      console.warn('TransitionController: Übergang bereits aktiv, ignoriere Anfrage');
+      console.warn('TransitionController: Übergang bereits aktiv');
+      return false;
+    }
+    
+    // Prüfen, ob initial Animation noch läuft
+    if (this._initialAnimationRunning) {
+      console.log('TransitionController: Warte auf Abschluss der initialAnimation');
+      
+      // Transition merken und später ausführen
+      this._deferredTransition = true;
       return false;
     }
     
     this.isTransitioning = true;
-    
+  
     // CSS-Zeiten auslesen
     const fadeDuration = getCSSTimeVariable('--title-fade-duration', 300);
     const betweenPause = getCSSTimeVariable('--title-between-pause', 200);

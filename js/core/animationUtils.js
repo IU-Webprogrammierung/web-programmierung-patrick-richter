@@ -116,37 +116,37 @@ export function animateElementTransition({
 /**
  * Erstellt eine initiale Erscheinungs-Animation für UI-Elemente
  * @param {HTMLElement|HTMLElement[]} elements - Zu animierende DOM-Elemente
- * @param {string} [className='initial-appear'] - CSS-Klasse für die Animation
  * @returns {Promise} - Promise, das erfüllt wird, wenn die Animation abgeschlossen ist
  */
-/**
- * Erstellt eine initiale Erscheinungs-Animation für UI-Elemente
- * @param {HTMLElement|HTMLElement[]} elements - Zu animierende DOM-Elemente
- * @returns {Promise} - Promise, das erfüllt wird, wenn die Animation abgeschlossen ist
- */
+
 export function initialAppearAnimation(elements) {
+  // Event auslösen, dass Animation startet
+  dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_STARTED);
+  
   const duration = getCSSTimeVariable("--title-initial-duration", 800);
-
   const elementsArray = Array.isArray(elements) ? elements : [elements];
-  const validElements = elementsArray.filter((el) => el instanceof HTMLElement);
-
-  if (validElements.length === 0) {
-    return Promise.resolve();
-  }
-
-  return new Promise((resolve) => {
-    // Synchronisiert: Erst initial-hidden entfernen, dann initial-appear hinzufügen
+  const validElements = elementsArray.filter(el => el instanceof HTMLElement);
+  
+  if (validElements.length === 0) return Promise.resolve();
+  
+  return new Promise(resolve => {
     requestAnimationFrame(() => {
-      validElements.forEach((el) => {
-        // initial-hidden Klasse entfernen
-        el.classList.remove("initial-hidden");
-
-        // Animation-Klasse hinzufügen
-        el.classList.add("initial-appear");
+      // Initial-hidden entfernen, Animation hinzufügen
+      validElements.forEach(el => {
+        el.classList.remove('initial-hidden');
+        el.classList.add('initial-appear');
       });
-
-      // Auflösen nach Animationsdauer
-      setTimeout(resolve, duration);
+      
+      // Animation-Abschluss abwarten
+      setTimeout(() => {
+        // Aufräumen
+        validElements.forEach(el => el.classList.remove('initial-appear'));
+        
+        // Event auslösen, dass Animation abgeschlossen ist
+        dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_COMPLETED);
+        
+        resolve();
+      }, duration + 50);
     });
   });
-}
+} 

@@ -120,6 +120,10 @@ export const EVENT_TYPES = {
   // Benutzerinteraktions-Events
   ACTIVE_PROJECT_CHANGED: 'activeProjectChanged', // Aktives Projekt gewechselt
   ACTIVE_IMAGE_CHANGED: 'activeImageChanged',     // Aktives Bild innerhalb eines Projekts gewechselt
+
+  // Animations-Events
+  INITIAL_ANIMATION_STARTED: 'initialAnimation:started',
+  INITIAL_ANIMATION_COMPLETED: 'initialAnimation:completed'
 };
 
 /**

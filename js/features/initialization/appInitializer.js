@@ -41,6 +41,20 @@ function init() {
       showLoadingError();
     }
   });
+
+document.addEventListener(EVENT_TYPES.INITIAL_ANIMATION_STARTED, () => {
+  TransitionController._initialAnimationRunning = true;
+});
+
+document.addEventListener(EVENT_TYPES.INITIAL_ANIMATION_COMPLETED, () => {
+  TransitionController._initialAnimationRunning = false;
+  
+  // Aufgeschobene Transition ausführen, falls vorhanden
+  if (TransitionController._deferredTransition) {
+    TransitionController._deferredTransition = false;
+    TransitionController.startTransition();
+  }
+});
 }
 
 /**
