@@ -19,6 +19,13 @@ export function init() {
     return;
   }
 
+  console.log("CHECK OB INITIAL_PROJECT_SET schon versendet wurde");
+   addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => { 
+    console.log("customPagination: Pagination initial aktualisiert");  
+    updatePaginationForProject(uiState.activeProjectIndex);
+   }); 
+  
+
   // Event-Handler für Projektwechsel-Synchronisierung
   document.addEventListener(TransitionController.events.PHASE_CHANGED, (event) => {
     const { phase } = event.detail;
@@ -48,24 +55,6 @@ export function init() {
       });
     }
   });
-
-  // Initial für das aktuell aktive Projekt einrichten
-  if (uiState.activeProjectIndex >= 0) {
-    // Prüfen, ob der Footer aktiv ist
-    if (checkFooter(uiState.activeProjectIndex, uiState.projects)) {
-      paginationContainer.style.display = 'none';
-    } else {
-      console.log(`Pagination: Initiale Erstellung für Projekt ${uiState.activeProjectIndex}`);
-      updatePaginationForProject(uiState.activeProjectIndex);
-      
-      // Initial das aktive Bild markieren
-      if (uiState.activeSlideIndex !== undefined && uiState.activeSlideIndex >= 0) {
-        updateActiveBullet(uiState.activeSlideIndex);
-      } else {
-        updateActiveBullet(0);
-      }
-    }
-  }
 }
 
 

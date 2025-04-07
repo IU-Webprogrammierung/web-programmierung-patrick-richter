@@ -31,8 +31,7 @@ export const contentElements = {
 
 function init() {
 
-    // Initialen Zustand anzeigen und UI-Elemente synchron animieren
-    updateContents();
+    // Auf erstes Projekt warten und Daten dann aktualisieren
 
  addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
   updateContents();

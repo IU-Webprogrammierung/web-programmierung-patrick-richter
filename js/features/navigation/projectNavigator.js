@@ -269,7 +269,7 @@ function init() {
 
   uiState.activeProjectIndex = 0;
   dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
-  console.log("projectNavigator: Initiales Projekt gesetzt:", uiState.activeProjectIndex);
+  console.log("projectNavigator: Initiales Projekt gesetzt INITIAL_PROJECT_SET:", uiState.activeProjectIndex);
 
   registerNavigationAPI(api);
   return api;

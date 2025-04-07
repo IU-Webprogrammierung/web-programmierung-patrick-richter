@@ -8,7 +8,7 @@ import imageNavigation from '../imageViewer/imageNavigation.js';
 import projectNavigator from '../navigation/projectNavigator.js';
 import hoverPreview from '../projects/hoverPreview.js';
 
-function init() {
+async function init() {
   // Auf UI-Komponenten reagieren
   addEventListener(EVENT_TYPES.UI_COMPONENTS_READY, () => {
     console.log("interactionManager: UI-Komponenten bereit - initialisiere Interaktionen");

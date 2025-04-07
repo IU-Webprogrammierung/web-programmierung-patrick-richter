@@ -32,7 +32,7 @@ function init() {
 
     try {
       // UI-Komponenten initialisieren
-      initializeUIComponents();
+      await initializeUIComponents();
       console.log("uiInitializer: UI-Komponenten initialisiert");
 
       // Interaction Initialisierung starten
@@ -50,7 +50,7 @@ function init() {
 /**
  * Initialisiert alle UI-Komponenten in der richtigen Reihenfolge
  */
-function initializeUIComponents() {
+async function initializeUIComponents() {
   console.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");
 
   // 1. Zentrale Animation für Titel, Description, etc.
@@ -66,7 +66,7 @@ function initializeUIComponents() {
   console.log("uiInitializer: Projekt-Indikator initialisiert");
 
   // 3. Swiper für Bildergalerien initialisieren
-  swiperInitializer.init();
+  await swiperInitializer.init();
   console.log("uiInitializer: Swiper initialisiert");
 
   // 4. Pagination für die Bilder einrichten
