@@ -7,6 +7,8 @@ import { checkFooter } from '../navigation/navigationUtils.js';
 import { getValidatedElement } from '../../core/utils.js';
 import uiState from '../../core/uiState.js';
 import TransitionController from '../../core/transitionController.js';
+import { addEventListener, EVENT_TYPES } from "../../core/events.js";
+
 
 // DOM-Elemente für Titel und Beschreibungen
 const headerTitle = getValidatedElement(".project-title");
@@ -29,14 +31,20 @@ export const contentElements = {
 
 function init() {
 
+    // Initialen Zustand anzeigen und UI-Elemente synchron animieren
+    updateContents();
+
+ addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
+  updateContents();
+    console.log("contentManager: Inhalt initial aktualisiert");
+ }); 
   // Auf Content-Update-Event reagieren
   document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
     updateContents();
     console.log("contentManager: Inhalt aktualisiert");
   });
 
-  // Initialen Zustand anzeigen und UI-Elemente synchron animieren
-  updateContents();
+
 
 }
 
@@ -48,6 +56,7 @@ function init() {
  */
 export function updateContents() {
   const activeIndex = uiState.activeProjectIndex;
+  console.log(`Aktives Projekt: CONTENT ${activeIndex}`);
   
   // Bestimmen ob der Footer aktiv ist (ohne direkten Array-Zugriff)
   const isFooterActive = checkFooter(activeIndex);
@@ -55,22 +64,23 @@ export function updateContents() {
   if (isFooterActive) {
     // Footer-Spezialbehandlung
     setTitles("Say Hi!", "");
-    
+
     // Description-Elemente ausblenden
     if (desktopDescription) desktopDescription.style.display = 'none';
     if (mobileDescription) mobileDescription.style.display = 'none';
-  } else if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
+  }
+  else if (activeIndex >= 0 && activeIndex < uiState.projects.length) {
     // Normales Projekt
     const activeElement = uiState.projects[activeIndex];
     const projectName = activeElement.getAttribute("data-project-name");
     const projectDesc = activeElement.getAttribute("data-project-description") || "";
     
     setTitles(projectName, projectDesc);
-    
     // Description-Elemente einblenden
     if (desktopDescription) desktopDescription.style.display = '';
     if (mobileDescription) mobileDescription.style.display = '';
   }
+  console.log(activeIndex, uiState.projects.length, "content manager");
 }
 
 /**
@@ -78,6 +88,7 @@ export function updateContents() {
  */
 function setTitles(projectName, projectDesc) {
   if (headerTitle) headerTitle.textContent = projectName;
+  console.log(`Titel gesetzt: "${projectName}"`);
   if (desktopDescription) desktopDescription.textContent = projectDesc;
   if (mobileTitle) mobileTitle.textContent = projectName;
   if (mobileDescription) mobileDescription.textContent = projectDesc;

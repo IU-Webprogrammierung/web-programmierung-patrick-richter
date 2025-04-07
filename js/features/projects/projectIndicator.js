@@ -30,6 +30,11 @@ function init() {
   
   // DOM-Struktur für die Projektliste initial erstellen
   createProjectList();
+
+   addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
+    updateTabText();
+      console.log("projectIndicator: Tab-Text initial aktualisiert");
+   }); 
   
 }
 

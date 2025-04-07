@@ -118,6 +118,7 @@ export const EVENT_TYPES = {
   APP_INIT_COMPLETE: 'appInitComplete',        // Anwendung vollständig initialisiert
 
   // Benutzerinteraktions-Events
+  INITIAL_PROJECT_SET: 'initialProjectSet',    // Erstes Projekt gesetzt
   ACTIVE_PROJECT_CHANGED: 'activeProjectChanged', // Aktives Projekt gewechselt
   ACTIVE_IMAGE_CHANGED: 'activeImageChanged',     // Aktives Bild innerhalb eines Projekts gewechselt
 

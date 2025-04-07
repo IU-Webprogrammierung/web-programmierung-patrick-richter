@@ -11,6 +11,7 @@ import projectLoader from '../projects/projectLoader.js';
 import uiInitializer from './uiInitializer.js';
 import footerLoader from '../footer/footerLoader.js';
 import overlayContent from '../overlay/overlayContent.js';
+import TransitionController from '../../core/transitionController.js';
 
 /**
  * Initialisiert die App
@@ -43,6 +44,7 @@ function init() {
   });
 
 document.addEventListener(EVENT_TYPES.INITIAL_ANIMATION_STARTED, () => {
+  console.log("INITIAL_ANIMATION_STARTED ausgelöst");
   TransitionController._initialAnimationRunning = true;
 });
 

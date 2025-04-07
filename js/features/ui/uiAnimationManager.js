@@ -3,7 +3,8 @@
  * @description Steuert synchronisierte Animationen für alle UI-Elemente
  */
 
-import { addEventListener, EVENT_TYPES } from '../../core/events.js';import { initialAppearAnimation } from '../../core/animationUtils.js';
+import { addEventListener, EVENT_TYPES } from '../../core/events.js'
+;import { initialAppearAnimation } from '../../core/animationUtils.js';
 import TransitionController from '../../core/transitionController.js';
 import { getValidatedElement } from '../../core/utils.js';
 
@@ -28,13 +29,6 @@ const uiElements = [
   desktopDescription,
   pagination,
   projectIndicator
-].filter(el => el !== null);
-
-const appearAnimationElements = [
-  headerTitle,
-  titleDescriptionContainer,
-  projectIndicatorTab,
-  paginationDescriptionContainer
 ].filter(el => el !== null);
 
 /**
@@ -79,10 +73,10 @@ function init() {
   // Finale Initialisierung nach App-Bereitschaft
   addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, async () => {
     console.log("UI-Animation wird gestartet nach App-Initialisierung");
-    
+
     try {
       // Animation starten und auf Abschluss warten
-      await initialAppearAnimation(appearAnimationElements);
+      await initialAppearAnimation();
       console.log("Initial-Animation abgeschlossen");
       
       // Erst jetzt Initialisierung als abgeschlossen markieren
