@@ -109,26 +109,20 @@ function updatePaginationForProject(projectIndex) {
   const bulletList = document.createElement('ul');
   bulletList.className = 'custom-pagination-list';
   bulletList.classList.add('animate-on-transition');
-  bulletList.setAttribute('role', 'tablist');
-  bulletList.setAttribute('aria-label', 'Bildauswahl');
+  bulletList.setAttribute('aria-label', 'Bildanzeiger');
   
   // Bullet-Elemente erstellen
   for (let i = 0; i < slideCount; i++) {
     const bulletItem = document.createElement('li');
     bulletItem.className = 'custom-pagination-item';
     
-    const bullet = document.createElement('button');
+    // ÄNDERUNG: button durch span ersetzen
+    const bullet = document.createElement('span');
     bullet.className = 'custom-pagination-bullet';
     bullet.classList.add('animate-on-transition');
-    bullet.setAttribute('type', 'button');
-    bullet.setAttribute('role', 'tab');
-    bullet.setAttribute('aria-label', `Bild ${i+1} von ${slideCount}`);
-    bullet.setAttribute('data-index', i);
     
-    // Klick-Handler für Navigation
-    bullet.addEventListener('click', () => {
-      navigateToSlide(swiperIndex, i);
-    });
+    // data-index beibehalten für Kompatibilität mit updateActiveBullet
+    bullet.setAttribute('data-index', i);
     
     bulletItem.appendChild(bullet);
     bulletList.appendChild(bulletItem);
@@ -156,7 +150,7 @@ export function updateActiveBullet(slideIndex) {
     return;
   }
   
-  // Bullets finden
+  // Bullets finden - jetzt mit span statt button
   const bullets = paginationContainer.querySelectorAll('.custom-pagination-bullet');
   if (bullets.length === 0) {
     console.warn('Keine Bullets gefunden');
@@ -170,22 +164,10 @@ export function updateActiveBullet(slideIndex) {
   bullets.forEach((bullet, index) => {
     const isActive = index === validIndex;
     bullet.classList.toggle('active', isActive);
-    bullet.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    // Kein aria-selected mehr nötig, da keine Tab-Rolle mehr
   });
   
   console.log(`Bullet ${validIndex} von ${bullets.length} aktiviert`);
-}
-
-/**
- * Navigiert zu einem bestimmten Slide
- */
-function navigateToSlide(swiperIndex, slideIndex) {
-  console.log(`navigateToSlide: Swiper ${swiperIndex}, Slide ${slideIndex}`);
-  
-  const swiper = swiperInitializer.getInstance(swiperIndex);
-  if (swiper) {
-    swiper.slideTo(slideIndex);
-  }
 }
 
 export default {

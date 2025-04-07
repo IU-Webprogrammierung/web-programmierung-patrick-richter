@@ -30,14 +30,14 @@ function init() {
       `uiInitializer: ${uiState.projects.length} Projekte im DOM gefunden`
     );
 
+    // Interaction Initialisierung starten
+    interactionInitializer.init();
+    console.log("uiInitializer: Interaktionen initialisiert");
+
     try {
       // UI-Komponenten initialisieren
       await initializeUIComponents();
       console.log("uiInitializer: UI-Komponenten initialisiert");
-
-      // Interaction Initialisierung starten
-      interactionInitializer.init();
-      console.log("uiInitializer: Interaktionen initialisiert");
 
       // Nächste Phase signalisieren: UI-Komponenten bereit
       dispatchCustomEvent(EVENT_TYPES.UI_COMPONENTS_READY);

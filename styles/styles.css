@@ -34,19 +34,16 @@
 }
 
 .custom-pagination-bullet {
+  display: inline-block; 
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.3);
-  border: none;
-  padding: 0;
-  cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0.6;
-}
+  cursor: default;
+  pointer-events: none;
 
-.custom-pagination-bullet:hover {
-  opacity: 0.9;
 }
 
 .custom-pagination-bullet.active {
