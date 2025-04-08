@@ -6,14 +6,14 @@
  * @fires DATA_LOADED - Signalisiert abgeschlossene Projektdatenladung (vor dem Laden anderer Daten)
  */
 
-import { API_ENDPOINTS, FALLBACK_DATA } from "../config.js";
+import { API_ENDPOINTS, FALLBACK_DATA } from "./config.js";
 import {
   normalizeProjectData,
   normalizeAboutData,
   normalizeClientsData,
   normalizeFooterData,
-} from "./normalizers/index.js";
-import { EVENT_TYPES, dispatchCustomEvent } from "./events.js";
+} from "../utils/normalizers/index.js";
+import { EVENT_TYPES, dispatchCustomEvent } from "./state/events.js";
 
 const dataStore = {
   projectsData: null,

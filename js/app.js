@@ -2,8 +2,8 @@ import {
   dispatchCustomEvent,
   addEventListener,
   EVENT_TYPES,
-} from "./core/events.js";
-import appInitializer from "./features/initialization/appInitializer.js";
+} from "./core/state/events.js";
+import appInitializer from "./startup/appInitializer.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // GSAP Plugins registrieren
