@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 1. DOCUMENT HEADER -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brenda Büttner</title>
+    <!-- Externe Ressourcen -->
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <!-- Neue modulare Einbindung -->
+    <script type="module" src="/js/app.js"></script>
+  </head>
+
+  <body>
+    <!-- 2. SITE HEADER -->
+    <header>
+      <!-- Navigation -->
+      <nav class="navbar">
+        <button class="nav-home button" id="scrollTop" aria-label="Go to top">
+          BB
+        </button>
+        <!-- Projektitel soll sich zukünftig mit JS dynamisch ändern -->
+        <button
+          id="openOverlay"
+          class="nav-about button"
+          aria-label="Open about overlay"
+        >
+          About
+        </button>
+      </nav>
+      <h1 class="project-title desktop-only initial-hidden animate-on-transition" aria-live="polite"></h1>
+    </header>
+
+    <!-- 3. MAIN CONTENT -->
+    <main>
+      <!-- Galerien der Projekte -->
+      <section class="project-container">
+        <!-- Projektelemente werden dynamisch geladen -->
+      </section>
+      <!-- Semantisch korrekter Footer - jetzt außerhalb der Projekt-Container -->
+      <footer id="site-footer" class="site-footer" data-special="footer" aria-hidden="true">
+        <div class="footer-top" id="footerTop"></div>
+        <div class="footer-content"></div>
+      </footer>
+      <div class="pagination-description-container initial-hidden static-on-transition desktop-only">
+        <div class="pagination initial-hidden animate-on-transition"></div>
+
+        <div class="description initial-hidden animate-on-transition"></div>
+      </div>
+
+      <div class="project-indicator">
+        <!-- Panel für Projektliste -->
+        <div
+          id="project-panel"
+          class="project-panel"
+          role="region"
+          aria-label="Projektliste"
+        >
+          <ul class="project-list">
+            <!-- Wird dynamisch gefüllt -->
+          </ul>
+        </div>
+
+        <!-- Tab für Anzeige und Trigger -->
+        <div
+          class="project-indicator-tab initial-hidden static-on-transition"
+          tabindex="0"
+          role="button"
+          aria-expanded="false"
+          aria-controls="project-panel"
+          aria-label="Projektliste anzeigen/ausblenden"
+        >
+          <div class="tab-chevron static-on-transition">
+            <div class="chevron-line line1 static-on-transition"></div>
+            <div class="chevron-line line2 static-on-transition"></div>
+          </div>
+          <div class="tab-text initial-hidden animate-on-transition"></div>
+        </div>
+      </div>
+
+      <!-- Container der Mobile Description -->
+      <div
+        class="title-description-container initial-hidden static-on-transition mobile-only"
+        id="TitleDescriptionContainer"
+        aria-expanded="false"
+        role="region"
+        aria-controls="mobile-description"
+      >
+        <div class="project-title-container">
+          <h1 class="project-title-mobile initial-hidden animate-on-transition" aria-live="polite"></h1>
+          <div class="title-arrow initial-hidden static-on-transition">
+            <svg
+              height="1rem"
+              width="1rem"
+              viewBox="0 0 407.437 407.437"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <polygon
+                points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="description-mobile initial-hidden animate-on-transition" id="mobile-description">
+          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+        </div>
+      </div>
+    </main>
+
+    <!-- 4. OVERLAY DIALOG -->
+    <dialog
+      class="overlay"
+      aria-label="Overlay with about and imprint information"
+      aria-modal="true"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <!-- Linke Seite (Portrait) -->
+      <div class="overlay-left" id="overlayLeft">
+        <picture>
+          <source srcset="./images/BB.webp" type="image/webp" />
+          <img
+            src="./images/BB.jpg"
+            class="bouncing-image"
+            alt="Portrait of the designer"
+          />
+        </picture>
+      </div>
+
+      <!-- Rechte Seite (Content) -->
+      <div class="overlay-right">
+        <button
+          id="closeOverlay"
+          class="close-overlay"
+          aria-label="Close about overlay"
+        >
+          <img src="./images/icons/close.png" alt="close icon" />
+        </button>
+        <div class="about-imprint-slider show-about">
+          <section
+            class="about"
+            id="about-section"
+            aria-live="polite"
+            aria-hidden="false"
+          >
+            <div class="overlay-content">
+              <div class="about-intro"></div>
+
+              <div class="about-clients">
+                <ul aria-labelledby="clients-title"></ul>
+              </div>
+            </div>
+            <footer>
+              <nav
+                class="overlay-navigation"
+                aria-label="Instagram Link and switch to Imprint section"
+              >
+                <a
+                  href="https://instagram.com/profile"
+                  class="btn-insta button"
+                  aria-label="Open Instagram profile"
+                  target="_blank"
+                >
+                  Instagram
+                </a>
+                <button
+                  class="btn-imprint button"
+                  id="showImprint"
+                  aria-controls="imprint-section"
+                >
+                  Imprint &amp; Privacy Policy
+                </button>
+              </nav>
+            </footer>
+          </section>
+          <section
+            class="imprint"
+            id="imprint-section"
+            aria-live="polite"
+            aria-hidden="true"
+          >
+            <div class="overlay-content">
+              <div class="imprint-content"></div>
+            </div>
+            <footer>
+              <nav
+                class="overlay-navigation"
+                aria-label="Switch to About section"
+              >
+                <button
+                  class="btn-about button"
+                  id="showAbout"
+                  aria-controls="about-section"
+                >
+                  Back to about
+                </button>
+              </nav>
+            </footer>
+          </section>
+        </div>
+      </div>
+    </dialog>
+    <!-- Hover-Preview-Bild -->
+    <img class="project-hover-preview" alt="Projektvorschau" src="" />
+  </body>
+</html>
