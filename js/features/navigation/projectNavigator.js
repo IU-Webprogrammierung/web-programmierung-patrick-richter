@@ -8,6 +8,7 @@ import uiState from "../../core/uiState.js";
 import { registerNavigationAPI } from "./navigationUtils.js";
 import { checkFooter } from "../navigation/navigationUtils.js";
 import { EVENT_TYPES, dispatchCustomEvent } from "../../core/events.js";
+import { getValidatedElement } from "../../core/utils.js";
 
 function init() {
   // Konfiguration
@@ -16,6 +17,7 @@ function init() {
     ANIMATION_DURATION: 0.8,
     SCROLL_TOLERANCE: 15,
   };
+
 
   // Alle navigierbaren Elemente in einer Collection
   const navigableElements = [
@@ -65,8 +67,9 @@ function init() {
     }
   });
 
+
   /**
-   * Unified transition function for all elements
+   * Einheitliche Funktion für die Navigation zu einem Element
    */
   function transitionToElement(index, direction) {
     index = wrap(index);
@@ -234,6 +237,7 @@ function init() {
     isFooter: (el) => el && el.id === "site-footer"
   });*/
 
+  // TODO Brauche ich die überhaupt? Kritisch überlegen
   // Navigation-API
   const api = {
     moveToNextElement: () => {
@@ -274,6 +278,10 @@ function init() {
   registerNavigationAPI(api);
   return api;
 }
+
+// Event Listener für Scroll-Top
+getValidatedElement("#scrollTop")?.addEventListener("click", () => transitionToElement(0, -1));
+
 export default {
   init,
 };

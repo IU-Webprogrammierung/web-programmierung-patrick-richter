@@ -5,7 +5,10 @@
 
 import uiState from "../../core/uiState.js";
 import { getValidatedElement } from "../../core/utils.js";
-import { getNavigationAPI, checkFooter } from "../navigation/navigationUtils.js";
+import {
+  getNavigationAPI,
+  checkFooter,
+} from "../navigation/navigationUtils.js";
 import { removeHoverListeners } from "./hoverPreview.js";
 import { EVENT_TYPES, addEventListener } from "../../core/events.js";
 import TransitionController from "../../core/transitionController.js";
@@ -20,22 +23,29 @@ function init() {
   // DOM-Elemente referenzieren
   tabElement = getValidatedElement(".project-indicator-tab");
   indicator = getValidatedElement(".project-indicator");
-  
+
+  tabElement.addEventListener("click", togglePanel);
+
   // Auf CONTENT_UPDATE_NEEDED reagieren, um Tab-Text und aktive Projektmarkierung zu aktualisieren
-  document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
-    updateTabText();
-    updateActiveProjectInList();
-    console.log("ProjectIndicator: Tab-Text und aktuelles Projekt aktualisiert");
-  });
-  
+  document.addEventListener(
+    TransitionController.events.CONTENT_UPDATE_NEEDED,
+    () => {
+      updateTabText();
+      updateActiveProjectInList();
+      console.log(
+        "ProjectIndicator: Tab-Text und aktuelles Projekt aktualisiert"
+      );
+    }
+  );
+
   // DOM-Struktur für die Projektliste initial erstellen
   createProjectList();
 
-   addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
+  addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {
     updateTabText();
-      console.log("projectIndicator: Tab-Text initial aktualisiert");
-   }); 
-  
+    updateActiveProjectInList();
+    console.log("projectIndicator: Tab-Text initial aktualisiert");
+  });
 }
 
 /**
@@ -44,7 +54,7 @@ function init() {
  */
 export function updateTabText() {
   if (!tabElement) return;
-  
+
   const tabText = tabElement.querySelector(".tab-text");
   if (!tabText) return;
 
@@ -54,10 +64,13 @@ export function updateTabText() {
     const regularProjects = uiState.projects.filter(
       (project, index) => !checkFooter(index, uiState.projects)
     );
-    
+
     // Prüfe, ob der aktive Index den Footer repräsentiert
-    const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
-    
+    const isFooterActive = checkFooter(
+      uiState.activeProjectIndex,
+      uiState.projects
+    );
+
     // Berechne den effektiven aktiven Index
     let activeIndex;
     if (isFooterActive) {
@@ -73,7 +86,7 @@ export function updateTabText() {
       }
       activeIndex = countBeforeActive;
     }
-    
+
     const totalProjects = regularProjects.length;
     tabText.textContent = `${activeIndex} / ${totalProjects}`;
   } else {
@@ -89,27 +102,30 @@ export function updateTabText() {
 function updateActiveProjectInList() {
   const links = document.querySelectorAll(".project-list a");
   if (!links || links.length === 0) return;
-  
+
   // Prüfe, ob der aktive Index den Footer repräsentiert
-  const isFooterActive = checkFooter(uiState.activeProjectIndex, uiState.projects);
-  
+  const isFooterActive = checkFooter(
+    uiState.activeProjectIndex,
+    uiState.projects
+  );
+
   if (isFooterActive) {
     // Bei Footer alle Markierungen entfernen
-    links.forEach(link => link.classList.remove("active"));
+    links.forEach((link) => link.classList.remove("active"));
     return;
   }
-  
+
   // Berechne den effektiven Index des aktiven Projekts unter Ausschluss des Footers
   let effectiveIndex = -1;
   let regularCounter = -1;
-  
+
   for (let i = 0; i <= uiState.activeProjectIndex; i++) {
     if (!checkFooter(i, uiState.projects)) {
       regularCounter++;
     }
   }
   effectiveIndex = regularCounter;
-  
+
   // Links aktualisieren
   links.forEach((link, index) => {
     if (index === effectiveIndex) {
@@ -126,7 +142,7 @@ function updateActiveProjectInList() {
  */
 function createProjectList() {
   projectList = getValidatedElement(".project-list");
-  
+
   if (!projectList || !uiState.projects.length) {
     console.warn("Projektliste oder Projekte nicht verfügbar");
     return;
@@ -138,7 +154,7 @@ function createProjectList() {
   uiState.projects.forEach((project, index) => {
     // Footer nicht in der Liste anzeigen
     if (checkFooter(index, uiState.projects)) return;
-    
+
     const li = document.createElement("li");
     const a = document.createElement("a");
     const projectId = project.getAttribute("data-project-id");
@@ -155,22 +171,36 @@ function createProjectList() {
     // Click-Handler mit API-Zugriff
     a.addEventListener("click", function (e) {
       e.preventDefault();
-      
+
       const navigation = getNavigationAPI();
       if (!navigation) {
         console.error("Navigation-API nicht verfügbar");
         return;
       }
+      // Projekt-ID für spätere Verwendung speichern
+      const projectId = this.getAttribute("data-project-id");
 
       // Panel schließen
       if (indicator && indicator.classList.contains("open")) {
         indicator.classList.remove("open");
         tabElement?.setAttribute("aria-expanded", "false");
 
-        // Transition mit Animation synchronisieren
-        requestAnimationFrame(() => {
+        const onTransitionEnd = () => {
+          // Erst nach Abschluss der Animation navigieren
           navigation.navigateToProject(projectId);
+          indicator.removeEventListener("transitionend", onTransitionEnd);
+        };
+
+        indicator.addEventListener("transitionend", onTransitionEnd, {
+          once: true,
         });
+
+        // Sicherheits-Fallback, falls Animation nicht beendet wird
+        setTimeout(() => {
+          if (indicator.classList.contains("open") === false) {
+            navigation.navigateToProject(projectId);
+          }
+        }, 400); // Etwas länger als CSS-Transition
       } else {
         // Direkt navigieren, wenn Panel nicht offen ist
         navigation.navigateToProject(projectId);
@@ -180,8 +210,12 @@ function createProjectList() {
     li.appendChild(a);
     projectList.appendChild(li);
   });
-  
-  console.log("Projektliste erstellt mit", projectList.children.length, "Einträgen");
+
+  console.log(
+    "Projektliste erstellt mit",
+    projectList.children.length,
+    "Einträgen"
+  );
 }
 
 /**
@@ -191,13 +225,13 @@ function togglePanel() {
   if (!indicator || !tabElement) return;
 
   indicator.classList.toggle("open");
-  
+
   // Prüfen, ob das Panel geschlossen wird
   if (indicator.classList.contains("open")) {
     // Hover-Listener entfernen
     removeHoverListeners();
   }
-  
+
   const isOpen = indicator.classList.contains("open");
   tabElement.setAttribute("aria-expanded", isOpen ? "true" : "false");
 }
@@ -207,5 +241,5 @@ export default {
   init,
   togglePanel,
   updateTabText,
-  updateActiveProjectInList
+  updateActiveProjectInList,
 };

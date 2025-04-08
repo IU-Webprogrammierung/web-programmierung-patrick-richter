@@ -7,6 +7,8 @@ import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '../../core/e
 import imageNavigation from '../imageViewer/imageNavigation.js';
 import projectNavigator from '../navigation/projectNavigator.js';
 import hoverPreview from '../projects/hoverPreview.js';
+import overlayController from '../overlay/overlayController.js';
+import mobileDescription from '../mobile/mobileDescription.js';
 
 async function init() {
   // Auf UI-Komponenten reagieren
@@ -40,11 +42,20 @@ function initializeInteractions() {
   projectNavigator.init ();
   console.log("interactionManager: Projektnavigation initialisiert");
   
-
   // 3. HoverImage (Project Indicator & About Overlay)
   hoverPreview.init();
   console.log("interactionManager: Hover-Interaktionen initialisiert");
+
+  // 4. Overlay-Controller
+  overlayController.init();
+  console.log("interactionManager: Overlay-Interaktionen initialisiert");
+
+  // 5. Mobile-Interaktionen
+  mobileDescription.init();
+  console.log("interactionManager: Mobile Interaktionen initialisiert");
+
 }
+
 
 export default {
   init,

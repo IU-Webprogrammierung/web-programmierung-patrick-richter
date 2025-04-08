@@ -20,6 +20,15 @@ const titleDescriptionContainer = getValidatedElement(
   ".title-description-container"
 );
 
+function init() {
+    getValidatedElement("#openOverlay")?.addEventListener("click", showOverlay);
+    getValidatedElement("#closeOverlay")?.addEventListener("click", hideOverlay);
+    getValidatedElement("#overlayLeft")?.addEventListener("click", hideOverlay);
+    addEventListener("keydown", handleKeyPress);
+    getValidatedElement("#showImprint")?.addEventListener("click", () => toggleAboutImprint("show-imprint"));
+    getValidatedElement("#showAbout")?.addEventListener("click", () => toggleAboutImprint("show-about"));
+}
+
 // Öffnet das Overlay und entfernt die Schließen-Animation
 
   export function showOverlay() {
@@ -106,3 +115,7 @@ export function handleKeyPress(event) {
     hideOverlay();
   }
 }
+
+export default {
+  init
+};

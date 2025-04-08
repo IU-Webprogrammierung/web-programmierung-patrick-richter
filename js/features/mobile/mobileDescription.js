@@ -10,6 +10,16 @@
 
 import { getValidatedElement } from '../../core/utils.js';
 
+function init() {
+
+  const titleDescriptionContainer = getValidatedElement(".title-description-container");
+  titleDescriptionContainer.addEventListener("click", toggleDescription);
+  titleDescriptionContainer.addEventListener("pointerdown", handlePointerDown);
+  titleDescriptionContainer.addEventListener("touchend", handleTouchEnd);
+
+}
+
+
 
 export function toggleDescription() {
   const titleDescriptionContainer = getValidatedElement(
@@ -65,3 +75,7 @@ export function handleTouchEnd(event) {
     toggleDescription();
   }
 }
+
+export default {
+  init
+};
