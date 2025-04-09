@@ -3,13 +3,15 @@
  * @description Erstellt und verwaltet die Inhalte des Overlay-Dialogs (About und Imprint).
  * Verantwortlich für die Erstellung von About-Intro, Client-Liste und Imprint-Inhalten
  * basierend auf den Daten aus dem zentralen Datenspeicher.
+ * 
+ * @listens EVENT_TYPES.ALL_DATA_LOADED - Initialisiert Overlay-Inhalte nach Datenladung
  */
 
 import dataStore from "@core/dataStore.js";
 import { getValidatedElement } from "@utils/utils.js";
 import { hideOverlay } from "@overlay/overlayController.js";
-import { getNavigationAPI } from "@utils/navigationUtils.js";
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
+import CustomRouter from "@core/CustomRouter.js";
 
 // Erstellt die About- und Imprint-Inhalte im Overlay
 function init() {
@@ -40,9 +42,13 @@ function init() {
       console.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
     }
   });
-} 
+}
 
-// Erstellt den About-Intro-Bereich
+/**
+ * Erstellt den About-Intro-Bereich
+ * @param {HTMLElement} container - Der Container für den About-Intro-Inhalt
+ * @param {Object} aboutImprintData - Die About/Imprint-Daten
+ */
 function createAboutIntro(container, aboutImprintData) {
   if (
     !aboutImprintData ||
@@ -70,7 +76,11 @@ function createAboutIntro(container, aboutImprintData) {
   container.innerHTML = introParagraphs;
 }
 
-// Erstellt die Client-Liste
+/**
+ * Erstellt die Client-Liste
+ * @param {HTMLElement} container - Der Container für die Client-Liste
+ * @param {Object} clientsData - Die Client-Daten
+ */
 function createClientsList(container, clientsData) {
   if (!clientsData || !clientsData.data || clientsData.data.length === 0) {
     console.warn("Keine Clients-Daten gefunden");
@@ -111,21 +121,22 @@ function createClientsList(container, clientsData) {
       link.textContent = client.name;
       link.setAttribute("aria-label", `${client.name} Projekt anzeigen`);
 
-      // Event-Listener für Klick hinzufügen mit Navigation-API
+      // Event-Listener für Klick hinzufügen mit Router statt Navigation-API
       link.addEventListener("click", function (e) {
         e.preventDefault();
-        hideOverlay(); // Overlay schließen
-
-        // Navigation-API abrufen und verwenden
-        const navigation = getNavigationAPI();
-        if (navigation) {
-          // Zum Projekt navigieren (mit kurzer Verzögerung für Animation)
-          setTimeout(() => {
-            navigation.navigateToProject(project.id);
-          }, 300);
-        } else {
-          console.error("Navigation-API nicht verfügbar");
-        }
+        
+        // Overlay schließen und Project-ID für Navigation speichern
+        const projectId = this.getAttribute("data-project-id");
+        hideOverlay();
+        
+        // Verzögerte Navigation nach Overlay-Animation
+        setTimeout(() => {
+          // Mit Router navigieren, wenn verfügbar
+          if (CustomRouter.initialized) {
+            console.log(`OverlayContent: Navigation zu Projekt-ID ${projectId} via Router`);
+            CustomRouter.navigateToProjectById(projectId);
+          }
+        }, 300); // Großzügiger Timeout für Animation
       });
 
       li.appendChild(link);
@@ -138,7 +149,11 @@ function createClientsList(container, clientsData) {
   });
 }
 
-// Erstellt den Imprint-Inhalt
+/**
+ * Erstellt den Imprint-Inhalt
+ * @param {HTMLElement} container - Der Container für den Imprint-Inhalt
+ * @param {Object} aboutImprintData - Die About/Imprint-Daten
+ */
 function createImprintContent(container, aboutImprintData) {
   if (
     !aboutImprintData ||

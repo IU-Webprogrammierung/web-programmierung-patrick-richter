@@ -1,16 +1,20 @@
 /**
- * projectNavigator.js
- * Hauptmodul für die Projekt-Navigation mit GSAP
+ * @module projectNavigator
+ * @description Hauptmodul für die Projekt-Navigation mit GSAP-Animationen.
+ * Steuert Übergänge zwischen Projekten mittels Events und GSAP.
+ * 
+ * @fires EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Bei Projektwechsel
+ * @fires EVENT_TYPES.INITIAL_PROJECT_SET - Beim Setzen des initialen Projekts
  */
 
-import { setupKeyboardNavigation } from "@portfolio/navigation/navigationKeyboardHandler.js";
 import uiState from "@core/state/uiState.js";
-import { registerNavigationAPI } from "@utils/navigationUtils.js";
 import { checkFooter } from "@utils/navigationUtils.js";
 import { EVENT_TYPES, dispatchCustomEvent } from "@core/state/events.js";
 import { getValidatedElement } from "@utils/utils.js";
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
+import { setupKeyboardNavigation } from "@portfolio/navigation/navigationKeyboardHandler.js";
+import { registerNavigationAPI } from "@utils/navigationUtils.js";
 
 function init() {
   // Konfiguration
@@ -19,7 +23,6 @@ function init() {
     ANIMATION_DURATION: 0.8,
     SCROLL_TOLERANCE: 15,
   };
-
 
   // Alle navigierbaren Elemente in einer Collection
   const navigableElements = [
@@ -30,10 +33,10 @@ function init() {
   let currentIndex = 0;
   let animating = false;
 
-  // Footer nur visuell initialisieren, Inhalt wird über Events geladen
+  // Footer visuell initialisieren (Inhalt wird über Events geladen)
   const footerElement = document.getElementById("site-footer");
   if (footerElement) {
-    // Footer-Top Click-Handler behalten
+    // Footer-Top Click-Handler 
     const footerTop = footerElement.querySelector(".footer-top");
     if (footerTop) {
       footerTop.addEventListener("click", () => {
@@ -69,9 +72,11 @@ function init() {
     }
   });
 
-
   /**
    * Einheitliche Funktion für die Navigation zu einem Element
+   * @param {number} index - Zielindex des Elements
+   * @param {number} direction - Richtung der Animation (1: vorwärts, -1: rückwärts)
+   * @returns {gsap.timeline} Die GSAP-Timeline für die Animation
    */
   function transitionToElement(index, direction) {
     index = wrap(index);
@@ -198,6 +203,7 @@ function init() {
 
   /**
    * Benachrichtigt über Elementwechsel - erkennt automatisch den Footer
+   * @param {number} index - Index des neuen aktiven Elements
    */
   function dispatchElementChangeEvent(index) {
     const element = navigableElements[index];
@@ -231,16 +237,12 @@ function init() {
     () => animating
   );
 
-  /*setupHistoryRouting({
-    projects: navigableElements,
-    transitionToProject: transitionToElement,
-    getCurrentIndex: () => currentIndex,
-    dispatchProjectChangeEvent,
-    isFooter: (el) => el && el.id === "site-footer"
-  });*/
+  // Initiales Projekt setzen
+  uiState.activeProjectIndex = 0;
+  dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
+  console.log("projectNavigator: Initiales Projekt gesetzt, INITIAL_PROJECT_SET:", uiState.activeProjectIndex);
 
-  // TODO Brauche ich die überhaupt? Kritisch überlegen
-  // Navigation-API
+  // Navigation-API für andere Module (vor allem Router)
   const api = {
     moveToNextElement: () => {
       if (animating) return;
@@ -250,9 +252,9 @@ function init() {
       if (animating) return;
       transitionToElement(currentIndex - 1, -1);
     },
-    navigateToIndex: (index) => {
+    navigateToIndex: (index, customDirection) => {
       if (animating) return;
-      const direction = index > currentIndex ? 1 : -1;
+      const direction = customDirection || (index > currentIndex ? 1 : -1);
       transitionToElement(index, direction);
     },
     navigateToProject: (projectId) => {
@@ -273,16 +275,19 @@ function init() {
     isFooterActive: () => checkFooter(navigableElements[currentIndex]),
   };
 
-  uiState.activeProjectIndex = 0;
-  dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
-  console.log("projectNavigator: Initiales Projekt gesetzt INITIAL_PROJECT_SET:", uiState.activeProjectIndex);
-
+  // API registrieren für bestehende Komponenten (Abwärtskompatibilität)
   registerNavigationAPI(api);
+  
+  // Scrollt-To-Top-Button-Handler
+  const scrollTopButton = getValidatedElement("#scrollTop");
+  if (scrollTopButton) {
+    scrollTopButton.addEventListener("click", () => {
+      api.navigateToTop();
+    });
+  }
+  
   return api;
 }
-
-// Event Listener für Scroll-Top
-getValidatedElement("#scrollTop")?.addEventListener("click", () => transitionToElement(0, -1));
 
 export default {
   init,

@@ -1,13 +1,22 @@
-import {
-  dispatchCustomEvent,
-  addEventListener,
-  EVENT_TYPES,
-} from "@core/state/events.js";
-import appInitializer from "@startup/appInitializer.js";
+/**
+ * @module app/main
+ * @description Initialisiert die App beim Laden des DOM.
+ * 
+ * @listens DOMContentLoaded
+ * @fires APP_INIT_STARTED
+ */
+
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 
-// GSAP Plugins registrieren
+import {
+  addEventListener,
+  dispatchCustomEvent,
+  EVENT_TYPES,
+} from "@core/state/events.js";
+import appInitializer from "@startup/appInitializer.js";
+
+// GSAP-Plugins registrieren
 gsap.registerPlugin(Observer);
 
 document.addEventListener("DOMContentLoaded", () => {

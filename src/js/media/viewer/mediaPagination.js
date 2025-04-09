@@ -23,6 +23,7 @@ export function init() {
    addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => { 
     console.log("customPagination: Pagination initial aktualisiert");  
     updatePaginationForProject(uiState.activeProjectIndex);
+    updateActiveBullet(0);
    }); 
   
 

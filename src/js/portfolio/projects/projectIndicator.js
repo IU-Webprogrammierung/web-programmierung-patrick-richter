@@ -1,17 +1,18 @@
 /**
  * @module projectIndicator
  * @description Verwaltet den Projekt-Indikator und das Navigations-Panel für den Index.
+ * 
+ * @listens TransitionController.events.CONTENT_UPDATE_NEEDED - Aktualisiert Tab-Text und aktive Markierung
+ * @listens EVENT_TYPES.INITIAL_PROJECT_SET - Aktualisiert Tab-Text und Markierung initial
  */
 
 import uiState from "@core/state/uiState.js";
 import { getValidatedElement } from "@utils/utils.js";
-import {
-  getNavigationAPI,
-  checkFooter,
-} from "@utils/navigationUtils.js";
+import { checkFooter } from "@utils/navigationUtils.js";
 import { removeHoverListeners } from "@portfolio/projects/hoverPreview.js";
 import { EVENT_TYPES, addEventListener } from "@core/state/events.js";
 import TransitionController from "@core/state/transitionController.js";
+import CustomRouter from "@core/CustomRouter.js";
 
 // Speicher für DOM-Elemente
 let projectList, indicator, tabElement;
@@ -41,6 +42,7 @@ function init() {
   // DOM-Struktur für die Projektliste initial erstellen
   createProjectList();
 
+  // Initial Tab-Text und aktive Markierung setzen
   addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {
     updateTabText();
     updateActiveProjectInList();
@@ -168,42 +170,30 @@ function createProjectList() {
       a.classList.add("active");
     }
 
-    // Click-Handler mit API-Zugriff
+    // Click-Handler mit Router-Navigation
     a.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const navigation = getNavigationAPI();
-      if (!navigation) {
-        console.error("Navigation-API nicht verfügbar");
-        return;
-      }
-      // Projekt-ID für spätere Verwendung speichern
-      const projectId = this.getAttribute("data-project-id");
+      const clickedProjectId = this.getAttribute("data-project-id");
 
       // Panel schließen
       if (indicator && indicator.classList.contains("open")) {
         indicator.classList.remove("open");
         tabElement?.setAttribute("aria-expanded", "false");
 
-        const onTransitionEnd = () => {
-          // Erst nach Abschluss der Animation navigieren
-          navigation.navigateToProject(projectId);
-          indicator.removeEventListener("transitionend", onTransitionEnd);
-        };
-
-        indicator.addEventListener("transitionend", onTransitionEnd, {
-          once: true,
-        });
-
-        // Sicherheits-Fallback, falls Animation nicht beendet wird
+        // Verzögerte Navigation nach Panel-Animation
         setTimeout(() => {
-          if (indicator.classList.contains("open") === false) {
-            navigation.navigateToProject(projectId);
+          // Mit Router navigieren
+          if (CustomRouter.initialized) {
+            console.log(`ProjectIndicator: Navigation zu Projekt-ID ${clickedProjectId} via Router`);
+            CustomRouter.navigateToProjectById(clickedProjectId);
           }
-        }, 400); // Etwas länger als CSS-Transition
+        }, 300);
       } else {
         // Direkt navigieren, wenn Panel nicht offen ist
-        navigation.navigateToProject(projectId);
+        if (CustomRouter.initialized) {
+          CustomRouter.navigateToProjectById(clickedProjectId);
+        }
       }
     });
 

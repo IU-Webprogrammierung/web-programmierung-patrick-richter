@@ -1,40 +1,66 @@
-// In uiState.js
-import { EVENT_TYPES } from '@core/state/events.js';
+/**
+ * @module uiState
+ * @description Zentraler Zustandsspeicher für die gesamte Anwendung.
+ * Verwaltet den aktiven Projektindex, aktives Bild, Textfarben und URL-Slugs.
+ * 
+ * @fires EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Bei Änderung des aktiven Projekts
+ * @fires EVENT_TYPES.ACTIVE_IMAGE_CHANGED - Bei Änderung des aktiven Bildes
+ */
+
+import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
 
 const uiState = {
   // Aktueller Zustand der Anwendung
   activeProjectIndex: -1,
   activeImageIndex: -1,
   activeTextColor: "black",
-  activeSlideIndex: -1, // Existierender globaler Slide-Index
+  activeSlideIndex: -1,
   projects: [],
-  activeSlideIndices: {}, // NEU: Speicherung der aktiven Slide-Indices pro Projekt
+  activeSlideIndices: {},
+  
+  /**
+   * @type {Object.<string, string>} Speichert die URL-Slugs für jede Projekt-ID
+   */
+  projectSlugs: {},
 
-  // Methode zum Aktualisieren der Projekte
+  /**
+   * Speichert den URL-Slug für eine bestimmte Projekt-ID
+   * @param {string} projectId - ID des Projekts
+   * @param {string} slug - Der zu speichernde URL-Slug
+   */
+  setProjectSlug(projectId, slug) {
+    this.projectSlugs[projectId] = slug;
+  },
+
+  /**
+   * Gibt den URL-Slug für eine bestimmte Projekt-ID zurück
+   * @param {string} projectId - ID des Projekts
+   * @returns {string|undefined} Der gespeicherte Slug oder undefined
+   */
+  getProjectSlug(projectId) {
+    return this.projectSlugs[projectId];
+  },
+
+  // Bestandsmethoden
   updateProjects() {
     this.projects = Array.from(
       document.querySelectorAll(".project")
     );
   },
 
-  // Methode zum Setzen des aktiven Projekts
   setActiveProject(index) {
     if (index !== this.activeProjectIndex) {
       this.activeProjectIndex = index;
-      document.dispatchEvent(
-        new CustomEvent(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, {
-          detail: { projectIndex: index },
-        })
-      );
+      dispatchCustomEvent(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, {
+        projectIndex: index
+      });
       console.log(
-        "uiState: Projekt geupdated - neues Projekt:",
-        this.activeProjectIndex,
-        index
+        "uiState: Projekt aktualisiert - neues Projekt:",
+        this.activeProjectIndex
       );
     }
   },
 
-  // Erweiterte Methode zum Setzen des aktiven Bildes
   setActiveImage(projectIndex, imageId, textColor, slideIndex = -1) {
     const changed =
       projectIndex !== this.activeProjectIndex ||
@@ -48,33 +74,26 @@ const uiState = {
       this.activeTextColor = textColor || "black";
       this.activeSlideIndex = slideIndex;
       
-      // NEU: Speichern des aktiven Slide-Index pro Projekt
+      // Speichern des aktiven Slide-Index pro Projekt
       if (slideIndex >= 0) {
         this.activeSlideIndices[projectIndex] = slideIndex;
-        console.log(`Slide-Index ${slideIndex} für Projekt ${projectIndex} gespeichert`);
       }
 
-      document.dispatchEvent(
-        new CustomEvent(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, {
-          detail: {
-            projectIndex: projectIndex,
-            imageIndex: imageId,
-            textColor: this.activeTextColor,
-            slideIndex: slideIndex 
-          },
-        })
-      );
+      dispatchCustomEvent(EVENT_TYPES.ACTIVE_IMAGE_CHANGED, {
+        projectIndex: projectIndex,
+        imageIndex: imageId,
+        textColor: this.activeTextColor,
+        slideIndex: slideIndex 
+      });
       console.log(
-        "uiState: Bild geupdated - neues Bild:",
-        imageId, this.activeImageIndex,
-        "projekt: ", projectIndex,
-        "TextFarbe: ", textColor,
-        "Slide-Index: ", slideIndex
+        "uiState: Bild aktualisiert - neues Bild:", imageId,
+        "Projekt:", projectIndex,
+        "TextFarbe:", textColor,
+        "Slide-Index:", slideIndex
       );
     }
   },
   
-  // Methode zum Abrufen des gespeicherten Slide-Index für ein Projekt
   getActiveSlideIndexForProject(projectIndex) {
     return this.activeSlideIndices[projectIndex] !== undefined ? 
       this.activeSlideIndices[projectIndex] : 0;
