@@ -17,3 +17,43 @@
     text-align: center;
     pointer-events: none; /* Erlaubt Klicks durch die Container hindurch */
   }
+
+
+  .title-description-container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    transform: translateY(calc(100% - 4rem)); /* Höhe title container */
+    font-family: Neue Montreal;
+    align-items: center;
+    padding: 0 var(--spacing-m) var(--spacing-3xl) var(--spacing-m);
+    width: 100%;
+    background-color: hsla(var(--color-bg-light), 0.1);
+    transition: transform var(--transition-slow),
+      background-color var(--transition-slow);
+  }
+
+  @media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+
+    .title-description-container.show-description {
+      background-color: hsla(var(--color-bg-light), 0.9);
+      transform: translateY(0);
+    }
+
+    .title-description-container.show-description .title-arrow {
+      transform: rotate(180deg);
+    }
+  
+    .title-description-container.show-description .title-arrow svg,
+    .title-description-container.show-description .title-arrow svg polygon {
+      fill: black !important;
+    }
+  
+    .title-description-container.show-description .project-title-mobile {
+      color: black;
+    }
+
+  }
+

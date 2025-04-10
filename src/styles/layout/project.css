@@ -1,3 +1,5 @@
+/* PROJECT STYLES */
+
 .project {
   width: 100vw;
   height: 100vh;
@@ -13,16 +15,18 @@
 }
 
 .description {
-    position: relative;
-    transform: none;
-    left: auto;
-    width: 100%;
-    margin-top: 1rem;
-    line-height: 1lh;     /* 1 line-height unit */
-    block-size: 2lh;      /* genau 2 Zeilen */
-  }
+  position: relative;
+  transform: none;
+  left: auto;
+  width: 100%;
+  margin-top: 1rem;
+  line-height: 1lh; /* 1 line-height unit */
+  block-size: 2lh; /* genau 2 Zeilen */
+}
 
-  /* Basis-Styling für Swiper */
+
+/* SWIPER STYLES */
+
 .swiper {
   width: 100%;
   height: 100%;
@@ -54,4 +58,68 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* HOVER IMAGE */
+
+.project-hover-preview {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-hover-preview.visible {
+  opacity: 1;
+}
+
+@media screen and (max-width: var(--breakpoint-mobile)),
+  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+
+  /* === PROJECT STYLES === */ 
+   
+    .project-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 4rem;
+      cursor: pointer;
+    }
+  
+    .project-title-mobile {
+      font-size: var(--font-size-mobile-l);
+      font-style: italic;
+    }
+  
+    .title-arrow {
+      position: absolute;
+      right: var(--spacing-m);
+      display: flex;
+      transition: transform var(--transition-default);
+      transform-origin: center;
+    }
+  
+    .title-arrow svg {
+      height: 1rem;
+    }
+
+  
+    .description-mobile {
+      font-size: var(--font-size-mobile-s);
+      line-height: normal;
+      text-align: center;
+      padding-left: var(--spacing-m);
+      padding-right: var(--spacing-m);
+    }
+
+/* === HOVER IMAGE === */
+  .project-hover-preview {
+    display: none !important;
+  }
 }

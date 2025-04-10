@@ -1,14 +1,17 @@
-/* -----------------------------
-   5. FARBANIMATION
-   ----------------------------- */
+/* === FARBANIMATION UND INITIALE EINBLENDUNG === */
 
 /* 1. Grundzustand aller UI-Elemente: Sichtbar */
-.project-title, .project-title-mobile, .description-mobile, 
-.description, .pagination, .tab-text {
+.project-title,
+.project-title-mobile,
+.description-mobile,
+.description,
+.pagination,
+.tab-text {
   color: var(--active-text-color);
   opacity: 1;
-  transition: opacity var(--title-fade-duration) ease-out, 
-              color var(--title-fade-duration) ease;
+  transition:
+    opacity var(--title-fade-duration) ease-out,
+    color var(--title-fade-duration) ease;
 }
 
 /* 2. Initiale Ausblendung (nur Seitenstart) */
@@ -19,8 +22,9 @@
 
 /* 3. Elemente, die bei Projektwechseln animiert werden sollen */
 .animate-on-transition {
-  transition: opacity var(--title-fade-duration) ease-out, 
-              color var(--title-fade-duration) ease;
+  transition:
+    opacity var(--title-fade-duration) ease-out,
+    color var(--title-fade-duration) ease;
 }
 
 .fade-out.animate-on-transition {
@@ -33,15 +37,18 @@
   transition: color var(--title-fade-duration) ease;
 }
 
-
 .initial-appear {
-  animation: initialFadeIn var(--title-initial-duration) ease-out var(--title-initial-delay) both;
+  animation: initialFadeIn var(--title-initial-duration) ease-out
+    var(--title-initial-delay) both;
 }
 @keyframes initialFadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-
 
 .navbar {
   color: var(--active-text-color);
@@ -52,4 +59,54 @@
 .title-arrow svg polygon {
   fill: var(--active-text-color);
   transition: fill var(--title-fade-duration) ease;
+}
+
+/* === BOUNCING IMAGE === */
+
+@keyframes appear {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideVert {
+  from {
+    top: 0;
+  }
+  to {
+    top: calc(100% - 323px);
+  }
+}
+
+@keyframes slideHori {
+  from {
+    left: 0;
+  }
+  to {
+    left: calc(100% - 245px);
+  }
+}
+
+@media screen and (max-width: var(--breakpoint-mobile)),
+  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+
+  /* === BOUNCING IMAGE === */
+  
+  @keyframes slideVert {
+    from {
+      top: 0;
+    }
+    to {
+      top: calc(100% - 156px);
+    }
+  }
+
+  @keyframes slideHori {
+    from {
+      left: 0;
+    }
+    to {
+      left: calc(100% - 122.5px);
+    }
+  }
 }

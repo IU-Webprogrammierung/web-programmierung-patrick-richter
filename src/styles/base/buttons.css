@@ -1,0 +1,28 @@
+button {
+    all: unset;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  
+  button.button,
+  a.button {
+    transition: var(--transition-fast);
+    transform-origin: center center;
+  }
+  
+  .button:hover {
+    transform: skewX(-12deg);
+  }
+  
+  button:focus-visible,
+  .button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  a.button {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+  }

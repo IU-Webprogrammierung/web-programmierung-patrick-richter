@@ -1,0 +1,330 @@
+/* Overlay Grundstruktur */
+
+.overlay {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+}
+
+.overlay.show-overlay {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+dialog::backdrop {
+  background: transparent;
+}
+
+/* Overlay rechte Seite */
+
+.overlay-right {
+  background-color: hsla(var(--color-bg-light));
+  width: var(--overlay-width);
+  overflow-x: hidden;
+  position: relative;
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+}
+
+.overlay.show-overlay .overlay-right {
+  transform: translateX(0);
+}
+
+.overlay.closing .overlay-right {
+  transform: translateX(100%);
+}
+
+/* Close Button */
+
+.close-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: calc(var(--header-bottom-padding) + var(--spacing-2xs));
+  margin-right: var(--spacing-m);
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.close-overlay img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* About/Imprint Slider */
+
+.about-imprint-slider {
+  width: calc(2 * var(--overlay-width));
+  height: 100%;
+  display: flex;
+  transform: translateX(0);
+  will-change: transform;
+  transition: transform var(--transition-slow);
+}
+
+.overlay.show-overlay .about-imprint-slider.show-about {
+  transform: translateX(0);
+}
+
+.overlay.show-overlay .about-imprint-slider.show-imprint {
+  transform: translateX(-50%);
+}
+
+/* About & Imprint Bereiche */
+
+.about,
+.imprint {
+  height: 100%;
+  width: var(--overlay-width);
+  padding: calc(var(--header-bottom-padding) + var(--spacing-2xs))
+    var(--spacing-3xl) 0 var(--spacing-3xl);
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: var(--spacing-4xl);
+}
+
+.overlay-navigation {
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-desktop-m);
+  padding-top: var(--spacing-m);
+  padding-bottom: var(--spacing-m);
+}
+
+.overlay-navigation a.button {
+  margin-right: auto;
+}
+
+.imprint .overlay-navigation {
+  justify-content: flex-end;
+}
+
+/* About / Imprint gemeinsames Styling */
+
+.about p,
+.imprint p {
+  margin-top: 0;
+}
+
+/* About Content Styling */
+
+.about-intro {
+  font-size: var(--font-size-desktop-m);
+}
+
+.about-clients {
+  font-size: var(--font-size-desktop-s);
+}
+
+.about-clients ul {
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.about-clients .clients-label {
+  text-transform: uppercase;
+}
+
+.about-clients ul li::after {
+  content: ",";
+}
+
+.about-clients ul li:first-child::after {
+  content: ":";
+}
+.about-clients ul li:last-child::after {
+  content: "";
+}
+
+.about-clients-project-link {
+  color: black;
+  text-underline-offset: 0.25rem;
+  text-decoration-thickness: 0.05rem;
+}
+
+/* Imprint Content Styling */
+
+.imprint-content {
+  font-size: var(--font-size-desktop-s);
+}
+
+.imprint-content h2 {
+  text-transform: uppercase;
+  font-size: var(--font-size-desktop-m);
+  font-weight: inherit;
+  margin-top: var(--spacing-3xl);
+  margin-bottom: var(--spacing-m);
+}
+
+.imprint-content h2:first-child {
+  margin-top: 0;
+}
+
+/* Overlay Linke Seite (Bild) */
+
+.overlay-left {
+  width: calc(100vw - var(--overlay-width));
+  position: relative;
+  overflow: hidden;
+}
+
+.overlay.show-overlay .overlay-left {
+  cursor: pointer;
+}
+
+.bouncing-image {
+  position: absolute;
+  will-change: transform;
+  width: 245;
+  height: 332px;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: none;
+}
+
+.overlay.show-overlay .bouncing-image {
+  animation:
+    appear 0s 500ms forwards,
+    slideVert 6s linear infinite alternate 500ms,
+    slideHori 7s linear infinite alternate 500ms;
+}
+
+@media screen and (max-width: var(--breakpoint-mobile)),
+  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+    
+  .overlay {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .overlay-left,
+  .overlay-right,
+  .about,
+  .imprint {
+    width: var(--overlay-width-mobile);
+  }
+
+  .about-imprint-slider {
+    width: calc(2 * var(--overlay-width-mobile));
+  }
+
+  .overlay-left {
+    height: 40%;
+  }
+
+  .overlay-right {
+    height: 60%;
+    transform: translateX(0) translateY(100%);
+  }
+
+  .overlay.show-overlay .overlay-right {
+    transform: translateX(0) translateY(0);
+  }
+
+  .overlay.closing .overlay-right {
+    transform: translateX(0) translateY(100%);
+  }
+
+  .about,
+  .imprint {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .overlay-content {
+    padding: var(--spacing-l) var(--spacing-4xl) 0 var(--spacing-xl);
+  }
+
+  .about-intro {
+    font-size: var(--font-size-mobile-m);
+  }
+
+  .close-overlay {
+    margin-top: var(--spacing-xl);
+    margin-right: var(--spacing-xl);
+  }
+
+  .close-overlay img {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .overlay-navigation {
+    font-size: var(--font-size-mobile-m);
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+    height: 4rem;
+    align-items: center;
+  }
+
+  .about-clients {
+    font-size: var(--font-size-mobile-s);
+    line-height: var(--font-size-mobile-s);
+  }
+
+  .imprint-content {
+    font-size: var(--font-size-mobile-s);
+  }
+
+  .imprint-content h2 {
+    font-size: var(--font-size-mobile-m);
+  }
+
+  /* Projektliste mobile anpassen */
+  .project-list {
+    padding: var(--spacing-xl) var(--spacing-xl);
+  }
+
+  .project-list li {
+    margin-bottom: var(--spacing-m);
+  }
+
+  .project-list a {
+    font-size: var(--font-size-mobile-m);
+    padding: var(--spacing-xs) 0;
+  }
+  .project-list a.active::before {
+    left: calc(-1 * var(--spacing-xl));
+    width: 0.6rem;
+    height: 0.6rem;
+  }
+
+  /* Mobile Bouncing Image Anpassungen */
+
+  .bouncing-image {
+    width: 122.5px;
+    height: 156px;
+  }
+}
