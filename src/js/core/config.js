@@ -2,14 +2,16 @@
  * @module config
  * @description Zentrale Konfigurationsdatei für die gesamte Anwendung.
  * Enthält API-URLs, Endpunkte und Fallback-Daten für eine bessere Wartbarkeit.
+ * 
+ * Die Konfiguration ist nach Umgebungen unterteilt und enthält alle externen Abhängigkeiten
+ * der Anwendung an einem zentralen Ort.
  */
 
-// Bestehende Variablen weiterverwenden (nicht neu deklarieren)
+// Umgebungsvariablen
 export const IS_DEVELOPMENT = true; // Für Produktion auf false setzen
 export const BASE_URL = IS_DEVELOPMENT ? 'https://brendabuettner.de' : '';
 export const API_URL = `${BASE_URL}/api`;
 
-// Nur neue Definitionen hinzufügen
 // API-Endpunkte zentral definiert
 export const API_ENDPOINTS = {
   projects: `${API_URL}/projects?populate[project_images][populate]=image&sort=rank:asc`,

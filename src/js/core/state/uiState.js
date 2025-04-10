@@ -1,7 +1,15 @@
 /**
  * @module uiState
  * @description Zentraler Zustandsspeicher für die gesamte Anwendung.
- * Verwaltet den aktiven Projektindex, aktives Bild, Textfarben und URL-Slugs.
+ * Verwaltet den aktiven Projektindex, aktives Bild, Textfarben, Slide-Indizes und URL-Slugs.
+ * Fungiert als Single Source of Truth für alle UI-bezogenen Zustände.
+ * Enthält Funktionen:
+ * - setProjectSlug()
+ * - getProjectSlug()
+ * - updateProjects()
+ * - setActiveProject()
+ * - setActiveImage()
+ * - getActiveSlideIndexForProject()
  * 
  * @fires EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Bei Änderung des aktiven Projekts
  * @fires EVENT_TYPES.ACTIVE_IMAGE_CHANGED - Bei Änderung des aktiven Bildes
@@ -41,13 +49,19 @@ const uiState = {
     return this.projectSlugs[projectId];
   },
 
-  // Bestandsmethoden
+  /**
+   * Aktualisiert die interne Liste der Projektelemente aus dem DOM
+   */
   updateProjects() {
     this.projects = Array.from(
       document.querySelectorAll(".project")
     );
   },
 
+  /**
+   * Setzt das aktive Projekt und löst bei Änderung ein Event aus
+   * @param {number} index - Der neue Projektindex
+   */
   setActiveProject(index) {
     if (index !== this.activeProjectIndex) {
       this.activeProjectIndex = index;
@@ -61,6 +75,13 @@ const uiState = {
     }
   },
 
+  /**
+   * Setzt das aktive Bild mit allen zugehörigen Eigenschaften
+   * @param {number} projectIndex - Index des Projekts
+   * @param {number} imageId - ID des Bildes
+   * @param {string} textColor - Textfarbe für das Bild
+   * @param {number} [slideIndex=-1] - Index des Slides im Swiper
+   */
   setActiveImage(projectIndex, imageId, textColor, slideIndex = -1) {
     const changed =
       projectIndex !== this.activeProjectIndex ||
@@ -94,6 +115,11 @@ const uiState = {
     }
   },
   
+  /**
+   * Gibt den gespeicherten Slide-Index für ein bestimmtes Projekt zurück
+   * @param {number} projectIndex - Index des Projekts
+   * @returns {number} Der gespeicherte Slide-Index oder 0 als Fallback
+   */
   getActiveSlideIndexForProject(projectIndex) {
     return this.activeSlideIndices[projectIndex] !== undefined ? 
       this.activeSlideIndices[projectIndex] : 0;

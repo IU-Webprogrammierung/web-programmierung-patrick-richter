@@ -1,21 +1,29 @@
 /**
  * @module projectNavigator
  * @description Hauptmodul für die Projekt-Navigation mit GSAP-Animationen.
- * Steuert Übergänge zwischen Projekten mittels Events und GSAP.
+ * Steuert Übergänge zwischen Projekten mittels Events, GSAP-Animationen und Observer.
+ * Implementiert vertikale Scroll-Navigation, parallax-Effekte und Footer-Interaktionen.
+ * Enthält Funktionen:
+ * - init()
+ * - transitionToElement()
+ * - dispatchElementChangeEvent()
  * 
  * @fires EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Bei Projektwechsel
  * @fires EVENT_TYPES.INITIAL_PROJECT_SET - Beim Setzen des initialen Projekts
+ * @listens wheel,touch,pointer - Über GSAP Observer für Scroll/Touch-Navigation
  */
 
-import uiState from "@core/state/uiState.js";
-import { checkFooter } from "@utils/navigationUtils.js";
-import { EVENT_TYPES, dispatchCustomEvent } from "@core/state/events.js";
-import { getValidatedElement } from "@utils/utils.js";
-import gsap from "gsap";
-import { Observer } from "gsap/Observer";
-import { setupKeyboardNavigation } from "@portfolio/navigation/navigationKeyboardHandler.js";
-import { registerNavigationAPI } from "@utils/navigationUtils.js";
+import uiState from '@core/state/uiState.js';
+import { checkFooter, getValidatedElement, registerNavigationAPI } from '@utils';
+import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
+import gsap from 'gsap';
+import { Observer } from 'gsap/Observer';
+import { setupKeyboardNavigation } from '@portfolio/navigation/navigationKeyboardHandler.js';
 
+/**
+ * Initialisiert die Projektnavigation
+ * @returns {Object} Die Navigation-API für externe Module
+ */
 function init() {
   // Konfiguration
   const CONFIG = {
@@ -202,7 +210,7 @@ function init() {
   }
 
   /**
-   * Benachrichtigt über Elementwechsel - erkennt automatisch den Footer
+   * Benachrichtigt über Elementwechsel
    * @param {number} index - Index des neuen aktiven Elements
    */
   function dispatchElementChangeEvent(index) {

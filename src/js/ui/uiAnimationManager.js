@@ -1,12 +1,18 @@
 /**
  * @module uiAnimationManager
- * @description Steuert synchronisierte Animationen für alle UI-Elemente
+ * @description Steuert synchronisierte Animationen für alle UI-Elemente.
+ * Koordiniert Fade-Effekte beim Projektwechsel und die initiale Erscheinungsanimation.
+ * Enthält Funktionen:
+ * - init()
+ * 
+ * @listens TransitionController.events.PHASE_CHANGED - Reagiert auf Phasen-Änderungen
+ * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Startet Transition bei Projektwechsel
+ * @listens EVENT_TYPES.APP_INIT_COMPLETE - Startet initiale Animation
  */
 
-import { addEventListener, EVENT_TYPES } from '@core/state/events.js'
-;import { initialAppearAnimation } from '@utils/animationUtils.js';
+import { addEventListener, EVENT_TYPES } from '@core/state/events.js';
+import { getValidatedElement, initialAppearAnimation } from '@utils';
 import TransitionController from '@core/state/transitionController.js';
-import { getValidatedElement } from '@utils/utils.js';
 
 // Alle zu animierenden UI-Elemente
 const headerTitle = getValidatedElement(".project-title");
@@ -28,9 +34,6 @@ const uiElements = [
   projectIndicator
 ].filter(el => el !== null);
 
-/**
- * Initialisiert alle UI-Animationen und Event-Listener
- */
 /**
  * Initialisiert alle UI-Animationen und Event-Listener
  */

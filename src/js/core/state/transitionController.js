@@ -1,9 +1,18 @@
 /**
  * @module transitionController
- * @description Koordiniert UI-Übergänge zwischen Projekten
+ * @description Koordiniert UI-Übergänge zwischen Projekten in definierten Phasen.
+ * Sorgt für synchronisierte Animationen aller UI-Elemente während Projektwechseln.
+ * Enthält Funktionen:
+ * - changePhase()
+ * - startTransition()
+ * - isActive()
+ * - getCurrentPhase()
+ * 
+ * @fires events.PHASE_CHANGED - Bei Wechsel zwischen Transitionsphasen
+ * @fires events.CONTENT_UPDATE_NEEDED - Signal zum Aktualisieren von Inhalten (BETWEEN-Phase)
  */
 
-import { getCSSTimeVariable } from '@utils/animationUtils.js';
+import { getCSSTimeVariable } from '@utils';
 
 const TransitionController = {
   // Definierte Phasen eines Übergangs
@@ -26,6 +35,7 @@ const TransitionController = {
   
   /**
    * Wechselt in eine neue Phase und benachrichtigt alle Listener
+   * @param {string} newPhase - Die neue Phase (aus this.phases)
    */
   changePhase(newPhase) {
     console.log(`TransitionController: Phase wechselt zu ${newPhase}`);
@@ -36,18 +46,17 @@ const TransitionController = {
       detail: { phase: newPhase }
     }));
     
-    // Wenn wir in die BETWEEN-Phase wechseln, Content-Update-Event auslösen
+    // Bei BETWEEN-Phase Content-Update-Event auslösen
     if (newPhase === this.phases.BETWEEN) {
       document.dispatchEvent(new CustomEvent(this.events.CONTENT_UPDATE_NEEDED));
       
-      // Die aktuelle Textfarbe aus dem uiState wird in der BETWEEN-Phase
-      // durch den imageColorHandler gesetzt, der auf das PHASE_CHANGED-Event reagiert
-      // Dies gewährleistet Synchronisation aller UI-Updates in dieser Phase
+      // Die Textfarbe wird in der BETWEEN-Phase durch den imageColorHandler gesetzt
     }
   },
   
   /**
-   * Startet einen neuen Übergang
+   * Startet einen neuen Übergang mit definierten Phasen
+   * @returns {boolean} true bei erfolgreicher Initiierung, false bei bereits laufendem Übergang
    */
   startTransition() {
     if (this.isTransitioning) {
@@ -94,6 +103,7 @@ const TransitionController = {
   
   /**
    * Prüft, ob gerade ein Übergang läuft
+   * @returns {boolean} true wenn ein Übergang aktiv ist
    */
   isActive() {
     return this.isTransitioning;
@@ -101,6 +111,7 @@ const TransitionController = {
   
   /**
    * Gibt die aktuelle Phase zurück
+   * @returns {string} Die aktuelle Phase
    */
   getCurrentPhase() {
     return this.currentPhase;

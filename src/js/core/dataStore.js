@@ -1,19 +1,28 @@
 /**
  * @module dataStore
  * @description Zentraler Datenspeicher für alle Inhalte der Website.
- * Lädt Daten asynchron und stellt sie über Getter-Methoden bereit.
- *
- * @fires DATA_LOADED - Signalisiert abgeschlossene Projektdatenladung (vor dem Laden anderer Daten)
+ * Lädt Daten asynchron und stellt sie über einheitliche Getter-Methoden bereit.
+ * Enthält Funktionen:
+ * - init()
+ * - getProjects()
+ * - getAboutImprint()
+ * - getClients()
+ * - getFooter()
+ * - fetchDataWithFallback()
+ * - loadData()
+ * 
+ * @fires EVENT_TYPES.PROJECT_DATA_LOADED - Nach erfolgreicher Projektdatenladung
+ * @fires EVENT_TYPES.ALL_DATA_LOADED - Nach vollständiger Ladung aller Daten
  */
 
-import { API_ENDPOINTS, FALLBACK_DATA } from "@core/config.js";
+import { API_ENDPOINTS, FALLBACK_DATA } from '@core/config.js';
 import {
   normalizeProjectData,
   normalizeAboutData,
   normalizeClientsData,
   normalizeFooterData,
-} from "@utils/normalizers/normalizerIndex.js";
-import { EVENT_TYPES, dispatchCustomEvent } from "@core/state/events.js";
+} from '@utils/normalizers/normalizerIndex.js';
+import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
 
 const dataStore = {
   projectsData: null,
@@ -22,31 +31,53 @@ const dataStore = {
   footerData: null,
 
   /**
-   * Initialisiert den Datenspeicher und startet sofort den Ladevorgang
+   * Initialisiert den Datenspeicher und startet den Ladevorgang
    */
   init() {
     console.log("dataStore: Initialisierung und Start des Datenladevorgang");
     this.loadData();
   },
 
-  // Standard-Getter für Daten
+  /**
+   * Gibt die aktuellen Projektdaten zurück
+   * @returns {Object|null} Die Projektdaten oder null wenn nicht geladen
+   */
   getProjects: function () {
     return this.projectsData;
   },
 
+  /**
+   * Gibt die About/Imprint-Daten zurück
+   * @returns {Object|null} Die About/Imprint-Daten oder null wenn nicht geladen
+   */
   getAboutImprint: function () {
     return this.aboutImprintData;
   },
 
+  /**
+   * Gibt die Client-Daten zurück
+   * @returns {Object|null} Die Client-Daten oder null wenn nicht geladen
+   */
   getClients: function () {
     return this.clientsData;
   },
 
+  /**
+   * Gibt die Footer-Daten zurück
+   * @returns {Object|null} Die Footer-Daten oder null wenn nicht geladen
+   */
   getFooter: function () {
     return this.footerData;
   },
 
-  // Hilfsfunktion zum Laden eines einzelnen Datentyps
+  /**
+   * Lädt einen Datentyp mit Fehlerbehandlung und Normalisierung
+   * @param {string} url - Die URL für den API-Aufruf
+   * @param {string} dataType - Beschreibender Name des Datentyps für Logging
+   * @param {Function} normalizeFn - Die Normalisierungsfunktion für die Daten
+   * @param {Object} fallbackData - Fallback-Daten, falls der Aufruf fehlschlägt
+   * @returns {Object} Die normalisierten Daten
+   */
   fetchDataWithFallback: async function (
     url,
     dataType,
@@ -72,9 +103,7 @@ const dataStore = {
   },
 
   /**
-   * Hauptmethode zum Laden aller Daten
-   * Lädt zuerst die Projektdaten und sendet dann das DATA_LOADED Event
-   * Danach werden die restlichen Daten im Hintergrund geladen
+   * Hauptmethode zum Laden aller Daten mit priorisierter Projektdatenladung
    * @returns {boolean} true wenn die Projekte erfolgreich geladen wurden
    */
   loadData: async function () {
@@ -97,7 +126,7 @@ const dataStore = {
           "dataStore: Projektdaten erfolgreich geladen, sende PROJECT_DATA_LOADED Event"
         );
 
-        // WICHTIG: Event sofort nach dem Laden der Projektdaten auslösen
+        // Event sofort nach dem Laden der Projektdaten auslösen
         dispatchCustomEvent(EVENT_TYPES.PROJECT_DATA_LOADED, {
           projectsCount: this.projectsData?.data?.length || 0,
         });
@@ -152,7 +181,7 @@ const dataStore = {
         footer: this.footerData?.data ? "OK" : "FEHLER",
       });
 
-      // Neues Event auslösen, wenn ALLE Daten geladen sind
+      // Event auslösen, wenn ALLE Daten geladen sind
       dispatchCustomEvent(EVENT_TYPES.ALL_DATA_LOADED, {
         projectsCount: this.projectsData?.data?.length || 0,
         aboutStatus: this.aboutImprintData?.data ? "OK" : "FEHLER",

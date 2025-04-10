@@ -1,10 +1,22 @@
 /**
- * Verwaltet die Textfarben in der UI basierend auf den aktiven Bildern
+ * @module mediaColorHandler
+ * @description Verwaltet die Textfarben in der UI basierend auf den aktiven Bildern.
  * Steuert die synchronisierte Aktualisierung der UI-Elemente bei Bildwechseln
+ * mit Debouncing für optimale Performance und koordiniert Farbübergänge während
+ * Projektwechseln.
+ * Enthält Funktionen:
+ * - init()
+ * - handleColorChange()
+ * - coordinateVisualUpdates()
+ * - handleTransitionPhase()
+ * - updateCursorStyle()
+ * 
+ * @listens EVENT_TYPES.ACTIVE_IMAGE_CHANGED - Reagiert auf Bildwechsel
+ * @listens TransitionController.events.PHASE_CHANGED - Synchronisiert Farbwechsel mit Transitions
  */
 
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
-import { getValidatedElement } from "@utils/utils.js";
+import { getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import TransitionController from '@core/state/transitionController.js';
 import { updateActiveBullet } from '@media/viewer/mediaPagination.js';
@@ -22,7 +34,7 @@ function init() {
     coordinateVisualUpdates
   );
   
-  // Neuer Listener für synchronisierten Farbwechsel während Transitionen
+  // Listener für synchronisierten Farbwechsel während Transitionen
 addEventListener(
     TransitionController.events.PHASE_CHANGED,
     handleTransitionPhase
@@ -33,7 +45,7 @@ addEventListener(
 
 /**
  * Zentrale Funktion für Farbwechsel - Single Source of Truth
- * Diese Funktion ist die einzige, die tatsächlich Farbänderungen vornimmt
+ * @param {string} textColor - Die anzuwendende Textfarbe
  */
 export function handleColorChange(textColor) {
   // Farbe ändern
@@ -50,7 +62,7 @@ export function handleColorChange(textColor) {
 
 /**
  * Koordiniert synchronisierte visuelle Updates bei Bildwechseln
- * Fasst Farbwechsel und Pagination-Updates in einem einzigen Animation Frame zusammen
+ * @param {CustomEvent} event - Das ACTIVE_IMAGE_CHANGED Event
  */
 export function coordinateVisualUpdates(event) {
   if (!event || !event.detail) return;
@@ -93,7 +105,7 @@ export function coordinateVisualUpdates(event) {
 
 /**
  * Handler für die Phasen des TransitionControllers
- * Synchronisiert den Farbwechsel mit der BETWEEN-Phase
+ * @param {CustomEvent} event - Das PHASE_CHANGED Event
  */
 function handleTransitionPhase(event) {
   const { phase } = event.detail;
@@ -112,6 +124,7 @@ function handleTransitionPhase(event) {
 
 /**
  * Aktualisiert den Cursor-Stil basierend auf der Textfarbe
+ * @param {string} textColor - Die aktuelle Textfarbe
  */
 function updateCursorStyle(textColor) {
   const container = getValidatedElement(".project-container");

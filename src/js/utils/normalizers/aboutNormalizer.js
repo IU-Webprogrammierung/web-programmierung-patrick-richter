@@ -4,7 +4,7 @@
  */
 
 import { FALLBACK_DATA } from '@core/config.js';
-import { ensureValue, ensureBaseStructure } from '@utils/normalizerUtils.js';
+import { ensureBaseStructure } from '@utils/normalizerUtils.js';
 
 /**
  * Normalisiert einen einzelnen Textabschnitt (Paragraph)

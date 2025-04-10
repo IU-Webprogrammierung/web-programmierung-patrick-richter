@@ -1,11 +1,21 @@
 /**
  * @module footerLoader
- * @description Lädt und konfiguriert den Footer-Inhalt
+ * @description Lädt und konfiguriert den Footer-Inhalt der Website.
+ * Generiert den HTML-Inhalt für den Footer dynamisch basierend auf den
+ * aus dem dataStore geladenen Daten.
+ * Enthält Funktionen:
+ * - init()
+ * - loadFooterContent()
+ * 
+ * @listens EVENT_TYPES.ALL_DATA_LOADED - Initialisiert Footer nach vollständigem Datenladen
  */
 
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
-import dataStore from "@core/dataStore.js";
+import dataStore from '@core/dataStore.js';
 
+/**
+ * Initialisiert den Footer-Loader
+ */
 function init () {
 
 // Auf DOM-Struktur-Bereitschaft reagieren

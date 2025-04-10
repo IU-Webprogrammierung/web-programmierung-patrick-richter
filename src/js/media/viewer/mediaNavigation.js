@@ -1,13 +1,23 @@
 /**
  * @module imageNavigation
  * @description Implementiert die interaktive Cursor-basierte Navigation in Bildergalerien.
- * Passt den Cursor basierend auf der Mausposition (links / rechts) an, ermöglicht Navigation zwischen
- * Bildern durch Klicks und unterstützt unendliches Scrollen durch Bilder.
+ * Passt den Cursor basierend auf der Mausposition (links/rechts) an und ermöglicht
+ * Navigation zwischen Bildern durch Klicks.
+ * Enthält Funktionen:
+ * - init()
+ * 
+ * @listens mousemove - Aktualisiert den Cursor je nach Position
+ * @listens mouseleave - Entfernt Cursor-Klassen beim Verlassen des Containers
+ * @listens scroll - Passt Cursor nach Scroll-Events an
+ * @listens click - Navigiert zwischen Bildern basierend auf Klickposition
  */
 
-import { getValidatedElement } from '@utils/utils.js';
+import { getValidatedElement } from '@utils';
 import swiperInitializer from '@media/viewer/swiperController.js';
 
+/**
+ * Initialisiert die Bildnavigation mit Cursor-Effekten und Klick-Handling
+ */
 function init() {
   const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 

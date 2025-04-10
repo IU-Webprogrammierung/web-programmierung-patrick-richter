@@ -1,10 +1,19 @@
 /**
  * @module hoverPreview
- * @description Einfache Hover-Funktionalität für Projektvorschauen
+ * @description Implementiert Bild-Vorschau bei Hover über Projektlinks.
+ * Zeigt ein kleines Vorschaubild, wenn der Nutzer mit der Maus über einen
+ * Projektlink fährt, und positioniert es dynamisch neben dem Cursor.
+ * Enthält Funktionen:
+ * - init()
+ * - removeHoverListeners()
+ * 
+ * @listens mouseenter - Für Project-Links, zeigt Preview an
+ * @listens mouseleave - Für Project-Links, blendet Preview aus
+ * @listens mousemove - Aktualisiert Position des Vorschaubilds
  */
 
-import dataStore from "@core/dataStore.js";
-import { getValidatedElement, fixImagePath } from "@utils/utils.js";
+import dataStore from '@core/dataStore.js';
+import { getValidatedElement, fixImagePath } from '@utils';
 
 // Speicher für Vorschaubilder und DOM-Cache
 let projectImages = {};
@@ -12,7 +21,8 @@ let previewEl = null;
 
 /**
  * Wählt ein passendes Bild für die Hover-Vorschau
- * Bevorzugt kleinere Formate und WebP wenn unterstützt
+ * @param {Object} imageObj - Das Bild-Objekt
+ * @returns {string} URL des Vorschaubildes
  */
 function getPreviewImageUrl(imageObj) {
   if (!imageObj) return 'images/placeholder.png';
@@ -34,7 +44,10 @@ function getPreviewImageUrl(imageObj) {
   return fixImagePath(imageObj.url);
 }
 
-// Handler für Mausbewegung
+/**
+ * Handler für Mausbewegung
+ * @param {MouseEvent} e - Das Mausevent
+ */
 function mouseMoveHandler(e) {
   if (previewEl) {
     previewEl.style.left = e.clientX + 20 + "px";
@@ -42,7 +55,9 @@ function mouseMoveHandler(e) {
   }
 }
 
-// Handler zum Anzeigen des Vorschaubildes
+/**
+ * Handler zum Anzeigen des Vorschaubildes
+ */
 function showPreviewHandler() {
   if (!previewEl) return;
 
@@ -55,7 +70,9 @@ function showPreviewHandler() {
   }
 }
 
-// Handler zum Ausblenden des Vorschaubildes
+/**
+ * Handler zum Ausblenden des Vorschaubildes
+ */
 function hidePreviewHandler() {
   if (!previewEl) return;
 
@@ -70,6 +87,7 @@ function hidePreviewHandler() {
 
 /**
  * Fügt Hover-Listener zu Links hinzu
+ * @param {NodeList} elements - Die Link-Elemente
  */
 function addHoverListeners(elements) {
   if (!elements || elements.length === 0) return;
@@ -107,7 +125,7 @@ export function removeHoverListeners() {
  * Initialisiert die Hover-Vorschau
  */
 function init() {
-  // Auf Mobilgeräten nicht ausführe
+  // Auf Mobilgeräten nicht ausführen
   if (/Mobi|Android/i.test(navigator.userAgent)) return;
 
   previewEl = getValidatedElement(".project-hover-preview");

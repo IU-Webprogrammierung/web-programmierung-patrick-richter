@@ -3,17 +3,24 @@
  * @description Erstellt und verwaltet die Inhalte des Overlay-Dialogs (About und Imprint).
  * Verantwortlich für die Erstellung von About-Intro, Client-Liste und Imprint-Inhalten
  * basierend auf den Daten aus dem zentralen Datenspeicher.
+ * Enthält Funktionen:
+ * - init()
+ * - createAboutIntro()
+ * - createClientsList()
+ * - createImprintContent()
  * 
  * @listens EVENT_TYPES.ALL_DATA_LOADED - Initialisiert Overlay-Inhalte nach Datenladung
  */
 
-import dataStore from "@core/dataStore.js";
-import { getValidatedElement } from "@utils/utils.js";
-import { hideOverlay } from "@overlay/overlayController.js";
+import dataStore from '@core/dataStore.js';
+import { getValidatedElement } from '@utils';
+import { hideOverlay } from '@overlay/overlayController.js';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
-import CustomRouter from "@core/CustomRouter.js";
+import CustomRouter from '@core/CustomRouter.js';
 
-// Erstellt die About- und Imprint-Inhalte im Overlay
+/**
+ * Initialisiert die Overlay-Inhalte und registriert Event-Listener
+ */
 function init() {
   addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
     console.log("overlayContent: Initialisiere About/Imprint-Inhalte");

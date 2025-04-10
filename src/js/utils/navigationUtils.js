@@ -1,6 +1,12 @@
 /**
- * navigationUtils.js
- * Hilfsfunktionen für die Projekt-Navigation und API-Zugriff
+ * @module navigationUtils
+ * @description Hilfsfunktionen für die Projekt-Navigation und API-Zugriff.
+ * Stellt Funktionen für die Erkennung des Footers und die Verwaltung 
+ * der Navigations-API bereit.
+ * Enthält Funktionen:
+ * - registerNavigationAPI()
+ * - getNavigationAPI()
+ * - checkFooter()
  */
 
 // Speichert die API-Instanz zur Laufzeit
@@ -9,6 +15,7 @@ let navigationAPI = null;
 /**
  * Registriert die Navigation-API für andere Module
  * @param {Object} api - Die Navigation-API aus projectNavigator.js
+ * @returns {Object} Die übergebene API für Method-Chaining
  */
 export function registerNavigationAPI(api) {
   console.log('Navigation-API registriert');
@@ -32,10 +39,6 @@ export function getNavigationAPI() {
  * @param {Element|number} elementOrIndex - Element oder Index zu prüfen
  * @param {Array} [elements] - Optional: Array von Elementen für Index-Zugriff
  * @returns {boolean} True, wenn es sich um den Footer handelt
- */
-/**
- * Prüft ob ein Element oder Index den Footer repräsentiert
- * Berücksichtigt die besondere Beziehung zwischen navigableElements und uiState.projects
  */
 export function checkFooter(elementOrIndex, elements) {
   // Element-direkte Prüfung

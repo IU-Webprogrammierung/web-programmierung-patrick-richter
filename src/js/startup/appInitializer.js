@@ -1,8 +1,14 @@
 /**
  * @module appInitializer
- * @description Verantwortlich für die initiale Datenladung der Anwendung
+ * @description Verantwortlich für die initiale Datenladung der Anwendung.
+ * Koordiniert den Startprozess und initialisiert die Core-Module.
+ * Enthält Funktionen:
+ * - init()
+ * - showLoadingError()
  * 
  * @listens APP_INIT_STARTED - Startet die Initialisierungskette
+ * @listens EVENT_TYPES.INITIAL_ANIMATION_STARTED - Setzt Animation-Flag
+ * @listens EVENT_TYPES.INITIAL_ANIMATION_COMPLETED - Entfernt Animation-Flag
  */
 
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
@@ -14,8 +20,7 @@ import overlayContent from '@overlay/overlayContent.js';
 import TransitionController from '@core/state/transitionController.js';
 
 /**
- * Initialisiert die App
- * Registriert den Event-Listener für APP_INIT_STARTED
+ * Initialisiert die App und registriert Event-Listener
  */
 function init() {
   console.log("appInitializer: Initialisierung");

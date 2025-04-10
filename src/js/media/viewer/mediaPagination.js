@@ -1,7 +1,20 @@
-import { checkFooter } from '@utils/navigationUtils.js';
+/**
+ * @module mediaPagination
+ * @description Verwaltet die benutzerdefinierte Pagination für Bildergalerien.
+ * Erstellt und aktualisiert Pagination-Bullets für die Navigation zwischen Bildern
+ * in einem Projekt, synchronisiert mit Swiper-Instanzen.
+ * Enthält Funktionen:
+ * - init()
+ * - updatePaginationForProject()
+ * - updateActiveBullet()
+ * 
+ * @listens EVENT_TYPES.INITIAL_PROJECT_SET - Initial Pagination erstellen
+ * @listens TransitionController.events.PHASE_CHANGED - Pagination bei Projektwechsel aktualisieren
+ */
+
+import { checkFooter, getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
-import { getValidatedElement } from '@utils/utils.js';
 import swiperInitializer from '@media/viewer/swiperController.js';
 import TransitionController from '@core/state/transitionController.js';
 
@@ -61,6 +74,7 @@ export function init() {
 
 /**
  * Aktualisiert die Pagination für ein bestimmtes Projekt
+ * @param {number} projectIndex - Index des Projekts
  */
 function updatePaginationForProject(projectIndex) {
   console.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
@@ -136,7 +150,7 @@ function updatePaginationForProject(projectIndex) {
 
 /**
  * Aktualisiert den aktiven Bullet in der Pagination
- * Exportiert für Verwendung in der synchronisierten Update-Funktion
+ * @param {number} slideIndex - Index des aktiven Slides
  */
 export function updateActiveBullet(slideIndex) {
   console.log(`updateActiveBullet: Aktiviere Slide ${slideIndex}`);

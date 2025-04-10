@@ -1,19 +1,24 @@
 /**
  * @module overlayController
  * @description Steuert das Overlay-System für About und Imprint-Inhalte.
- * Verwaltet das Öffnen und Schließen des Overlays mit Animationen, sowie den
+ * Verwaltet das Öffnen und Schließen des Overlays mit Animationen sowie den 
  * Wechsel zwischen About und Imprint. Synchronisiert den Overlay-Status mit der URL.
+ * Enthält Funktionen:
+ * - init()
+ * - showOverlay()
+ * - hideOverlay()
+ * - toggleAboutImprint()
+ * - handleKeyPress()
  * 
  * @listens keydown - Für ESC-Taste zum Schließen
+ * @listens click - Auf Open/Close-Buttons und Overlay-Left
  */
 
-import { validateElement } from '@utils/utils.js';
-import { getValidatedElement } from '@utils/utils.js';
-import { toggleDescription } from "@ui/mobileUi/mobileDescription.js";
-import { removeHoverListeners } from "@portfolio/projects/hoverPreview.js";
-import CustomRouter from "@core/CustomRouter.js";
-import uiState from "@core/state/uiState.js";
-import { checkFooter } from "@utils/navigationUtils.js";
+import { checkFooter, getValidatedElement, validateElement } from '@utils';
+import { toggleDescription } from '@ui/mobileUi/mobileDescription.js';
+import { removeHoverListeners } from '@portfolio/projects/hoverPreview.js';
+import CustomRouter from '@core/CustomRouter.js';
+import uiState from '@core/state/uiState.js';
 
 // Overlay-DOM-Elemente
 const overlay = getValidatedElement(".overlay");
@@ -25,6 +30,9 @@ const titleDescriptionContainer = getValidatedElement(
 // Flag, um zu erkennen, ob URL-Updates unterdrückt werden sollen
 let suppressRouteUpdate = false;
 
+/**
+ * Initialisiert den Overlay-Controller und registriert Event-Listener
+ */
 function init() {
     // Event-Listener für direktes Öffnen/Schließen
     getValidatedElement("#openOverlay")?.addEventListener("click", () => {

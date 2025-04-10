@@ -1,6 +1,11 @@
 /**
  * @module interactionInitializer
- * @description Verwaltet die Initialisierung aller Benutzerinteraktionen
+ * @description Verwaltet die Initialisierung aller Benutzerinteraktionen.
+ * Startet nach der UI-Komponenten-Initialisierung und richtet alle Interaktionen
+ * wie Navigation, Hover-Effekte und Touch-Events ein.
+ * Enthält Funktionen:
+ * - init()
+ * - initializeInteraktionen()
  * 
  * @listens EVENT_TYPES.UI_COMPONENTS_READY - Startet die Initialisierung der Interaktionskomponenten
  * @fires EVENT_TYPES.APP_INIT_COMPLETE - Signalisiert die vollständige Initialisierung der App
@@ -14,6 +19,9 @@ import overlayController from '@overlay/overlayController.js';
 import mobileDescription from '@ui/mobileUi/mobileDescription.js';
 import CustomRouter from '@core/CustomRouter.js';
 
+/**
+ * Initialisiert den Interaction-Initializer
+ */
 async function init() {
   // Auf UI-Komponenten reagieren
   addEventListener(EVENT_TYPES.UI_COMPONENTS_READY, () => {
@@ -33,7 +41,7 @@ async function init() {
 }
 
 /**
- * Initialisiert alle Interaktionskomponenten
+ * Initialisiert alle Interaktionskomponenten in der richtigen Reihenfolge
  */
 function initializeInteraktionen() {
   console.log("interactionManager: Starte Interaktions-Initialisierung");

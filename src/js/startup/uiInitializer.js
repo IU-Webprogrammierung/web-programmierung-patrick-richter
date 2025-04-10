@@ -1,22 +1,33 @@
 /**
  * @module uiInitializer
- * @description Koordiniert die Initialisierung aller UI-Komponenten
+ * @description Koordiniert die Initialisierung aller UI-Komponenten.
+ * Wird nach der DOM-Struktur-Erstellung ausgeführt und initialisiert
+ * UI-Komponenten in der korrekten Reihenfolge.
+ * Enthält Funktionen:
+ * - init()
+ * - initializeUIComponents()
+ * 
+ * @listens EVENT_TYPES.DOM_STRUCTURE_READY - Startet UI-Initialisierung nach DOM-Erstellung
+ * @fires EVENT_TYPES.UI_COMPONENTS_READY - Signalisiert abgeschlossene UI-Initialisierung
  */
 
 import {
   EVENT_TYPES,
   dispatchCustomEvent,
   addEventListener,
-} from "@core/state/events.js";
-import uiState from "@core/state/uiState.js";
-import uiAnimationManager from "@ui/uiAnimationManager.js";
-import swiperInitializer from "@media/viewer/swiperController.js";
-import customPagination from "@media/viewer/mediaPagination.js";
-import imageColorHandler from "@media/color/mediaColorHandler.js";
-import projectIndicator from "@portfolio/projects/projectIndicator.js";
-import contentManager from "@ui/contentManager.js";
-import interactionInitializer from "@startup/interactionInitializer.js";
+} from '@core/state/events.js';
+import uiState from '@core/state/uiState.js';
+import uiAnimationManager from '@ui/uiAnimationManager.js';
+import swiperInitializer from '@media/viewer/swiperController.js';
+import customPagination from '@media/viewer/mediaPagination.js';
+import imageColorHandler from '@media/color/mediaColorHandler.js';
+import projectIndicator from '@portfolio/projects/projectIndicator.js';
+import contentManager from '@ui/contentManager.js';
+import interactionInitializer from '@startup/interactionInitializer.js';
 
+/**
+ * Initialisiert den UI-Initializer
+ */
 function init() {
   // Auf DOM-Struktur reagieren
   addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, async () => {
@@ -49,6 +60,7 @@ function init() {
 
 /**
  * Initialisiert alle UI-Komponenten in der richtigen Reihenfolge
+ * @returns {Promise<boolean>} Promise, das nach erfolgreicher Initialisierung erfüllt wird
  */
 async function initializeUIComponents() {
   console.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");

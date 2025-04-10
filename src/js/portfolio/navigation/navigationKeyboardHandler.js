@@ -8,7 +8,7 @@
  * - Home/End zum ersten/letzten Projekt
  */
 
-import { checkFooter } from '@utils/navigationUtils.js';
+import { checkFooter } from '@utils';
 
 export function setupKeyboardNavigation(transitionToProject, projects, getAnimating) {
   console.log('Keyboard-Navigation wird initialisiert');

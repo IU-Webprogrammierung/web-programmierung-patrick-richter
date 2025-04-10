@@ -1,8 +1,15 @@
 /**
  * @module swiperInitializer
  * @description Integriert Swiper.js für verbesserte Bildergalerien.
- * Initialisiert Swiper-Instanzen, reagiert auf Projektwechsel und kommuniziert
- * mit dem zentralen uiState zur Wahrung der Datenkonsistenz.
+ * Initialisiert Swiper-Instanzen für alle Projekte, reagiert auf Projektwechsel
+ * und kommuniziert mit dem zentralen uiState zur Wahrung der Datenkonsistenz.
+ * Enthält Funktionen:
+ * - init()
+ * - setupProjectChangeHandler()
+ * - navigateSlide()
+ * - getInstance()
+ * 
+ * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Aktualisiert Swiper bei Projektwechseln
  */
 
 import Swiper from 'swiper';
@@ -15,8 +22,8 @@ import 'swiper/css';
 const swiperInstances = [];
 
 /**
- * Initialisiert Swiper für alle Slider auf der Seite.
- * Gibt ein Promise zurück, das aufgelöst wird, wenn alle Swiper initialisiert sind.
+ * Initialisiert Swiper für alle Slider auf der Seite
+ * @returns {Promise<Array>} Promise mit allen erstellten Swiper-Instanzen
  */
 export async function init() {
   console.log("SwiperJS: Initialisierung beginnt");
@@ -145,6 +152,9 @@ function setupProjectChangeHandler() {
 
 /**
  * Navigiert zu einem bestimmten Slide
+ * @param {Element} slider - Das Swiper-Container-Element
+ * @param {number} clientX - X-Koordinate des Klicks für Richtungsbestimmung
+ * @returns {boolean} true wenn Navigation erfolgreich
  */
 function navigateSlide(slider, clientX) {
   const containerIndex = Array.from(document.querySelectorAll('.swiper')).indexOf(slider);

@@ -1,15 +1,26 @@
 /**
  * @module mobileDescription
  * @description Verwaltet die mobile Ansicht der Projektbeschreibungen.
- * Implementiert ein ein- / ausklappbares Beschreibungsfeld mit Touch-Gesten-Unterstützung.
- *
- * Funktionen: toggleDescription(), handlePointerDown(), handleTouchEnd()
+ * Implementiert ein ein-/ausklappbares Beschreibungsfeld mit
+ * Touch-Gesten-Unterstützung für mobile Geräte.
+ * Enthält Funktionen:
+ * - init()
+ * - toggleDescription()
+ * - handlePointerDown()
+ * - handleTouchEnd()
+ * 
+ * @listens click - Toggles die Beschreibungsanzeige bei Klick
+ * @listens pointerdown - Erfasst Start-Position für Swipe-Erkennung
+ * @listens touchend - Erkennt Swipe-Gesten und reagiert entsprechend
  */
 
 // Mobile Description Element
 
-import { getValidatedElement } from '@utils/utils.js';
+import { getValidatedElement } from '@utils';
 
+/**
+ * Initialisiert die mobile Beschreibungskomponente
+ */
 function init() {
 
   const titleDescriptionContainer = getValidatedElement(".title-description-container");
@@ -19,8 +30,9 @@ function init() {
 
 }
 
-
-
+/**
+ * Schaltet die Beschreibungsanzeige ein/aus
+ */
 export function toggleDescription() {
   const titleDescriptionContainer = getValidatedElement(
     ".title-description-container",
@@ -39,6 +51,10 @@ export function toggleDescription() {
 // Überprüft touchstart
 let startY = 0;
 
+/**
+ * Speichert die Start-Y-Position beim Touch/Pointer-Down
+ * @param {PointerEvent|TouchEvent} event - Das Pointer/Touch-Event
+ */
 export function handlePointerDown(event) {
   startY =
     event.clientY ||
@@ -46,8 +62,10 @@ export function handlePointerDown(event) {
     0;
 }
 
-// Überprüft Swipe/Drag-Richtung unf öffnet ggf. Description Mobile
-
+/**
+ * Überprüft Swipe/Drag-Richtung und öffnet ggf. Description Mobile
+ * @param {TouchEvent} event - Das Touch-End-Event
+ */
 export function handleTouchEnd(event) {
   const titleDescriptionContainer = getValidatedElement(
     ".title-description-container"

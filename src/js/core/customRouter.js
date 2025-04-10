@@ -2,7 +2,21 @@
  * @module CustomRouter
  * @description Verwaltet URLs und Projekt-Navigation mit der Browser History API.
  * Bietet URL-Synchronisation, Deep-Linking und Integration mit dem Overlay-System.
- *
+ * 
+ * Funktionen:
+ * - init() - Initialisiert den Router mit der Navigation-API
+ * - setupEventListeners() - Richtet Event-Listener für die URL-Synchronisation ein
+ * - initializeProjectSlugs() - Generiert eindeutige URL-Slugs für alle Projekte
+ * - handleInitialURL() - Verarbeitet die initiale URL beim Laden der Seite
+ * - handleURLChange() - Verarbeitet URL-Änderungen und navigiert entsprechend
+ * - updateURLForProject() - Aktualisiert die URL für ein bestimmtes Projekt
+ * - navigateToProject() - Navigiert zu einem bestimmten Projektindex
+ * - navigateToProjectById() - Navigiert zu einem Projekt anhand seiner ID
+ * - navigateToHome() - Navigiert zum ersten Projekt
+ * - navigateToAbout() - Navigiert zur About-Seite
+ * - navigateToImprint() - Navigiert zur Imprint-Seite
+ * - handleOverlayRoute() - Behandelt About- und Imprint-Routen
+ * 
  * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Aktualisiert URL basierend auf Projektwechseln
  * @listens EVENT_TYPES.APP_INIT_COMPLETE - Verarbeitet initiale URL nach vollständiger App-Initialisierung
  */
@@ -11,13 +25,16 @@ import {
   addEventListener,
   EVENT_TYPES,
   dispatchCustomEvent,
-} from "@core/state/events.js";
-import uiState from "@core/state/uiState.js";
-import { checkFooter } from "@utils/navigationUtils.js";
+} from '@core/state/events.js';
+import uiState from '@core/state/uiState.js';
+import { checkFooter, normalizeSlug,
+  getSlugFromPath,
+  isValidProject,
+  updateURL } from '@utils';
 import {
   showOverlay,
   toggleAboutImprint,
-} from "@overlay/overlayController.js";
+} from '@overlay/overlayController.js';
 
 class CustomRouter {
   constructor() {
@@ -98,16 +115,14 @@ class CustomRouter {
     // Für jedes Projekt einen Slug generieren (außer Footer)
     uiState.projects.forEach((project, index) => {
       // Footer überspringen
-      // TODO könnte gleich checkfooter nutzen
-      if (this.isFooter(project, index)) return;
+      if (checkFooter(project, uiState.projects)) return;
 
-      // TODO schauen, ob ich da nicht lieber über id im array gehe
       const projectId = project.getAttribute("data-project-id");
       const projectName =
         project.getAttribute("data-project-name") || `project-${index}`;
 
       // Basis-Slug erstellen
-      let baseSlug = this.normalizeSlug(projectName);
+      let baseSlug = normalizeSlug(projectName);
       if (!baseSlug) baseSlug = `project-${index}`;
 
       // Eindeutigkeit sicherstellen
@@ -132,72 +147,78 @@ class CustomRouter {
   /**
    * Verarbeitet die initiale URL beim Laden der Seite (z.B. wenn Link verschickt wurde)
    */
-  handleInitialURL() {
-    const path = window.location.pathname;
-    console.log("CustomRouter: Verarbeite initiale URL", path);
+/**
+ * Verarbeitet die initiale URL beim Laden der Seite (z.B. wenn Link verschickt wurde)
+ */
+handleInitialURL() {
+  const path = window.location.pathname;
+  console.log("CustomRouter: Verarbeite initiale URL", path);
 
-    if (path === "/about" || path === "/imprint") {
-      const project = uiState.projects[0];
-      const firstSlide = project.querySelector(".swiper-slide");
-      if (firstSlide) {
-        const textColor = firstSlide.getAttribute("data-text-color") || "black";
-        uiState.setActiveImage(0, 0, textColor, 0);
-      }
-
-      // About/Imprint Routen
-      if (path === "/about") {
-        this.handleOverlayRoute("about");
-        return;
-      }
-
-      if (path === "/imprint") {
-        this.handleOverlayRoute("imprint");
-        return;
-      }
+  // About/Imprint Routen mit Farbinitialisierung
+  if (path === "/about" || path === "/imprint") {
+    // Textfarbe vom ersten Projekt übernehmen
+    const project = uiState.projects[0];
+    const firstSlide = project.querySelector(".swiper-slide");
+    if (firstSlide) {
+      const textColor = firstSlide.getAttribute("data-text-color") || "black";
+      uiState.setActiveImage(0, 0, textColor, 0);
     }
 
-    // Projektspezifische URL
-    const slug = this.getSlugFromPath(path);
+    // About-Route
+    if (path === "/about") {
+      this.handleOverlayRoute("about");
+      return;
+    }
 
-    // Leere URL (Home-Route)
-    if (!slug) return;
-
-    // Projektindex aus Slug ermitteln
-    const projectIndex = this.getProjectIndexFromSlug(slug);
-
-    if (projectIndex >= 0) {
-      console.log(
-        `CustomRouter: Initial Projekt-Route für "${slug}" - Index ${projectIndex}`
-      );
-
-      const project = uiState.projects[projectIndex];
-      const firstSlide = project.querySelector(".swiper-slide");
-      if (firstSlide) {
-        const textColor = firstSlide.getAttribute("data-text-color") || "black";
-        uiState.setActiveImage(projectIndex, 0, textColor, 0);
-      }
-
-      // Zum Projekt navigieren
-      if (this.navigationAPI) {
-        this.navigationAPI.navigateToIndex(projectIndex, 1);
-
-        // INITIAL_PROJECT_SET auslösen (um content zu updaten)
-        setTimeout(() => {
-          uiState.activeProjectIndex = projectIndex;
-          dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
-        }, 100);
-      }
-    } else {
-      // Slug nicht gefunden - zur Startseite
-      console.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
-      this.updateURL("/");
+    // Imprint-Route
+    if (path === "/imprint") {
+      this.handleOverlayRoute("imprint");
+      return;
     }
   }
+
+  // Projektspezifische URL
+  const slug = getSlugFromPath(path);
+
+  // Leere URL (Home-Route)
+  if (!slug) return;
+
+  // Projektindex aus Slug ermitteln
+  const projectIndex = this.getProjectIndexFromSlug(slug);
+
+  if (projectIndex >= 0) {
+    console.log(
+      `CustomRouter: Initial Projekt-Route für "${slug}" - Index ${projectIndex}`
+    );
+
+    // Textfarbe vom ersten Bild des Projekts übernehmen
+    const project = uiState.projects[projectIndex];
+    const firstSlide = project.querySelector(".swiper-slide");
+    if (firstSlide) {
+      const textColor = firstSlide.getAttribute("data-text-color") || "black";
+      uiState.setActiveImage(projectIndex, 0, textColor, 0);
+    }
+
+    // Zum Projekt navigieren
+    if (this.navigationAPI) {
+      this.navigationAPI.navigateToIndex(projectIndex, 1);
+
+      // INITIAL_PROJECT_SET auslösen (um content zu updaten)
+      setTimeout(() => {
+        uiState.activeProjectIndex = projectIndex;
+        dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
+      }, 100);
+    }
+  } else {
+    // Slug nicht gefunden - zur Startseite
+    console.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
+    updateURL("/");
+  }
+}
 
   /**
    * Verarbeitet eine URL-Änderung und navigiert entsprechend
    * @param {string} path - Der zu verarbeitende URL-Pfad
-   * @param {boolean} isFromPopState - Ob die Änderung durch Browser-Navigation ausgelöst wurde
    */
   handleURLChange(path) {
     console.log(`CustomRouter: Verarbeite URL-Änderung "${path}"`);
@@ -214,7 +235,7 @@ class CustomRouter {
     }
 
     // Projektspezifische URL
-    const slug = this.getSlugFromPath(path);
+    const slug = getSlugFromPath(path);
 
     // Leere URL (Home-Route)
     if (!slug) {
@@ -248,8 +269,8 @@ class CustomRouter {
   updateURLForProject(projectIndex) {
     // Ungültigen Index oder Footer überspringen
     if (
-      !this.isValidProject(projectIndex) ||
-      this.isFooter(uiState.projects[projectIndex])
+      !isValidProject(projectIndex, uiState.projects) ||
+      checkFooter(uiState.projects[projectIndex])
     ) {
       return;
     }
@@ -260,7 +281,7 @@ class CustomRouter {
     const slug = uiState.getProjectSlug(projectId);
 
     if (slug) {
-      this.updateURL(`/${slug}`);
+      updateURL(`/${slug}`);
     }
   }
 
@@ -304,7 +325,7 @@ class CustomRouter {
    * Navigiert zum ersten Projekt (Home)
    */
   navigateToHome() {
-    this.updateURL("/");
+    updateURL("/");
     this.navigateToProject(0);
   }
 
@@ -312,7 +333,7 @@ class CustomRouter {
    * Navigiert zur About-Seite und öffnet das Overlay
    */
   navigateToAbout() {
-    this.updateURL("/about", { overlay: "about" });
+    updateURL("/about", { overlay: "about" });
     this.handleOverlayRoute("about");
   }
 
@@ -320,11 +341,9 @@ class CustomRouter {
    * Navigiert zur Imprint-Seite und öffnet das Overlay
    */
   navigateToImprint() {
-    this.updateURL("/imprint", { overlay: "imprint" });
+    updateURL("/imprint", { overlay: "imprint" });
     this.handleOverlayRoute("imprint");
   }
-
-  /* ---- Hilfsmethoden ---- */
 
   /**
    * Behandelt About und Imprint Routen einheitlich
@@ -336,46 +355,6 @@ class CustomRouter {
     showOverlay();
     toggleAboutImprint(`show-${type}`);
     this.suppressUrlUpdates = false;
-  }
-
-  /**
-   * Aktualisiert die Browser-URL
-   * @param {string} path - Der neue Pfad
-   * @param {Object} state - Optionales State-Objekt
-   */
-  updateURL(path, state = {}) {
-    if (window.location.pathname !== path) {
-      console.log(`CustomRouter: Aktualisiere URL auf "${path}"`);
-      window.history.replaceState(state, "", path);
-    }
-  }
-
-  /**
-   * Konvertiert einen String in einen URL-freundlichen Slug
-   * @param {string} str - Der zu konvertierende String
-   * @returns {string} Der normalisierte URL-Slug
-   */
-  normalizeSlug(str) {
-    if (!str) return "";
-
-    return str
-      .toLowerCase()
-      .replace(/ä/g, "ae")
-      .replace(/ö/g, "oe")
-      .replace(/ü/g, "ue")
-      .replace(/ß/g, "ss")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
-
-  /**
-   * Extrahiert den Slug aus einem URL-Pfad
-   * @param {string} path - Der URL-Pfad
-   * @returns {string} Der extrahierte Slug
-   */
-  getSlugFromPath(path) {
-    return path.replace(/^\/|\/$/g, "");
   }
 
   /**
@@ -395,25 +374,6 @@ class CustomRouter {
     return uiState.projects.findIndex(
       (project) => project.getAttribute("data-project-id") === projectId
     );
-  }
-
-  /**
-   * Prüft, ob ein Element oder Index den Footer repräsentiert
-   * @param {Element|number} elementOrIndex - Das zu prüfende Element oder der Index
-   * @param {Array} [elemArray] - Optional: Das Array für Indexpüfung
-   * @returns {boolean} True, wenn es sich um den Footer handelt
-   */
-  isFooter(elementOrIndex, elemArray) {
-    return checkFooter(elementOrIndex, elemArray);
-  }
-
-  /**
-   * Prüft, ob ein Projektindex gültig ist
-   * @param {number} index - Der zu prüfende Index
-   * @returns {boolean} True, wenn der Index gültig ist
-   */
-  isValidProject(index) {
-    return index >= 0 && index < uiState.projects.length;
   }
 }
 

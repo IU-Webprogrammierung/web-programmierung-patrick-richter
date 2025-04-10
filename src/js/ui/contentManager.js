@@ -1,10 +1,18 @@
 /**
  * @module contentManager
- * @description Verwaltet Inhaltsaktualisierungen für Titel und Beschreibungen
+ * @description Verwaltet Inhaltsaktualisierungen für Titel und Beschreibungen.
+ * Aktualisiert Projekt-Titel und Beschreibungen basierend auf dem aktiven Projekt
+ * und handhabt Spezialfälle wie Footer-Inhalte.
+ * Enthält Funktionen:
+ * - init()
+ * - updateContents()
+ * - setTitles()
+ * 
+ * @listens EVENT_TYPES.INITIAL_PROJECT_SET - Initial Inhalte aktualisieren
+ * @listens TransitionController.events.CONTENT_UPDATE_NEEDED - Inhalte während Transition aktualisieren
  */
 
-import { checkFooter } from '@utils/navigationUtils.js';
-import { getValidatedElement } from '@utils/utils.js';
+import { checkFooter, getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import TransitionController from '@core/state/transitionController.js';
 import { addEventListener, EVENT_TYPES } from "@core/state/events.js";
@@ -20,7 +28,6 @@ const projectIndicatorTab = getValidatedElement(".tab-text");
 /**
  * Liste aller UI-Elemente, die bei Inhaltswechseln aktualisiert werden
  */
-// TODO muss das export sein? soll in uiAnimationManager separat behandelt werden?
 export const contentElements = {
   headerTitle,
   mobileTitle,
@@ -29,10 +36,12 @@ export const contentElements = {
   projectIndicatorTab
 };
 
+/**
+ * Initialisiert den Content-Manager
+ */
 function init() {
 
     // Auf erstes Projekt warten und Daten dann aktualisieren
-
  addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
   updateContents();
     console.log("contentManager: Inhalt initial aktualisiert");
@@ -42,14 +51,8 @@ function init() {
     updateContents();
     console.log("contentManager: Inhalt aktualisiert");
   });
-
-
-
 }
 
-/**
- * Aktualisiert Titel und Beschreibungen basierend auf dem aktiven Projekt
- */
 /**
  * Aktualisiert Titel und Beschreibungen basierend auf dem aktiven Projekt
  */
@@ -84,6 +87,8 @@ export function updateContents() {
 
 /**
  * Setzt Titel und Beschreibungen in allen relevanten DOM-Elementen
+ * @param {string} projectName - Name des Projekts
+ * @param {string} projectDesc - Beschreibung des Projekts
  */
 function setTitles(projectName, projectDesc) {
   if (headerTitle) headerTitle.textContent = projectName;

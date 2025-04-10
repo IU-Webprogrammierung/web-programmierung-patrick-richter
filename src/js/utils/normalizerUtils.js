@@ -1,6 +1,10 @@
 /**
  * @module normalizers/utils
- * @description Gemeinsame Hilfsfunktionen für die Datennormalisierung
+ * @description Gemeinsame Hilfsfunktionen für die Datennormalisierung.
+ * Stellt Funktionen zur Überprüfung und Standardisierung von Datenstrukturen bereit.
+ * Enthält Funktionen:
+ * - ensureValue()
+ * - ensureBaseStructure()
  */
 
 import { FALLBACK_DATA } from '@core/config.js';

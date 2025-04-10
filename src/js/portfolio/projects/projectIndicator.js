@@ -1,14 +1,21 @@
 /**
  * @module projectIndicator
- * @description Verwaltet den Projekt-Indikator und das Navigations-Panel für den Index.
+ * @description Verwaltet den Projekt-Indikator und das navigierbare Panel für den Projektindex.
+ * Zeigt den aktuellen Projektindex und Gesamtprojektzahl an, bietet ein ausklappbares 
+ * Navigations-Panel und markiert das aktive Projekt visuell.
+ * Enthält Funktionen:
+ * - init()
+ * - updateTabText()
+ * - updateActiveProjectInList()
+ * - createProjectList()
+ * - togglePanel()
  * 
  * @listens TransitionController.events.CONTENT_UPDATE_NEEDED - Aktualisiert Tab-Text und aktive Markierung
  * @listens EVENT_TYPES.INITIAL_PROJECT_SET - Aktualisiert Tab-Text und Markierung initial
  */
 
 import uiState from "@core/state/uiState.js";
-import { getValidatedElement } from "@utils/utils.js";
-import { checkFooter } from "@utils/navigationUtils.js";
+import { checkFooter, getValidatedElement } from '@utils';
 import { removeHoverListeners } from "@portfolio/projects/hoverPreview.js";
 import { EVENT_TYPES, addEventListener } from "@core/state/events.js";
 import TransitionController from "@core/state/transitionController.js";
@@ -51,8 +58,8 @@ function init() {
 }
 
 /**
- * Aktualisiert den Tab-Text im Projekt-Indikator.
- * Verwendet checkFooter für einheitliche Footer-Erkennung.
+ * Aktualisiert den Tab-Text im Projekt-Indikator
+ * Zeigt das Format "aktuellerIndex / Gesamtzahl" an
  */
 export function updateTabText() {
   if (!tabElement) return;
@@ -98,8 +105,7 @@ export function updateTabText() {
 }
 
 /**
- * Aktualisiert die aktive Projektmarkierung in der Projektliste.
- * Verwendet ebenfalls checkFooter für Footer-Erkennung.
+ * Aktualisiert die aktive Projektmarkierung in der Projektliste
  */
 function updateActiveProjectInList() {
   const links = document.querySelectorAll(".project-list a");
@@ -139,8 +145,8 @@ function updateActiveProjectInList() {
 }
 
 /**
- * Erstellt die Projektliste im Panel.
- * Filtert den Footer aus der Liste.
+ * Erstellt die Projektliste im Panel
+ * Filtert den Footer aus der Liste
  */
 function createProjectList() {
   projectList = getValidatedElement(".project-list");
@@ -209,7 +215,7 @@ function createProjectList() {
 }
 
 /**
- * Toggle-Funktion für das Panel
+ * Öffnet/schließt das Projekt-Panel
  */
 function togglePanel() {
   if (!indicator || !tabElement) return;

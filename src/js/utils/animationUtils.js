@@ -1,11 +1,19 @@
-import {EVENT_TYPES, dispatchCustomEvent} from "@core/state/events.js";
-import { getValidatedElements } from "@utils/utils.js";
-
 /**
  * @module animationUtils
  * @description Zentrale Hilfsfunktionen für UI-Animationen und Übergänge.
- * Bietet wiederverwendbare Funktionen für einheitliche Überblendeffekte.
+ * Bietet wiederverwendbare Funktionen für einheitliche Überblendeffekte und Timing.
+ * Enthält Funktionen:
+ * - parseTimeValue()
+ * - getCSSTimeVariable()
+ * - animateElementTransition()
+ * - initialAppearAnimation()
+ * 
+ * @fires EVENT_TYPES.INITIAL_ANIMATION_STARTED - Bei Start der initialen Animation
+ * @fires EVENT_TYPES.INITIAL_ANIMATION_COMPLETED - Bei Abschluss der initialen Animation
  */
+
+import {EVENT_TYPES, dispatchCustomEvent} from '@core/state/events.js';
+import { getValidatedElements } from '@utils';
 
 /**
  * Extrahiert CSS-Zeitwerte mit einheitlicher Interpretation von ms/s
@@ -120,7 +128,6 @@ export function animateElementTransition({
  * Erstellt eine initiale Erscheinungs-Animation für UI-Elemente
  * @returns {Promise} - Promise, das erfüllt wird, wenn die Animation abgeschlossen ist
  */
-
 export function initialAppearAnimation() {
   const uiElements = Array.from(getValidatedElements(".initial-hidden") || []);
   console.log("initialAppearAnimation wird aufgerufen mit:", uiElements);
@@ -174,5 +181,3 @@ export function initialAppearAnimation() {
     });
   });
 }
-
-

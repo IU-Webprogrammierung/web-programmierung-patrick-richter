@@ -1,18 +1,24 @@
 /**
  * @module projectLoader
  * @description Verantwortlich für das Erstellen und Rendern der Projektinhalte.
+ * Lädt Projektdaten aus dem zentralen Datenspeicher und generiert die entsprechenden
+ * DOM-Elemente mit responsiven Bildern und Metadaten.
+ * Enthält Funktionen:
+ * - init()
+ * - createProjectElements()
+ * - createResponsiveImageHTML()
  * 
- * @listens DATA_LOADED - Registriert mit init()
- * @fires DOM_STRUCTURE_READY - Signalisiert fertige DOM-Struktur
+ * @listens EVENT_TYPES.PROJECT_DATA_LOADED - Startet DOM-Erstellung nach Datenladen
+ * @fires EVENT_TYPES.DOM_STRUCTURE_READY - Signalisiert abgeschlossene DOM-Struktur
  */
 
 import { EVENT_TYPES, addEventListener, dispatchCustomEvent } from '@core/state/events.js';
 import dataStore from '@core/dataStore.js';
-import { fixImagePath } from '@utils/utils.js';
+import { fixImagePath } from '@utils';
 
 /**
  * Initialisiert den projectLoader
- * Registriert Event-Listener für PROEJCT_DATA_LOADED
+ * Registriert Event-Listener für PROJECT_DATA_LOADED
  */
 function init() {
   console.log("projectLoader: Initialisierung");
@@ -38,6 +44,7 @@ function init() {
 
 /**
  * Erstellt die DOM-Elemente für alle Projekte
+ * @returns {boolean} True bei erfolgreicher Erstellung
  */
 async function createProjectElements() {
   const projectsData = dataStore.getProjects();
@@ -95,7 +102,7 @@ async function createProjectElements() {
 /**
  * Erstellt HTML für ein responsives Bild mit optimierter Auswahl für verschiedene Geräte
  * @param {Object} imageData - Die Bilddaten mit allen Formaten
- * @returns {string} - HTML für das Bild mit picture/source-Tags
+ * @returns {string} HTML für das Bild mit picture/source-Tags
  */
 function createResponsiveImageHTML(imageData) {
   const imageObj = imageData?.image?.[0];
