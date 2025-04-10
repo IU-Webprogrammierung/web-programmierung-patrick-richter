@@ -1,0 +1,184 @@
+
+
+
+/* 1. Basiscontainer */
+.project-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 5;
+  }
+  
+  /* 2. Tab-Styling */
+  .project-indicator-tab {
+    position: absolute;
+    top: calc(50% - 4.5rem);
+    height: 9rem;
+    left: 0;
+    transform: translateX(0);
+    background-color: hsla(var(--color-bg-light), 0.1);
+    padding: var(--spacing-l) var(--spacing-2xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-l);
+    cursor: pointer;
+    z-index: 5;
+    pointer-events: auto;
+    transition: background-color var(--transition-fast),
+      transform var(--transition-default), height var(--transition-default),
+      opacity var(--transition-default);
+  }
+  
+  /* 3. Tab-Komponenten */
+  .tab-text {
+    writing-mode: vertical-rl;
+    white-space: nowrap;
+    width: 1.5rem;
+    text-align: center;
+    min-height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Styling für das Chevron/X */
+  .tab-chevron {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.6rem;
+    height: 0.6rem;
+    position: relative;
+    transition: transform var(--transition-fast), height var(--transition-fast),
+      width var(--transition-default);
+  }
+  
+  .chevron-line {
+    position: absolute;
+    width: 100%;
+    height: 0.05rem;
+    background-color: var(--active-text-color);
+    transition: transform var(--transition-default),
+      background-color var(--transition-fast);
+  }
+  
+  /* Chevron-Zustand (nach rechts zeigend) */
+  .tab-chevron .line1 {
+    transform: translateY(-0.2rem) rotate(45deg);
+  }
+  
+  .tab-chevron .line2 {
+    transform: translateY(0.2rem) rotate(-45deg);
+  }
+  
+  /* X-Zustand im geöffneten Panel */
+  .project-indicator.open .tab-chevron {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .project-indicator.open .tab-chevron .line1 {
+    transform: rotate(45deg);
+  }
+  
+  .project-indicator.open .tab-chevron .line2 {
+    transform: rotate(-45deg);
+  }
+  
+  /* Farbänderungen */
+  .project-indicator-tab:hover .chevron-line,
+  .project-indicator.open .chevron-line {
+    background-color: black;
+  }
+  
+  /* 4. Panel-Styling */
+  .project-panel {
+    position: absolute;
+    top: calc(50% - 4.5rem);
+    left: 0;
+    width: 20rem;
+    height: calc(50% + 4.5rem);
+    transform: translateX(-100%);
+    background-color: white;
+    overflow-y: auto;
+    pointer-events: auto;
+    transition: transform var(--transition-default);
+  }
+  
+  /* 5. Projektlisten-Styling */
+  .project-list {
+    list-style: none;
+    padding: var(--spacing-l);
+    margin: 0;
+  }
+  
+  .project-list li {
+    margin-bottom: var(--spacing-s);
+    padding-left: var(--spacing-l);
+    position: relative;
+  }
+  
+  .project-list a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    font-size: var(--font-size-desktop-s);
+    display: block; /* Blockformatierung für gleichmäßige Ausrichtung */
+  }
+  
+  /* Normaler Hover-Effekt für alle Projekte */
+  .project-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: var(--spacing-2xs);
+    text-decoration-thickness: 0.05rem;
+  }
+  
+  /* Aktives Projekt mit herausstehendem Punkt */
+  .project-list a.active {
+    position: relative;
+  }
+  
+  .project-list a.active::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--spacing-l));
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: currentColor;
+    border-radius: 50%;
+  }
+  
+  /* 6. Zustände (hover, open) */
+  /* Hover-Zustand */
+  .project-indicator-tab:hover {
+    background-color: hsla(var(--color-bg-light), 0.7);
+    height: calc(50% + 4.5rem);
+  }
+  
+  /* Offener Zustand */
+  .project-indicator.open .project-panel {
+    transform: translateX(0);
+  }
+  
+  .project-indicator.open .project-indicator-tab {
+    transform: translateX(18rem);
+    height: calc(50% + 4.5rem);
+    background-color: hsla(var(--color-bg-light), 1);
+  }
+  
+  /* 7. Text-Wechsel-Effekt */
+  .project-indicator-tab:hover .tab-text,
+  .project-indicator.open .tab-text {
+    font-size: 0; 
+  }
+  
+  .project-indicator-tab:hover .tab-text::after,
+  .project-indicator.open .tab-text::after {
+    content: "Index";
+    font-size: var(--font-size-desktop-s);
+    color: black;
+  }

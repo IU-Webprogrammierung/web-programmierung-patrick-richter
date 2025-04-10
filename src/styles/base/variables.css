@@ -1,0 +1,54 @@
+/* -----------------------------
+   VARIABLEN UND BASISWERTE
+   ----------------------------- */
+
+   :root {
+    /* Farben */
+    --active-text-color: black;
+    --color-bg-light: 0, 0%, 100%;
+  
+    /* Typografie */
+    --font-primary: "Neue Montreal", sans-serif;
+    --font-size-desktop-l: 2rem;
+    --font-size-desktop-m: 1.5rem;
+    --font-size-desktop-s: 1rem;
+    --font-size-mobile-l: 1.5rem;
+    --font-size-mobile-m: 1.25rem;
+    --font-size-mobile-s: 1rem;
+  
+    /* Animation */
+    --transition-fast: 0.2s ease-out;
+    --transition-default: 0.3s ease-out;
+    --transition-slow: 0.5s ease-out;
+  
+    --title-fade-duration: 300ms;
+    --title-between-pause: 200ms;
+    --title-initial-delay: 1000ms;
+    --title-initial-duration: 300ms;
+  
+    /* Layout */
+    --overlay-width: 50vw;
+    --overlay-width-mobile: 100vw;
+  
+    /* Abstände */
+    --spacing-2xs: 0.25rem;
+    --spacing-xs: 0.5rem;
+    --spacing-s: 0.75rem;
+    --spacing-m: 1rem;
+    --spacing-l: 1.25rem;
+    --spacing-xl: 1.5rem;
+    --spacing-2xl: 1.75rem;
+    --spacing-3xl: 2rem;
+    --spacing-4xl: 2.5rem;
+    --spacing-5xl: 3rem;
+  
+    /* Spezifische Abstände */
+    --header-bottom-padding: var(--spacing-m);
+    --left-right-padding: var(--spacing-l);
+    --content-padding: var(--spacing-l);
+    --mobile-padding: var(--spacing-m);
+  
+    /* Breakpoints */
+    --breakpoint-mobile: 800px;
+    --breakpoint-tablet: 1200px;
+  }

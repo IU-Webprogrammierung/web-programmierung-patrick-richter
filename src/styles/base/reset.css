@@ -1,0 +1,29 @@
+/* -----------------------------
+   RESET & BASISSTILE
+   ----------------------------- */
+
+   *,
+   *::before,
+   *::after {
+     box-sizing: inherit;
+   }
+   
+   html {
+     font-size: 16px;
+     /*font-size: clamp(1rem, 1.1vw, 2rem);*/
+     /*scroll-behavior: smooth;*/
+     overflow: hidden;
+     font-family: var(--font-primary);
+     box-sizing: border-box;
+   }
+   
+   body {
+     margin: 0px;
+     padding: 0px;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+   }
+   
+   h1 {
+     all: unset;
+   }

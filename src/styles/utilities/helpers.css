@@ -1,0 +1,15 @@
+/* Für Deaktivierung der mobile Elemente */
+
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: var(--breakpoint-mobile)),
+  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+
+    /* Für Deaktivierung der Desktop Elemente */
+    
+  .desktop-only {
+    display: none;
+  }
+}

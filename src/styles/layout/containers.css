@@ -1,0 +1,19 @@
+.project-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Benutzerdefinierte Pagination */
+.pagination-description-container {
+    position: fixed;
+    bottom: 2rem;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    text-align: center;
+    pointer-events: none; /* Erlaubt Klicks durch die Container hindurch */
+  }

@@ -1,0 +1,23 @@
+header {
+    font-family: Neue Montreal, Arial, sans-serif;
+    font-weight: 400;
+    font-size: var(--font-size-desktop-l);
+    line-height: var(--font-size-desktop-l);
+    /* color: white;
+    mix-blend-mode: difference; */
+    width: 100vw;
+    position: fixed;
+    z-index: 10;
+  }
+  
+  header > * {
+    padding-top: var(--header-bottom-padding);
+    padding-bottom: var(--header-bottom-padding);
+  }
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: var(--left-right-padding);
+    padding-right: var(--left-right-padding);
+  }

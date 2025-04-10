@@ -1,0 +1,55 @@
+/* -----------------------------
+   5. FARBANIMATION
+   ----------------------------- */
+
+/* 1. Grundzustand aller UI-Elemente: Sichtbar */
+.project-title, .project-title-mobile, .description-mobile, 
+.description, .pagination, .tab-text {
+  color: var(--active-text-color);
+  opacity: 1;
+  transition: opacity var(--title-fade-duration) ease-out, 
+              color var(--title-fade-duration) ease;
+}
+
+/* 2. Initiale Ausblendung (nur Seitenstart) */
+.initial-hidden {
+  opacity: 0 !important;
+  transition: none !important;
+}
+
+/* 3. Elemente, die bei Projektwechseln animiert werden sollen */
+.animate-on-transition {
+  transition: opacity var(--title-fade-duration) ease-out, 
+              color var(--title-fade-duration) ease;
+}
+
+.fade-out.animate-on-transition {
+  opacity: 0;
+}
+
+/* 4. Elemente, die bei Projektwechseln NICHT animiert werden */
+.static-on-transition {
+  /* Diese Elemente bleiben bei Projektwechseln unverändert */
+  transition: color var(--title-fade-duration) ease;
+}
+
+
+.initial-appear {
+  animation: initialFadeIn var(--title-initial-duration) ease-out var(--title-initial-delay) both;
+}
+@keyframes initialFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+.navbar {
+  color: var(--active-text-color);
+  transition: color var(--title-fade-duration) ease;
+}
+
+.title-arrow svg,
+.title-arrow svg polygon {
+  fill: var(--active-text-color);
+  transition: fill var(--title-fade-duration) ease;
+}
