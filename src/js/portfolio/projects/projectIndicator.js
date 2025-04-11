@@ -220,13 +220,25 @@ function createProjectList() {
 function togglePanel() {
   if (!indicator || !tabElement) return;
 
+  // Zustand vor der Änderung speichern
+  const wasOpen = indicator.classList.contains("open");
+
   indicator.classList.toggle("open");
 
-  // Prüfen, ob das Panel geschlossen wird
-  if (indicator.classList.contains("open")) {
-    // Hover-Listener entfernen
-    removeHoverListeners();
+// Prüfen ob Panel gerade GESCHLOSSEN wurde
+if (wasOpen && !indicator.classList.contains("open")) {
+  // Panel wurde gerade geschlossen
+  removeHoverListeners();
+  const panel = document.querySelector(".project-panel");
+  if (panel) {
+    setTimeout(() => {
+      panel.scrollTop = 0;
+    }, 900);
   }
+} else if (!wasOpen && indicator.classList.contains("open")) {
+  // Panel wurde gerade geöffnet
+  removeHoverListeners();
+}
 
   const isOpen = indicator.classList.contains("open");
   tabElement.setAttribute("aria-expanded", isOpen ? "true" : "false");

@@ -17,10 +17,53 @@
   
   .site-footer .footer-content {
     height: 50vh;
+    display: flex;
+    flex-direction: column;
     background-color: white;
-    font-family: Neue Montreal;
-    font-size: var(--font-size-desktop-l);
     text-align: center;
     padding-top: var(--spacing-3xl);
     pointer-events: auto;
   }
+
+  .site-footer .footer-content h1 {
+    font-size: 5rem;
+    font-weight:100;
+    margin-bottom: var(--spacing-5xl);  
+  }
+
+  .site-footer .footer-content p {
+    font-size: 2.5rem;
+    font-weight:100;
+    margin-top: 0px;
+    margin-bottom: var(--spacing-l);
+  }
+
+  .site-footer .footer-content a {
+    font-size: 2.5rem;
+    font-weight:100;
+  }
+
+  @media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+
+  .site-footer .footer-content h1 {
+    font-size: 3rem;
+    line-height: normal;
+    color: black;
+    margin-bottom: var(--spacing-5xl);  
+  }
+
+  .site-footer .footer-content p {
+    font-size: 1rem;
+    margin-top: 0px;
+    margin-bottom: var(--spacing-l);
+    padding:0;
+    line-height: normal;
+    color: black;
+  }
+  .site-footer .footer-content a {
+    font-size: 1rem;
+    font-weight:100;
+  }
+}
+

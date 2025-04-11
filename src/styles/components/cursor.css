@@ -7,16 +7,20 @@
    
    .project-container.cursor-left {
     cursor: url("../images/icons/arrow-left-black.svg") 20 15, w-resize;
+ 
   }
   
   .project-container.cursor-right {
     cursor: url("../images/icons/arrow-right-black.svg") 20 15, e-resize;
+
   }
   
   .project-container.cursor-left.white-cursor {
     cursor: url("../images/icons/arrow-left-white.svg") 20 15, w-resize;
+
   }
   
   .project-container.cursor-right.white-cursor {
     cursor: url("../images/icons/arrow-right-white.svg") 20 15, e-resize;
+
   }

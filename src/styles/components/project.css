@@ -8,10 +8,12 @@
 
 .project-title {
   font-style: italic;
+  text-transform: uppercase;
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  padding: var(--spacing-m);
 }
 
 .description {
@@ -20,8 +22,8 @@
   left: auto;
   width: 100%;
   margin-top: 1rem;
-  line-height: 1lh; /* 1 line-height unit */
-  block-size: 2lh; /* genau 2 Zeilen */
+  line-height: 1.2lh; /* 1 line-height unit */
+  block-size: 2.4lh; /* genau 2 Zeilen */
 }
 
 
@@ -99,8 +101,9 @@
     }
   
     .project-title-mobile {
-      font-size: var(--font-size-mobile-l);
+      font-size: var(--font-size-mobile-m);
       font-style: italic;
+      text-transform: uppercase;
     }
   
     .title-arrow {
@@ -118,6 +121,7 @@
   
     .description-mobile {
       font-size: var(--font-size-mobile-s);
+      color: black;
       line-height: normal;
       text-align: center;
       padding-left: var(--spacing-m);

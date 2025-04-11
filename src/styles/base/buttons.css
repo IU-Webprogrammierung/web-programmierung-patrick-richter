@@ -26,3 +26,21 @@ button {
     color: inherit;
     display: flex;
   }
+
+  .button.nav-about {
+    text-transform: uppercase;
+  }
+
+  a[href^="mailto:"] {
+    color: black;
+    text-decoration: underline;
+    text-underline-offset: 0.5rem;
+    text-decoration-thickness: 0.05rem;
+    display: inline-block;
+    transition: var(--transition-fast);
+    transform-origin: center center;
+  }
+
+  a[href^="mailto:"]:hover {
+    transform: skewX(-12deg);
+  }

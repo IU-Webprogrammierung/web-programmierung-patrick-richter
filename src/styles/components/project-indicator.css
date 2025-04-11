@@ -3,8 +3,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
-  z-index: 5;
+  height: 100vh; /* Fallback */
+  height: 100dvh;
+  z-index: 60;
 }
 
 /* 2. Tab-Styling */
@@ -21,22 +22,23 @@
   align-items: center;
   gap: var(--spacing-l);
   cursor: pointer;
-  z-index: 5;
+  z-index: 60;
   pointer-events: auto;
   transition:
     background-color var(--transition-fast),
-    transform var(--transition-default),
-    height var(--transition-default),
-    opacity var(--transition-default);
+    transform var(--transition-slow),
+    height var(--transition-slow),
+    opacity var(--transition-fast);
 }
 
 /* 3. Tab-Komponenten */
 .tab-text {
   writing-mode: vertical-rl;
   white-space: nowrap;
-  width: 1.5rem;
   text-align: center;
   min-height: 4rem;
+  font-size: var(--font-size-desktop-s);
+  line-height: var(--font-size-desktop-s);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,14 +108,17 @@
   background-color: white;
   overflow-y: auto;
   pointer-events: auto;
-  transition: transform var(--transition-default);
+  transition: transform var(--transition-slow);
+  padding: var(--spacing-l);
 }
 
 /* 5. Projektlisten-Styling */
 .project-list {
   list-style: none;
-  padding: var(--spacing-l);
-  margin: 0;
+  overflow-y: auto;
+  margin:0;
+  padding:0;
+  height:100%;
 }
 
 .project-list li {
@@ -148,8 +153,8 @@
   left: calc(-1 * var(--spacing-l));
   top: 50%;
   transform: translateY(-50%);
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.4rem;
+  height: 0.4rem;
   background-color: currentColor;
   border-radius: 50%;
 }
@@ -189,15 +194,9 @@
   screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
   /* Mobile Project-Indicator Anpassungen */
 
-.project-indicator {
-    height:100dvh;
-}
-
   .project-panel {
     width: 100vw;
-    height: calc(50% + 4.5rem);
-    top: calc(50% - 4.5rem);
-    box-shadow: none;
+    padding-right:0; /* Anpassung nötig damit Scrollbar rechts ist */
   }
 
   .project-indicator.open .project-indicator-tab {
@@ -210,28 +209,20 @@
     height: 9rem;
   }
 
-  /* Projektliste mobile anpassen */
   .project-list {
-    padding-left: var(--spacing-xl);
-    height: 70%; /* Volle Höhe des Panels nutzen */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* Für besseres Scrollverhalten auf iOS */
-    background-color: yellow;
-    width:90%
+    padding-right: var(--spacing-l); /* Anpassung für Scrollbar */
   }
 
   .project-list li {
-    margin-bottom: 0;
+    margin-bottom: var(--spacing-l);
   }
 
   .project-list a {
     font-size: var(--font-size-mobile-m);
-    padding: var(--spacing-xs);
   }
   .project-list a.active::before {
-    left: calc(-1 * var(--spacing-xl));
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 0.5rem;
+    height: 0.5rem;
   }
 
   /* Styling für das Chevron/X */

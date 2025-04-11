@@ -10,17 +10,15 @@
 @import 'utilities/accesibility.css';
 
 /* Layout */
-@import 'layout/layout.css';
 @import 'layout/header.css';
 @import 'layout/footer.css';
-@import 'layout/project.css';
 @import 'layout/containers.css';
 
 /* Components */
+@import 'components/project.css';
 @import 'components/project-indicator.css';
 @import 'components/pagination.css';
 @import 'components/overlay.css';
-@import 'components/mobile-description.css';
 @import 'components/cursor.css';
 
 @import 'utilities/helpers.css';

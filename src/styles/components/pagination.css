@@ -17,14 +17,14 @@
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
-    opacity: 0.6;
+    opacity: 0.4;
     cursor: default;
     pointer-events: none;
   
   }
   
   .custom-pagination-bullet.active {
-    opacity: 0.6;
+    opacity: 0.4;
     background-color: var(--active-text-color, #000);
   }
   
@@ -32,6 +32,20 @@
   .pagination {
     text-align: center;
     margin-bottom: 1rem;
-    z-index: 10;
-    pointer-events: auto;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+    .pagination {
+      margin-bottom: 0; /* Abstand entfernen */
+    }
+    .custom-pagination-item {
+      margin: 0 5px;
+    }
+    
+    .custom-pagination-bullet {
+      width: 0.4rem;
+      height: 0.4rem;
+    }
   }

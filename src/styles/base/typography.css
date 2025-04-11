@@ -37,3 +37,25 @@
     font-weight: 600;
     font-style: normal;
   }
+
+
+  @font-face {
+    font-family: Attila Sans Classic;
+    src: url("../fonts/AttilaSansClassicTrial-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: Stabil Grotesk;
+    src: url("../fonts/StabilGroteskTrial-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: Stabil Grotesk;
+    src: url("../fonts/StabilGroteskTrial-Light.otf") format("opentype");
+    font-weight: 200;
+    font-style: normal;
+  }
+

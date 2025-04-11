@@ -9,10 +9,13 @@
   
     /* Typografie */
     --font-primary: "Neue Montreal", sans-serif;
+    /*--font-primary: "Stabil Grotesk", sans-serif;
+    --font-primary: "Attila Sans Classic", sans-serif;*/
+    
     --font-size-desktop-l: 2rem;
     --font-size-desktop-m: 1.5rem;
     --font-size-desktop-s: 1rem;
-    --font-size-mobile-l: 1.5rem;
+    --font-size-mobile-l: 1.75rem;
     --font-size-mobile-m: 1.25rem;
     --font-size-mobile-s: 1rem;
   

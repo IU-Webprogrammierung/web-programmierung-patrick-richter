@@ -128,7 +128,7 @@ function init() {
           } else {
             // Aktives Element
             gsap.set(el, {
-              zIndex: checkFooter(i, navigableElements) ? 50 : i === 0 ? 5 : 0, // Footer höheren z-index
+              zIndex: checkFooter(i, navigableElements) ? 80 : i === 0 ? 5 : 0, // Footer höheren z-index
             });
             el.setAttribute("aria-hidden", "false");
           }

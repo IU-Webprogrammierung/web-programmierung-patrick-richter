@@ -1,10 +1,7 @@
 header {
-    font-family: Neue Montreal, Arial, sans-serif;
     font-weight: 400;
     font-size: var(--font-size-desktop-l);
     line-height: var(--font-size-desktop-l);
-    /* color: white;
-    mix-blend-mode: difference; */
     width: 100vw;
     position: fixed;
     z-index: 10;
@@ -20,4 +17,13 @@ header {
     align-items: center;
     padding-left: var(--left-right-padding);
     padding-right: var(--left-right-padding);
+  }
+
+  @media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+    header {
+      font-weight: 400;     
+      font-size: var(--font-size-mobile-l);
+      line-height: var(--font-size-mobile-l);
+    }
   }
