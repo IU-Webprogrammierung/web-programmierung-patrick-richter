@@ -12,7 +12,7 @@
      font-size: 16px;
      /*font-size: clamp(1rem, 1.1vw, 2rem);*/
      /*scroll-behavior: smooth;*/
-     overflow: hidden;
+     overflow: hidden; 
      font-family: var(--font-primary);
      box-sizing: border-box;
    }

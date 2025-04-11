@@ -223,7 +223,7 @@ function init() {
 
   // Observer für Scroll/Touch
   Observer.create({
-    target: document.body, // Target auf body für bessere Erkennung von allen Elementen
+    target: document.querySelector('.navigable-container'), 
     type: "wheel,touch,pointer",
     wheelSpeed: -0.3,
     onDown: (self) => {

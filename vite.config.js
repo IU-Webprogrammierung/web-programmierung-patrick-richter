@@ -8,6 +8,7 @@ export default defineConfig({
   
   // Konfiguration des Entwicklungsservers
   server: {
+    host: '0.0.0.0',
     // Automatisches Öffnen im Browser
     open: true,
     // Port für den Entwicklungsserver

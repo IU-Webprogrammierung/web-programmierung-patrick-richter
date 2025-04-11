@@ -219,9 +219,9 @@ dialog::backdrop {
     slideHori 7s linear infinite alternate 500ms;
 }
 
-@media screen and (max-width: var(--breakpoint-mobile)),
-  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
-    
+@media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
+
   .overlay {
     display: flex;
     flex-direction: column;
@@ -300,25 +300,6 @@ dialog::backdrop {
 
   .imprint-content h2 {
     font-size: var(--font-size-mobile-m);
-  }
-
-  /* Projektliste mobile anpassen */
-  .project-list {
-    padding: var(--spacing-xl) var(--spacing-xl);
-  }
-
-  .project-list li {
-    margin-bottom: var(--spacing-m);
-  }
-
-  .project-list a {
-    font-size: var(--font-size-mobile-m);
-    padding: var(--spacing-xs) 0;
-  }
-  .project-list a.active::before {
-    left: calc(-1 * var(--spacing-xl));
-    width: 0.6rem;
-    height: 0.6rem;
   }
 
   /* Mobile Bouncing Image Anpassungen */

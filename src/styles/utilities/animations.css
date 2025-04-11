@@ -87,11 +87,11 @@
   }
 }
 
-@media screen and (max-width: var(--breakpoint-mobile)),
-  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+@media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
 
   /* === BOUNCING IMAGE === */
-  
+
   @keyframes slideVert {
     from {
       top: 0;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <!-- 1. DOCUMENT HEADER -->
   <head>
@@ -28,21 +28,33 @@
           About
         </button>
       </nav>
-      <h1 class="project-title desktop-only initial-hidden animate-on-transition" aria-live="polite"></h1>
+      <h1
+        class="project-title desktop-only initial-hidden animate-on-transition"
+        aria-live="polite"
+      ></h1>
     </header>
 
     <!-- 3. MAIN CONTENT -->
     <main>
       <!-- Galerien der Projekte -->
-      <section class="project-container">
-        <!-- Projektelemente werden dynamisch geladen -->
-      </section>
-      <!-- Semantisch korrekter Footer - jetzt außerhalb der Projekt-Container -->
-      <footer id="site-footer" class="site-footer" data-special="footer" aria-hidden="true">
-        <div class="footer-top" id="footerTop"></div>
-        <div class="footer-content"></div>
-      </footer>
-      <div class="pagination-description-container initial-hidden static-on-transition desktop-only">
+      <div class="navigable-container">
+        <section class="project-container">
+          <!-- Projektelemente werden dynamisch geladen -->
+        </section>
+        <!-- Semantisch korrekter Footer - jetzt außerhalb der Projekt-Container -->
+        <footer
+          id="site-footer"
+          class="site-footer"
+          data-special="footer"
+          aria-hidden="true"
+        >
+          <div class="footer-top" id="footerTop"></div>
+          <div class="footer-content"></div>
+        </footer>
+      </div>
+      <div
+        class="pagination-description-container initial-hidden static-on-transition desktop-only"
+      >
         <div class="pagination initial-hidden animate-on-transition"></div>
 
         <div class="description initial-hidden animate-on-transition"></div>
@@ -87,7 +99,10 @@
         aria-controls="mobile-description"
       >
         <div class="project-title-container">
-          <h1 class="project-title-mobile initial-hidden animate-on-transition" aria-live="polite"></h1>
+          <h1
+            class="project-title-mobile initial-hidden animate-on-transition"
+            aria-live="polite"
+          ></h1>
           <div class="title-arrow initial-hidden static-on-transition">
             <svg
               height="1rem"
@@ -101,7 +116,10 @@
             </svg>
           </div>
         </div>
-        <div class="description-mobile initial-hidden animate-on-transition" id="mobile-description">
+        <div
+          class="description-mobile initial-hidden animate-on-transition"
+          id="mobile-description"
+        >
           Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
           nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
         </div>

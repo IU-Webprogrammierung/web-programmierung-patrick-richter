@@ -4,12 +4,20 @@
   display: none;
 }
 
-@media screen and (max-width: var(--breakpoint-mobile)),
-  screen and (min-width: var(--breakpoint-mobile)) and (max-width: var(--breakpoint-tablet)) and (orientation: portrait) {
+.desktop-only {
+  display: block;
+}
+
+@media screen and (max-width: 800px),
+  screen and (min-width: 800px) and (max-width: 1200px) and (orientation: portrait) {
 
     /* Für Deaktivierung der Desktop Elemente */
     
   .desktop-only {
     display: none;
+  }
+
+  .mobile-only {
+    display: block;
   }
 }

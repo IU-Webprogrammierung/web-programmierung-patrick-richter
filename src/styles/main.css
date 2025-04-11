@@ -6,7 +6,6 @@
 
 
 /* Utilities */
-@import 'utilities/helpers.css';
 @import 'utilities/animations.css';
 @import 'utilities/accesibility.css';
 
@@ -23,3 +22,5 @@
 @import 'components/overlay.css';
 @import 'components/mobile-description.css';
 @import 'components/cursor.css';
+
+@import 'utilities/helpers.css';
