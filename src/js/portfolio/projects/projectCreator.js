@@ -12,6 +12,7 @@
  * @fires EVENT_TYPES.DOM_STRUCTURE_READY - Signalisiert abgeschlossene DOM-Struktur
  */
 
+import logger from '@core/logger';
 import { EVENT_TYPES, addEventListener, dispatchCustomEvent } from '@core/state/events.js';
 import dataStore from '@core/dataStore.js';
 import { fixImagePath } from '@utils';
@@ -21,23 +22,23 @@ import { fixImagePath } from '@utils';
  * Registriert Event-Listener für PROJECT_DATA_LOADED
  */
 function init() {
-  console.log("projectLoader: Initialisierung");
+  logger.log("projectLoader: Initialisierung");
   
   // Auf Datenladung reagieren
   addEventListener(EVENT_TYPES.PROJECT_DATA_LOADED, async (event) => {
-    console.log("projectLoader: EVENT PROJECT_DATA_LOADED empfangen", event);
+    logger.log("projectLoader: EVENT PROJECT_DATA_LOADED empfangen", event);
     
     try {
       // DOM-Struktur erstellen
       await createProjectElements();
       
       // Explizit loggen
-      console.log("projectLoader: DOM-Struktur erstellt, sende DOM_STRUCTURE_READY");
+      logger.log("projectLoader: DOM-Struktur erstellt, sende DOM_STRUCTURE_READY");
       
       // Nächste Phase signalisieren: DOM-Struktur bereit
       dispatchCustomEvent(EVENT_TYPES.DOM_STRUCTURE_READY);
     } catch (error) {
-      console.error("Fehler beim Erstellen der DOM-Struktur:", error);
+      logger.error("Fehler beim Erstellen der DOM-Struktur:", error);
     }
   });
 }
@@ -51,7 +52,7 @@ async function createProjectElements() {
   const container = document.querySelector(".project-container");
 
   if (!container) {
-    console.error("Fehler: Project-Container nicht gefunden");
+    logger.error("Fehler: Project-Container nicht gefunden");
     return false;
   }
 
@@ -107,7 +108,7 @@ async function createProjectElements() {
 function createResponsiveImageHTML(imageData) {
   const imageObj = imageData?.image?.[0];
   if (!imageObj) {
-    console.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || "Unbekanntes Bild"}`);
+    logger.warn(`Keine Bilddaten gefunden für: ${imageData?.imageTitle || "Unbekanntes Bild"}`);
     return `<div class="swiper-slide"><picture><img src="images/placeholder.png" alt="Bildvorschau nicht verfügbar"/></picture></div>`;
   }
 
@@ -165,7 +166,7 @@ function createResponsiveImageHTML(imageData) {
 
   // Debug-Ausgabe für Entwicklung
   if (webpSrcset.length > 0) {
-    console.log(`WebP-Optionen für ${imageTitle}:`, webpSrcset.join(", "));
+    logger.log(`WebP-Optionen für ${imageTitle}:`, webpSrcset.join(", "));
   }
 
   // Genauere Größendefinition für unterschiedliche Viewport-Größen

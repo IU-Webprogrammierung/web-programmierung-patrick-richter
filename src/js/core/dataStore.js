@@ -16,6 +16,7 @@
  */
 
 import { API_ENDPOINTS, FALLBACK_DATA } from '@core/config.js';
+import logger from '@core/logger';
 import {
   normalizeProjectData,
   normalizeAboutData,
@@ -34,7 +35,7 @@ const dataStore = {
    * Initialisiert den Datenspeicher und startet den Ladevorgang
    */
   init() {
-    console.log("dataStore: Initialisierung und Start des Datenladevorgang");
+    logger.log("dataStore: Initialisierung und Start des Datenladevorgang");
     this.loadData();
   },
 
@@ -85,19 +86,19 @@ const dataStore = {
     fallbackData
   ) {
     try {
-      console.log(`Lade ${dataType} von ${url}...`);
+      logger.log(`Lade ${dataType} von ${url}...`);
       const response = await fetch(url);
 
       if (!response.ok) {
-        console.warn(`Fehler beim Laden von ${dataType}: ${response.status}`);
+        logger.warn(`Fehler beim Laden von ${dataType}: ${response.status}`);
         return normalizeFn(fallbackData);
       }
 
       const data = await response.json();
-      console.log(`${dataType} erfolgreich geladen`);
+      logger.log(`${dataType} erfolgreich geladen`);
       return normalizeFn(data);
     } catch (error) {
-      console.error(`Fehler beim Laden von ${dataType}:`, error);
+      logger.error(`Fehler beim Laden von ${dataType}:`, error);
       return normalizeFn(fallbackData);
     }
   },
@@ -107,7 +108,7 @@ const dataStore = {
    * @returns {boolean} true wenn die Projekte erfolgreich geladen wurden
    */
   loadData: async function () {
-    console.log("dataStore: Daten-Fetch beginnt...");
+    logger.log("dataStore: Daten-Fetch beginnt...");
 
     try {
       // Kritische Daten (Projekte) zuerst laden
@@ -122,7 +123,7 @@ const dataStore = {
       const projectsLoaded = this.projectsData?.data?.length > 0;
 
       if (projectsLoaded) {
-        console.log(
+        logger.log(
           "dataStore: Projektdaten erfolgreich geladen, sende PROJECT_DATA_LOADED Event"
         );
 
@@ -131,12 +132,12 @@ const dataStore = {
           projectsCount: this.projectsData?.data?.length || 0,
         });
       } else {
-        console.error("dataStore: Fehler beim Laden der Projektdaten");
+        logger.error("dataStore: Fehler beim Laden der Projektdaten");
         return false;
       }
 
       // Paralleles Laden der weniger kritischen Daten NACH dem Event
-      console.log(
+      logger.log(
         "dataStore: Lade zusätzliche Daten (About, Clients, Footer) im Hintergrund..."
       );
       const [aboutData, clientsData, footerData] = await Promise.allSettled([
@@ -175,7 +176,7 @@ const dataStore = {
           : normalizeFooterData(FALLBACK_DATA.footer);
 
       // Status-Übersicht ausgeben
-      console.log("dataStore: Hintergrundladung abgeschlossen mit Status:", {
+      logger.log("dataStore: Hintergrundladung abgeschlossen mit Status:", {
         about: this.aboutImprintData?.data ? "OK" : "FEHLER",
         clients: this.clientsData?.data?.length > 0 ? "OK" : "FEHLER",
         footer: this.footerData?.data ? "OK" : "FEHLER",
@@ -191,7 +192,7 @@ const dataStore = {
 
       return true;
     } catch (error) {
-      console.error("dataStore: Fehler beim Laden der Daten:", error);
+      logger.error("dataStore: Fehler beim Laden der Daten:", error);
       return false;
     }
   },

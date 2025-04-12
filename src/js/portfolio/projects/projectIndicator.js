@@ -14,6 +14,7 @@
  * @listens EVENT_TYPES.INITIAL_PROJECT_SET - Aktualisiert Tab-Text und Markierung initial
  */
 
+import logger from '@core/logger';
 import uiState from "@core/state/uiState.js";
 import { checkFooter, getValidatedElement } from '@utils';
 import { removeHoverListeners } from "@portfolio/projects/hoverPreview.js";
@@ -40,7 +41,7 @@ function init() {
     () => {
       updateTabText();
       updateActiveProjectInList();
-      console.log(
+      logger.log(
         "ProjectIndicator: Tab-Text und aktuelles Projekt aktualisiert"
       );
     }
@@ -53,7 +54,7 @@ function init() {
   addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {
     updateTabText();
     updateActiveProjectInList();
-    console.log("projectIndicator: Tab-Text initial aktualisiert");
+    logger.log("projectIndicator: Tab-Text initial aktualisiert");
   });
 }
 
@@ -152,7 +153,7 @@ function createProjectList() {
   projectList = getValidatedElement(".project-list");
 
   if (!projectList || !uiState.projects.length) {
-    console.warn("Projektliste oder Projekte nicht verfügbar");
+    logger.warn("Projektliste oder Projekte nicht verfügbar");
     return;
   }
 
@@ -191,7 +192,7 @@ function createProjectList() {
         setTimeout(() => {
           // Mit Router navigieren
           if (CustomRouter.initialized) {
-            console.log(`ProjectIndicator: Navigation zu Projekt-ID ${clickedProjectId} via Router`);
+            logger.log(`ProjectIndicator: Navigation zu Projekt-ID ${clickedProjectId} via Router`);
             CustomRouter.navigateToProjectById(clickedProjectId);
           }
         }, 300);
@@ -207,7 +208,7 @@ function createProjectList() {
     projectList.appendChild(li);
   });
 
-  console.log(
+  logger.log(
     "Projektliste erstellt mit",
     projectList.children.length,
     "Einträgen"

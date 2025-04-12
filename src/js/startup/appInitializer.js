@@ -11,6 +11,7 @@
  * @listens EVENT_TYPES.INITIAL_ANIMATION_COMPLETED - Entfernt Animation-Flag
  */
 
+import logger from '@core/logger';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
 import dataStore from '@core/dataStore.js';
 import projectLoader from '@portfolio/projects/projectCreator.js';
@@ -23,11 +24,11 @@ import TransitionController from '@core/state/transitionController.js';
  * Initialisiert die App und registriert Event-Listener
  */
 function init() {
-  console.log("appInitializer: Initialisierung");
+  logger.log("appInitializer: Initialisierung");
   
   // Event-Listener für App-Start registrieren
   addEventListener(EVENT_TYPES.APP_INIT_STARTED, async () => {
-    console.log("appInitializer: Start des Initialisierungsprozesses");
+    logger.log("appInitializer: Start des Initialisierungsprozesses");
     
     try {
       // ProjectLoader initialisieren
@@ -35,7 +36,7 @@ function init() {
       projectLoader.init();
       footerLoader.init();
       overlayContent.init();
-      console.log("appInitializer: ProjectLoader initialisiert");
+      logger.log("appInitializer: ProjectLoader initialisiert");
       
       // Datenspeicher initialisieren
       // Dies löst automatisch loadData() aus, das wiederum
@@ -43,13 +44,13 @@ function init() {
       dataStore.init();
       uiInitializer.init();
     } catch (error) {
-      console.error("appInitializer: Fehler bei der Initialisierung:", error);
+      logger.error("appInitializer: Fehler bei der Initialisierung:", error);
       showLoadingError();
     }
   });
 
 document.addEventListener(EVENT_TYPES.INITIAL_ANIMATION_STARTED, () => {
-  console.log("INITIAL_ANIMATION_STARTED ausgelöst");
+  logger.log("INITIAL_ANIMATION_STARTED ausgelöst");
   TransitionController._initialAnimationRunning = true;
 });
 

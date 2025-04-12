@@ -11,6 +11,7 @@
  * - routerUtils - Routing- und URL-Hilfsfunktionen
  * - navigationUtils - Navigation zwischen Projekten
  * - normalizeUtils - Datennormalisierung
+ * - deviceUtils - Geräte- und Umgebungsfunktionen
  */
 
 // DOM-Utilities
@@ -30,4 +31,7 @@ export * from './animationUtils.js';
 
 // Normalisierungs-Utilities
 export * from './normalizerUtils.js';
+
+// Device-Utilities
+export * from './deviceUtils.js';
 

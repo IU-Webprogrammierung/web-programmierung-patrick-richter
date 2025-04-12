@@ -4,6 +4,7 @@
     left: 0;
     width: 100%;
     height: 100vh;
+    height: 100dvh; 
     display: flex;
     flex-direction: column;
     pointer-events: auto; /* Wichtig: Interaktionen ermöglichen */
@@ -12,11 +13,13 @@
   
   .site-footer .footer-top {
     height: 50vh;
+    height: 50dvh;
     cursor: pointer;
   }
   
   .site-footer .footer-content {
     height: 50vh;
+    height: 50dvh;
     display: flex;
     flex-direction: column;
     background-color: white;

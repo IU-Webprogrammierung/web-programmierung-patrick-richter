@@ -9,6 +9,8 @@
  * - checkFooter()
  */
 
+import logger from '@core/logger';
+
 // Speichert die API-Instanz zur Laufzeit
 let navigationAPI = null;
 
@@ -18,7 +20,7 @@ let navigationAPI = null;
  * @returns {Object} Die übergebene API für Method-Chaining
  */
 export function registerNavigationAPI(api) {
-  console.log('Navigation-API registriert');
+  logger.log('Navigation-API registriert');
   navigationAPI = api;
   return api;
 }
@@ -29,7 +31,7 @@ export function registerNavigationAPI(api) {
  */
 export function getNavigationAPI() {
   if (!navigationAPI) {
-    console.warn('Navigation-API noch nicht initialisiert.');
+    logger.warn('Navigation-API noch nicht initialisiert.');
   }
   return navigationAPI;
 }

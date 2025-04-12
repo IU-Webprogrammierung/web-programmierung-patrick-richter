@@ -10,6 +10,8 @@
  * - updateURL() - Aktualisiert die Browser-URL
  */
 
+import logger from '@core/logger';
+
 /**
  * Konvertiert einen String in einen URL-freundlichen Slug
  * @param {string} str - Der zu konvertierende String
@@ -55,7 +57,7 @@ export function normalizeSlug(str) {
    */
   export function updateURL(path, state = {}) {
     if (window.location.pathname !== path) {
-      console.log(`URL-Update: "${path}"`);
+      logger.log(`URL-Update: "${path}"`);
       window.history.replaceState(state, "", path);
     }
   }

@@ -26,6 +26,7 @@ import {
   EVENT_TYPES,
   dispatchCustomEvent,
 } from '@core/state/events.js';
+import logger from '@core/logger';
 import uiState from '@core/state/uiState.js';
 import { checkFooter, normalizeSlug,
   getSlugFromPath,
@@ -51,10 +52,10 @@ class CustomRouter {
    * @returns {CustomRouter} Instanz für Method-Chaining
    */
   init(navigationAPI) {
-    console.log("CustomRouter: Initialisierung mit Navigation-API");
+    logger.log("CustomRouter: Initialisierung mit Navigation-API");
 
     if (!navigationAPI) {
-      console.error("CustomRouter: Keine Navigation-API übergeben!");
+      logger.error("CustomRouter: Keine Navigation-API übergeben!");
       return this;
     }
 
@@ -71,7 +72,7 @@ class CustomRouter {
 
     // Initiale URL verarbeiten nach App-Initialisierung
     addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
-      console.log(
+      logger.log(
         "CustomRouter: App vollständig initialisiert, verarbeite initiale URL"
       );
 
@@ -101,11 +102,11 @@ class CustomRouter {
    * Generiert eindeutige URL-Slugs für alle Projekte und speichert sie im uiState
    */
   initializeProjectSlugs() {
-    console.log("CustomRouter: Generiere eindeutige Slugs für alle Projekte");
+    logger.log("CustomRouter: Generiere eindeutige Slugs für alle Projekte");
 
     // Prüfen, ob Projekte verfügbar sind
     if (!uiState.projects || uiState.projects.length === 0) {
-      console.warn("CustomRouter: Keine Projekte im uiState gefunden");
+      logger.warn("CustomRouter: Keine Projekte im uiState gefunden");
       return;
     }
 
@@ -138,7 +139,7 @@ class CustomRouter {
 
       // Slug im uiState speichern
       uiState.setProjectSlug(projectId, finalSlug);
-      console.log(
+      logger.log(
         `CustomRouter: Slug für "${projectName}" (ID: ${projectId}) ist "${finalSlug}"`
       );
     });
@@ -152,7 +153,7 @@ class CustomRouter {
  */
 handleInitialURL() {
   const path = window.location.pathname;
-  console.log("CustomRouter: Verarbeite initiale URL", path);
+  logger.log("CustomRouter: Verarbeite initiale URL", path);
 
   // About/Imprint Routen mit Farbinitialisierung
   if (path === "/about" || path === "/imprint") {
@@ -187,7 +188,7 @@ handleInitialURL() {
   const projectIndex = this.getProjectIndexFromSlug(slug);
 
   if (projectIndex >= 0) {
-    console.log(
+    logger.log(
       `CustomRouter: Initial Projekt-Route für "${slug}" - Index ${projectIndex}`
     );
 
@@ -211,7 +212,7 @@ handleInitialURL() {
     }
   } else {
     // Slug nicht gefunden - zur Startseite
-    console.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
+    logger.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
     updateURL("/");
   }
 }
@@ -221,7 +222,7 @@ handleInitialURL() {
    * @param {string} path - Der zu verarbeitende URL-Pfad
    */
   handleURLChange(path) {
-    console.log(`CustomRouter: Verarbeite URL-Änderung "${path}"`);
+    logger.log(`CustomRouter: Verarbeite URL-Änderung "${path}"`);
 
     // About/Imprint Routen
     if (path === "/about") {
@@ -254,7 +255,7 @@ handleInitialURL() {
       }
     } else {
       // Slug nicht gefunden - zur Home-Route
-      console.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
+      logger.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
 
       this.suppressUrlUpdates = true;
       this.navigateToHome();
@@ -291,14 +292,14 @@ handleInitialURL() {
    */
   navigateToProject(projectIndex) {
     if (!this.navigationAPI) {
-      console.error("CustomRouter: Keine Navigation-API verfügbar");
+      logger.error("CustomRouter: Keine Navigation-API verfügbar");
       return;
     }
 
     // Richtung für Animation bestimmen
     const direction = projectIndex > uiState.activeProjectIndex ? 1 : -1;
 
-    console.log(
+    logger.log(
       `CustomRouter: Navigiere zu Projekt ${projectIndex} mit Richtung ${direction}`
     );
     this.navigationAPI.navigateToIndex(projectIndex, direction);
@@ -317,7 +318,7 @@ handleInitialURL() {
     if (projectIndex >= 0) {
       this.navigateToProject(projectIndex);
     } else {
-      console.warn(`CustomRouter: Projekt mit ID ${projectId} nicht gefunden`);
+      logger.warn(`CustomRouter: Projekt mit ID ${projectId} nicht gefunden`);
     }
   }
 
@@ -350,7 +351,7 @@ handleInitialURL() {
    * @param {string} type - Der Typ (about oder imprint)
    */
   handleOverlayRoute(type) {
-    console.log(`CustomRouter: ${type}-Route erkannt`);
+    logger.log(`CustomRouter: ${type}-Route erkannt`);
     this.suppressUrlUpdates = true;
     showOverlay();
     toggleAboutImprint(`show-${type}`);

@@ -106,6 +106,7 @@
  *    - Laden sekundäre Inhalte wie Footer, About und Client-Liste
  */
 
+import logger from '@core/logger';
 import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 
@@ -122,7 +123,7 @@ gsap.registerPlugin(Observer);
 document.addEventListener("DOMContentLoaded", () => {
   // Initialisierung der App
   appInitializer.init();
-  console.log("App-Initialisierung gestartet");
+  logger.log("App-Initialisierung gestartet");
 
   // Custom Event auslösen, um die Initialisierungskette zu starten
   // Siehe events.js für den Überblick des Ablaufs
@@ -130,6 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Auf den Abschluss der Initialisierung hören
   addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, () => {
-    console.log("App vollständig initialisiert");
+    logger.log("App vollständig initialisiert");
   });
 });

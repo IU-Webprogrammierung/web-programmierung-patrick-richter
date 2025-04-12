@@ -16,6 +16,7 @@
 
 // Mobile Description Element
 
+import logger from '@core/logger';
 import { getValidatedElement } from '@utils';
 
 /**
@@ -77,8 +78,8 @@ export function handleTouchEnd(event) {
       event.changedTouches[0] &&
       event.changedTouches[0].clientY) ||
     0;
-  console.log("handleTouchEnd: Touch geendet bei:", endY);
-  console.log("handleTouchEnd: startY", startY);
+  logger.log("handleTouchEnd: Touch geendet bei:", endY);
+  logger.log("handleTouchEnd: startY", startY);
   let deltaY = startY - endY;
 
   if (

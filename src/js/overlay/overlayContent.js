@@ -12,6 +12,7 @@
  * @listens EVENT_TYPES.ALL_DATA_LOADED - Initialisiert Overlay-Inhalte nach Datenladung
  */
 
+import logger from '@core/logger';
 import dataStore from '@core/dataStore.js';
 import { getValidatedElement } from '@utils';
 import { hideOverlay } from '@overlay/overlayController.js';
@@ -23,7 +24,7 @@ import CustomRouter from '@core/CustomRouter.js';
  */
 function init() {
   addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
-    console.log("overlayContent: Initialisiere About/Imprint-Inhalte");
+    logger.log("overlayContent: Initialisiere About/Imprint-Inhalte");
     try {
       const aboutImprintData = dataStore.getAboutImprint();
       const clientsData = dataStore.getClients();
@@ -33,7 +34,7 @@ function init() {
       const imprintContent = getValidatedElement(".imprint-content");
 
       if (!aboutIntro || !clientsList || !imprintContent) {
-        console.error("Fehler: About/Imprint-Elemente nicht gefunden");
+        logger.error("Fehler: About/Imprint-Elemente nicht gefunden");
         return;
       }
 
@@ -46,7 +47,7 @@ function init() {
       // Imprint-Inhalt erstellen
       createImprintContent(imprintContent, aboutImprintData);
     } catch (error) {
-      console.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
+      logger.error("Fehler beim Erstellen der About/Imprint-Inhalte:", error);
     }
   });
 }
@@ -62,7 +63,7 @@ function createAboutIntro(container, aboutImprintData) {
     !aboutImprintData.data ||
     !aboutImprintData.data.intro
   ) {
-    console.warn("Keine About-Intro-Daten gefunden");
+    logger.warn("Keine About-Intro-Daten gefunden");
     return;
   }
 
@@ -90,7 +91,7 @@ function createAboutIntro(container, aboutImprintData) {
  */
 function createClientsList(container, clientsData) {
   if (!clientsData || !clientsData.data || clientsData.data.length === 0) {
-    console.warn("Keine Clients-Daten gefunden");
+    logger.warn("Keine Clients-Daten gefunden");
     return;
   }
 
@@ -140,7 +141,7 @@ function createClientsList(container, clientsData) {
         setTimeout(() => {
           // Mit Router navigieren, wenn verfügbar
           if (CustomRouter.initialized) {
-            console.log(`OverlayContent: Navigation zu Projekt-ID ${projectId} via Router`);
+            logger.log(`OverlayContent: Navigation zu Projekt-ID ${projectId} via Router`);
             CustomRouter.navigateToProjectById(projectId);
           }
         }, 300); // Großzügiger Timeout für Animation
@@ -167,7 +168,7 @@ function createImprintContent(container, aboutImprintData) {
     !aboutImprintData.data ||
     !aboutImprintData.data.imprint
   ) {
-    console.warn("Keine Imprint-Daten gefunden");
+    logger.warn("Keine Imprint-Daten gefunden");
     return;
   }
 

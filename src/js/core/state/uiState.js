@@ -15,6 +15,7 @@
  * @fires EVENT_TYPES.ACTIVE_IMAGE_CHANGED - Bei Änderung des aktiven Bildes
  */
 
+import logger from '@core/logger';
 import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
 
 const uiState = {
@@ -68,7 +69,7 @@ const uiState = {
       dispatchCustomEvent(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, {
         projectIndex: index
       });
-      console.log(
+      logger.log(
         "uiState: Projekt aktualisiert - neues Projekt:",
         this.activeProjectIndex
       );
@@ -106,7 +107,7 @@ const uiState = {
         textColor: this.activeTextColor,
         slideIndex: slideIndex 
       });
-      console.log(
+      logger.log(
         "uiState: Bild aktualisiert - neues Bild:", imageId,
         "Projekt:", projectIndex,
         "TextFarbe:", textColor,

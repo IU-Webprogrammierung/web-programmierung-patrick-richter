@@ -8,10 +8,11 @@
  * - Home/End zum ersten/letzten Projekt
  */
 
+import logger from '@core/logger';
 import { checkFooter } from '@utils';
 
 export function setupKeyboardNavigation(transitionToProject, projects, getAnimating) {
-  console.log('Keyboard-Navigation wird initialisiert');
+  logger.log('Keyboard-Navigation wird initialisiert');
   
   /**
    * Behandelt Tastendruck-Events für die Navigation
@@ -66,7 +67,7 @@ export function setupKeyboardNavigation(transitionToProject, projects, getAnimat
   window.addEventListener('keydown', handleKeydown);
 
   // Testausgabe für Debugging
-  console.log(`Keyboard-Navigation initialisiert für ${projects.length} Projekte`);
+  logger.log(`Keyboard-Navigation initialisiert für ${projects.length} Projekte`);
 
   // Aufräum-Funktion zurückgeben
   return function cleanup() {
