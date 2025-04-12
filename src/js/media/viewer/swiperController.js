@@ -56,7 +56,7 @@ export async function init() {
       // Swiper mit gewünschten Optionen initialisieren
       const swiper = new Swiper(container, {
         slidesPerView: 1,
-        speed: getResponsiveValue(750, 1000),
+        speed: getResponsiveValue(750, 1200),
         direction: 'horizontal',
         loop: true,
         loopedSlides: 1,
