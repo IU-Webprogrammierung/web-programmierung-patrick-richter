@@ -20,7 +20,6 @@ Thumbs.db
 # Temporäre Dateien und Ordner
 node_modules/
 .cache/
-dist/
 
 # Strapi - zu ignorierende Dateien
 strapi-cms/node_modules/
