@@ -2,7 +2,7 @@
  * @module CustomRouter
  * @description Verwaltet URLs und Projekt-Navigation mit der Browser History API.
  * Bietet URL-Synchronisation, Deep-Linking und Integration mit dem Overlay-System.
- * 
+ *
  * Funktionen:
  * - init() - Initialisiert den Router mit der Navigation-API
  * - setupEventListeners() - Richtet Event-Listener für die URL-Synchronisation ein
@@ -16,7 +16,7 @@
  * - navigateToAbout() - Navigiert zur About-Seite
  * - navigateToImprint() - Navigiert zur Imprint-Seite
  * - handleOverlayRoute() - Behandelt About- und Imprint-Routen
- * 
+ *
  * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Aktualisiert URL basierend auf Projektwechseln
  * @listens EVENT_TYPES.APP_INIT_COMPLETE - Verarbeitet initiale URL nach vollständiger App-Initialisierung
  */
@@ -25,17 +25,17 @@ import {
   addEventListener,
   EVENT_TYPES,
   dispatchCustomEvent,
-} from '@core/state/events.js';
-import logger from '@core/logger';
-import uiState from '@core/state/uiState.js';
-import { checkFooter, normalizeSlug,
+} from "@core/state/events.js";
+import logger from "@core/logger";
+import uiState from "@core/state/uiState.js";
+import {
+  checkFooter,
+  normalizeSlug,
   getSlugFromPath,
   isValidProject,
-  updateURL } from '@utils';
-import {
-  showOverlay,
-  toggleAboutImprint,
-} from '@overlay/overlayController.js';
+  updateURL,
+} from "@utils";
+import { showOverlay, toggleAboutImprint } from "@overlay/overlayController.js";
 
 class CustomRouter {
   constructor() {
@@ -95,7 +95,6 @@ class CustomRouter {
       // Aktualisiere die URL mit neuem Projektindex
       this.updateURLForProject(projectIndex);
     });
-
   }
 
   /**
@@ -148,74 +147,74 @@ class CustomRouter {
   /**
    * Verarbeitet die initiale URL beim Laden der Seite (z.B. wenn Link verschickt wurde)
    */
-/**
- * Verarbeitet die initiale URL beim Laden der Seite (z.B. wenn Link verschickt wurde)
- */
-handleInitialURL() {
-  const path = window.location.pathname;
-  logger.log("CustomRouter: Verarbeite initiale URL", path);
+  /**
+   * Verarbeitet die initiale URL beim Laden der Seite (z.B. wenn Link verschickt wurde)
+   */
+  handleInitialURL() {
+    const path = window.location.pathname;
+    logger.log("CustomRouter: Verarbeite initiale URL", path);
 
-  // About/Imprint Routen mit Farbinitialisierung
-  if (path === "/about" || path === "/imprint") {
-    // Textfarbe vom ersten Projekt übernehmen
-    const project = uiState.projects[0];
-    const firstSlide = project.querySelector(".swiper-slide");
-    if (firstSlide) {
-      const textColor = firstSlide.getAttribute("data-text-color") || "black";
-      uiState.setActiveImage(0, 0, textColor, 0);
+    // About/Imprint Routen mit Farbinitialisierung
+    if (path === "/about" || path === "/imprint") {
+      // Textfarbe vom ersten Projekt übernehmen
+      const project = uiState.projects[0];
+      const firstSlide = project.querySelector(".swiper-slide");
+      if (firstSlide) {
+        const textColor = firstSlide.getAttribute("data-text-color") || "black";
+        uiState.setActiveImage(0, 0, textColor, 0);
+      }
+
+      // About-Route
+      if (path === "/about") {
+        this.handleOverlayRoute("about");
+        return;
+      }
+
+      // Imprint-Route
+      if (path === "/imprint") {
+        this.handleOverlayRoute("imprint");
+        return;
+      }
     }
 
-    // About-Route
-    if (path === "/about") {
-      this.handleOverlayRoute("about");
-      return;
-    }
+    // Projektspezifische URL
+    const slug = getSlugFromPath(path);
 
-    // Imprint-Route
-    if (path === "/imprint") {
-      this.handleOverlayRoute("imprint");
-      return;
+    // Leere URL (Home-Route)
+    if (!slug) return;
+
+    // Projektindex aus Slug ermitteln
+    const projectIndex = this.getProjectIndexFromSlug(slug);
+
+    if (projectIndex >= 0) {
+      logger.log(
+        `CustomRouter: Initial Projekt-Route für "${slug}" - Index ${projectIndex}`
+      );
+
+      // Textfarbe vom ersten Bild des Projekts übernehmen
+      const project = uiState.projects[projectIndex];
+      const firstSlide = project.querySelector(".swiper-slide");
+      if (firstSlide) {
+        const textColor = firstSlide.getAttribute("data-text-color") || "black";
+        uiState.setActiveImage(projectIndex, 0, textColor, 0);
+      }
+
+      // Zum Projekt navigieren
+      if (this.navigationAPI) {
+        this.navigationAPI.navigateToIndex(projectIndex, 1);
+
+        // INITIAL_PROJECT_SET auslösen (um content zu updaten)
+        setTimeout(() => {
+          uiState.activeProjectIndex = projectIndex;
+          dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
+        }, 100);
+      }
+    } else {
+      // Slug nicht gefunden - zur Startseite
+      logger.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
+      updateURL("/");
     }
   }
-
-  // Projektspezifische URL
-  const slug = getSlugFromPath(path);
-
-  // Leere URL (Home-Route)
-  if (!slug) return;
-
-  // Projektindex aus Slug ermitteln
-  const projectIndex = this.getProjectIndexFromSlug(slug);
-
-  if (projectIndex >= 0) {
-    logger.log(
-      `CustomRouter: Initial Projekt-Route für "${slug}" - Index ${projectIndex}`
-    );
-
-    // Textfarbe vom ersten Bild des Projekts übernehmen
-    const project = uiState.projects[projectIndex];
-    const firstSlide = project.querySelector(".swiper-slide");
-    if (firstSlide) {
-      const textColor = firstSlide.getAttribute("data-text-color") || "black";
-      uiState.setActiveImage(projectIndex, 0, textColor, 0);
-    }
-
-    // Zum Projekt navigieren
-    if (this.navigationAPI) {
-      this.navigationAPI.navigateToIndex(projectIndex, 1);
-
-      // INITIAL_PROJECT_SET auslösen (um content zu updaten)
-      setTimeout(() => {
-        uiState.activeProjectIndex = projectIndex;
-        dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
-      }, 100);
-    }
-  } else {
-    // Slug nicht gefunden - zur Startseite
-    logger.warn(`CustomRouter: Kein Projekt für Slug "${slug}" gefunden`);
-    updateURL("/");
-  }
-}
 
   /**
    * Verarbeitet eine URL-Änderung und navigiert entsprechend
@@ -375,6 +374,39 @@ handleInitialURL() {
     return uiState.projects.findIndex(
       (project) => project.getAttribute("data-project-id") === projectId
     );
+  }
+
+  // Ergänze diese Methode:
+  updateMetaTags(projectData) {
+    // Dynamische Anpassung der Meta-Tags basierend auf dem aktuellen Projekt
+    document.title = `${projectData.name} - Brenda Büttner Portfolio`;
+
+    // Meta-Description aktualisieren
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        `${projectData.name}: ${projectData.description.substring(0, 150)}...`
+      );
+    }
+
+    // OG-Tags aktualisieren
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute(
+        "content",
+        `${projectData.name} - Brenda Büttner Portfolio`
+      );
+    }
+
+    // Canonical URL setzen
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement("link");
+      canonicalLink.setAttribute("rel", "canonical");
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.setAttribute("href", window.location.href);
   }
 }
 
