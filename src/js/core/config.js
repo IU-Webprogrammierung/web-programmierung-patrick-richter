@@ -8,7 +8,7 @@
  */
 
 // Umgebungsvariablen
-export const IS_DEVELOPMENT = true; // Für Produktion auf false setzen
+export const IS_DEVELOPMENT = false; // Für Produktion auf false setzen
 export const BASE_URL = IS_DEVELOPMENT ? "https://brendabuettner.de" : "";
 export const API_URL = `${BASE_URL}/api`;
 
