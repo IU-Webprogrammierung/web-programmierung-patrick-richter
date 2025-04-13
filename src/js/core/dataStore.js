@@ -10,31 +10,34 @@
  * - getFooter()
  * - fetchDataWithFallback()
  * - loadData()
- * 
+ *
  * @fires EVENT_TYPES.PROJECT_DATA_LOADED - Nach erfolgreicher Projektdatenladung
  * @fires EVENT_TYPES.ALL_DATA_LOADED - Nach vollständiger Ladung aller Daten
  */
 
-import { API_ENDPOINTS, FALLBACK_DATA } from '@core/config.js';
+import { API_ENDPOINTS, FALLBACK_DATA } from "@core/config.js";
+import logger from "@core/logger";
 import {
   normalizeProjectData,
   normalizeAboutData,
   normalizeClientsData,
   normalizeFooterData,
-} from '@utils/normalizers/normalizerIndex.js';
-import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
+  normalizeGlobalSettingsData,
+} from "@utils/normalizers/normalizerIndex.js";
+import { EVENT_TYPES, dispatchCustomEvent } from "@core/state/events.js";
 
 const dataStore = {
   projectsData: null,
   aboutImprintData: null,
   clientsData: null,
   footerData: null,
+  globalSettingsData: null,
 
   /**
    * Initialisiert den Datenspeicher und startet den Ladevorgang
    */
   init() {
-    console.log("dataStore: Initialisierung und Start des Datenladevorgang");
+    logger.log("dataStore: Initialisierung und Start des Datenladevorgang");
     this.loadData();
   },
 
@@ -71,6 +74,14 @@ const dataStore = {
   },
 
   /**
+   * Gibt die Global-Settings-Daten zurück
+   * @returns {Object|null} Die Global-Settings-Daten oder null wenn nicht geladen
+   */
+  getGlobalSettings: function () {
+    return this.globalSettingsData;
+  },
+
+  /**
    * Lädt einen Datentyp mit Fehlerbehandlung und Normalisierung
    * @param {string} url - Die URL für den API-Aufruf
    * @param {string} dataType - Beschreibender Name des Datentyps für Logging
@@ -85,19 +96,19 @@ const dataStore = {
     fallbackData
   ) {
     try {
-      console.log(`Lade ${dataType} von ${url}...`);
+      logger.log(`Lade ${dataType} von ${url}...`);
       const response = await fetch(url);
 
       if (!response.ok) {
-        console.warn(`Fehler beim Laden von ${dataType}: ${response.status}`);
+        logger.warn(`Fehler beim Laden von ${dataType}: ${response.status}`);
         return normalizeFn(fallbackData);
       }
 
       const data = await response.json();
-      console.log(`${dataType} erfolgreich geladen`);
+      logger.log(`${dataType} erfolgreich geladen`);
       return normalizeFn(data);
     } catch (error) {
-      console.error(`Fehler beim Laden von ${dataType}:`, error);
+      logger.error(`Fehler beim Laden von ${dataType}:`, error);
       return normalizeFn(fallbackData);
     }
   },
@@ -107,7 +118,7 @@ const dataStore = {
    * @returns {boolean} true wenn die Projekte erfolgreich geladen wurden
    */
   loadData: async function () {
-    console.log("dataStore: Daten-Fetch beginnt...");
+    logger.log("dataStore: Daten-Fetch beginnt...");
 
     try {
       // Kritische Daten (Projekte) zuerst laden
@@ -122,7 +133,7 @@ const dataStore = {
       const projectsLoaded = this.projectsData?.data?.length > 0;
 
       if (projectsLoaded) {
-        console.log(
+        logger.log(
           "dataStore: Projektdaten erfolgreich geladen, sende PROJECT_DATA_LOADED Event"
         );
 
@@ -131,34 +142,41 @@ const dataStore = {
           projectsCount: this.projectsData?.data?.length || 0,
         });
       } else {
-        console.error("dataStore: Fehler beim Laden der Projektdaten");
+        logger.error("dataStore: Fehler beim Laden der Projektdaten");
         return false;
       }
 
       // Paralleles Laden der weniger kritischen Daten NACH dem Event
-      console.log(
-        "dataStore: Lade zusätzliche Daten (About, Clients, Footer) im Hintergrund..."
+      logger.log(
+        "dataStore: Lade zusätzliche Daten (About, Clients, Footer, Globale Einstellungen) im Hintergrund..."
       );
-      const [aboutData, clientsData, footerData] = await Promise.allSettled([
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.about,
-          "About",
-          normalizeAboutData,
-          FALLBACK_DATA.about
-        ),
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.clients,
-          "Clients",
-          normalizeClientsData,
-          FALLBACK_DATA.clients
-        ),
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.footer,
-          "Footer",
-          normalizeFooterData,
-          FALLBACK_DATA.footer
-        ),
-      ]);
+      const [aboutData, clientsData, footerData, globalSettingsData] =
+        await Promise.allSettled([
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.about,
+            "About",
+            normalizeAboutData,
+            FALLBACK_DATA.about
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.clients,
+            "Clients",
+            normalizeClientsData,
+            FALLBACK_DATA.clients
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.footer,
+            "Footer",
+            normalizeFooterData,
+            FALLBACK_DATA.footer
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.globalSettings,
+            "Globale Einstellungen",
+            normalizeGlobalSettingsData,
+            FALLBACK_DATA.globalSettings
+          ),
+        ]);
 
       // Ergebnisse verarbeiten
       this.aboutImprintData =
@@ -173,9 +191,13 @@ const dataStore = {
         footerData.status === "fulfilled"
           ? footerData.value
           : normalizeFooterData(FALLBACK_DATA.footer);
+      this.globalSettingsData =
+        globalSettingsData.status === "fulfilled"
+          ? globalSettingsData.value
+          : normalizeGlobalSettingsData(FALLBACK_DATA.globalSettings);
 
       // Status-Übersicht ausgeben
-      console.log("dataStore: Hintergrundladung abgeschlossen mit Status:", {
+      logger.log("dataStore: Hintergrundladung abgeschlossen mit Status:", {
         about: this.aboutImprintData?.data ? "OK" : "FEHLER",
         clients: this.clientsData?.data?.length > 0 ? "OK" : "FEHLER",
         footer: this.footerData?.data ? "OK" : "FEHLER",
@@ -191,7 +213,7 @@ const dataStore = {
 
       return true;
     } catch (error) {
-      console.error("dataStore: Fehler beim Laden der Daten:", error);
+      logger.error("dataStore: Fehler beim Laden der Daten:", error);
       return false;
     }
   },

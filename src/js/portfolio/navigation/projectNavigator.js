@@ -13,6 +13,7 @@
  * @listens wheel,touch,pointer - Über GSAP Observer für Scroll/Touch-Navigation
  */
 
+import logger from '@core/logger';
 import uiState from '@core/state/uiState.js';
 import { checkFooter, getValidatedElement, registerNavigationAPI } from '@utils';
 import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
@@ -91,7 +92,7 @@ function init() {
     if (index === currentIndex || animating) return;
 
     animating = true;
-    console.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
+    logger.log(`Navigiere zu Element ${index}, Richtung: ${direction}`);
 
     // Feststellen, ob wir zum/vom Footer navigieren
     const isToFooter = checkFooter(index, navigableElements);
@@ -136,7 +137,7 @@ function init() {
 
         animating = false;
         currentIndex = index;
-        console.log(`Navigation zu Element ${index} abgeschlossen`);
+        logger.log(`Navigation zu Element ${index} abgeschlossen`);
       },
     });
 
@@ -248,7 +249,7 @@ function init() {
   // Initiales Projekt setzen
   uiState.activeProjectIndex = 0;
   dispatchCustomEvent(EVENT_TYPES.INITIAL_PROJECT_SET);
-  console.log("projectNavigator: Initiales Projekt gesetzt, INITIAL_PROJECT_SET:", uiState.activeProjectIndex);
+  logger.log("projectNavigator: Initiales Projekt gesetzt, INITIAL_PROJECT_SET:", uiState.activeProjectIndex);
 
   // Navigation-API für andere Module (vor allem Router)
   const api = {

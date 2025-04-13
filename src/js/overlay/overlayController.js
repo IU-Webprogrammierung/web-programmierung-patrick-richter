@@ -14,6 +14,7 @@
  * @listens click - Auf Open/Close-Buttons und Overlay-Left
  */
 
+import logger from '@core/logger';
 import { checkFooter, getValidatedElement, validateElement } from '@utils';
 import { toggleDescription } from '@ui/mobileUi/mobileDescription.js';
 import { removeHoverListeners } from '@portfolio/projects/hoverPreview.js';
@@ -90,7 +91,7 @@ export function showOverlay() {
         toggleDescription();
       overlay.classList.add("show-overlay");
       overlay.setAttribute("aria-hidden", "false");
-      console.log("Overlay visible");
+      logger.log("Overlay visible");
       getValidatedElement("#closeOverlay").focus();
     }
 }
@@ -100,7 +101,7 @@ export function showOverlay() {
  */
 export function hideOverlay() {
   if (!overlay || !overlayRight) {
-      console.error("Fehler: Overlay-Elemente nicht gefunden");
+      logger.error("Fehler: Overlay-Elemente nicht gefunden");
       return;
   }
 
@@ -152,7 +153,7 @@ export function toggleAboutImprint(targetClass) {
     const aboutImprintSlider = getValidatedElement(".about-imprint-slider");
 
     if (!aboutImprintSlider) {
-        console.error("Fehler: About-Imprint-Slider nicht gefunden");
+        logger.error("Fehler: About-Imprint-Slider nicht gefunden");
         return;
     }
 

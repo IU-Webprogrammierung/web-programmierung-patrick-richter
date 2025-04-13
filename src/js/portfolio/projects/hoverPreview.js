@@ -12,6 +12,7 @@
  * @listens mousemove - Aktualisiert Position des Vorschaubilds
  */
 
+import logger from '@core/logger';
 import dataStore from '@core/dataStore.js';
 import { getValidatedElement, fixImagePath } from '@utils';
 
@@ -146,15 +147,15 @@ function init() {
   const projectIndicatorTab = getValidatedElement(".project-indicator-tab");
 
   if (projectIndicatorTab) {
-    console.log("HoverPreview initialisiert");
+    logger.log("HoverPreview initialisiert");
 
     projectIndicatorTab.addEventListener("click", () => {
-      console.log("HoverPreview initialisiert LISTENER AUSGELÖST");
+      logger.log("HoverPreview initialisiert LISTENER AUSGELÖST");
       const projectLinks = document.querySelectorAll(".project-list a[data-project-id]");
       addHoverListeners(projectLinks);
     });
   } else {
-    console.warn("projectIndicatorTab nicht gefunden");
+    logger.warn("projectIndicatorTab nicht gefunden");
   }
 
   // Event-Listener für About-Overlay

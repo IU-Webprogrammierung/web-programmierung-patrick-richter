@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /styles/
+
+# Verbesserte Crawl-Rate für Google
+User-agent: Googlebot
+Crawl-delay: 1
+
+# Sitemap-Referenz
+Sitemap: https://brendabuettner.de/sitemap.xml

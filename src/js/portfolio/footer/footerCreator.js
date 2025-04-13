@@ -10,6 +10,7 @@
  * @listens EVENT_TYPES.ALL_DATA_LOADED - Initialisiert Footer nach vollständigem Datenladen
  */
 
+import logger from '@core/logger';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
 import dataStore from '@core/dataStore.js';
 
@@ -20,7 +21,7 @@ function init () {
 
 // Auf DOM-Struktur-Bereitschaft reagieren
 addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
-  console.log("footerLoader: Initialisiere Footer");
+  logger.log("footerLoader: Initialisiere Footer");
   
   // Inhalte laden
   loadFooterContent();
@@ -32,18 +33,18 @@ addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
  * Lädt Footer-Inhalte aus dem dataStore und aktualisiert das DOM
  */
 function loadFooterContent() {
-  console.log("Lade Footer-Inhalte...");
+  logger.log("Lade Footer-Inhalte...");
   
   const container = document.querySelector(".footer-content");
   if (!container) {
-    console.error("Footer-Container nicht gefunden - keine .footer-content im DOM");
+    logger.error("Footer-Container nicht gefunden - keine .footer-content im DOM");
     return;
   }
   
   const footerData = dataStore.getFooter();
   
   if (!footerData || !footerData.data || !footerData.data.getincontact) {
-    console.warn("Keine Footer-Daten gefunden - Fallback wird verwendet");
+    logger.warn("Keine Footer-Daten gefunden - Fallback wird verwendet");
     
     // Fallback-Inhalt
     container.innerHTML = `
@@ -82,7 +83,7 @@ function loadFooterContent() {
   
   // Inhalt in DOM einfügen
   container.innerHTML = footerContent;
-  console.log("Footer-Inhalte erfolgreich geladen");
+  logger.log("Footer-Inhalte erfolgreich geladen");
 }
 
 export default {

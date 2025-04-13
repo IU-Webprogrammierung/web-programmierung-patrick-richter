@@ -12,6 +12,7 @@
  * @fires events.CONTENT_UPDATE_NEEDED - Signal zum Aktualisieren von Inhalten (BETWEEN-Phase)
  */
 
+import logger from '@core/logger';
 import { getCSSTimeVariable } from '@utils';
 
 const TransitionController = {
@@ -38,7 +39,7 @@ const TransitionController = {
    * @param {string} newPhase - Die neue Phase (aus this.phases)
    */
   changePhase(newPhase) {
-    console.log(`TransitionController: Phase wechselt zu ${newPhase}`);
+    logger.log(`TransitionController: Phase wechselt zu ${newPhase}`);
     this.currentPhase = newPhase;
     
     // Event auslösen
@@ -60,13 +61,13 @@ const TransitionController = {
    */
   startTransition() {
     if (this.isTransitioning) {
-      console.warn('TransitionController: Übergang bereits aktiv');
+      logger.warn('TransitionController: Übergang bereits aktiv');
       return false;
     }
     
     // Prüfen, ob initial Animation noch läuft
     if (this._initialAnimationRunning) {
-      console.log('TransitionController: Warte auf Abschluss der initialAnimation');
+      logger.log('TransitionController: Warte auf Abschluss der initialAnimation');
       
       // Transition merken und später ausführen
       this._deferredTransition = true;

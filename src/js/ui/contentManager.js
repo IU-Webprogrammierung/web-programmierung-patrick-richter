@@ -12,6 +12,7 @@
  * @listens TransitionController.events.CONTENT_UPDATE_NEEDED - Inhalte während Transition aktualisieren
  */
 
+import logger from '@core/logger';
 import { checkFooter, getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import TransitionController from '@core/state/transitionController.js';
@@ -44,12 +45,12 @@ function init() {
     // Auf erstes Projekt warten und Daten dann aktualisieren
  addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => {   
   updateContents();
-    console.log("contentManager: Inhalt initial aktualisiert");
+    logger.log("contentManager: Inhalt initial aktualisiert");
  }); 
   // Auf Content-Update-Event reagieren
   document.addEventListener(TransitionController.events.CONTENT_UPDATE_NEEDED, () => {
     updateContents();
-    console.log("contentManager: Inhalt aktualisiert");
+    logger.log("contentManager: Inhalt aktualisiert");
   });
 }
 
@@ -58,7 +59,7 @@ function init() {
  */
 export function updateContents() {
   const activeIndex = uiState.activeProjectIndex;
-  console.log(`Aktives Projekt: CONTENT ${activeIndex}`);
+  logger.log(`Aktives Projekt: CONTENT ${activeIndex}`);
   
   // Bestimmen ob der Footer aktiv ist (ohne direkten Array-Zugriff)
   const isFooterActive = checkFooter(activeIndex);
@@ -82,7 +83,7 @@ export function updateContents() {
     if (desktopDescription) desktopDescription.style.display = '';
     if (mobileDescription) mobileDescription.style.display = '';
   }
-  console.log(activeIndex, uiState.projects.length, "content manager");
+  logger.log(activeIndex, uiState.projects.length, "content manager");
 }
 
 /**
@@ -92,11 +93,11 @@ export function updateContents() {
  */
 function setTitles(projectName, projectDesc) {
   if (headerTitle) headerTitle.textContent = projectName;
-  console.log(`Titel gesetzt: "${projectName}"`);
+  logger.log(`Titel gesetzt: "${projectName}"`);
   if (desktopDescription) desktopDescription.textContent = projectDesc;
   if (mobileTitle) mobileTitle.textContent = projectName;
   if (mobileDescription) mobileDescription.textContent = projectDesc;
-  console.log(`Titel gesetzt: "${projectName}"`);
+  logger.log(`Titel gesetzt: "${projectName}"`);
 }
 
 

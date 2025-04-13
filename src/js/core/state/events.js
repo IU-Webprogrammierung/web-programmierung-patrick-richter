@@ -20,6 +20,8 @@
  * @fires EVENT_TYPES.INITIAL_ANIMATION_STARTED/COMPLETED - Animation-Events
  */
 
+import logger from '@core/logger';
+
 // Event-Typen als Konstanten definieren für konsistente Nutzung
 export const EVENT_TYPES = {
   // Initialisierungs-Events
@@ -46,7 +48,7 @@ export const EVENT_TYPES = {
  * @param {Object} [detail={}] - Optionale Detaildaten für das Event
  */
 export function dispatchCustomEvent(eventName, detail = {}) {
-  console.log(`Event wird gesendet: ${eventName}`, detail);
+  logger.log(`Event wird gesendet: ${eventName}`, detail);
   document.dispatchEvent(new CustomEvent(eventName, { detail }));
 }
 
@@ -57,7 +59,7 @@ export function dispatchCustomEvent(eventName, detail = {}) {
  * @returns {Function} Der Handler (für mögliche spätere Entfernung)
  */
 export function addEventListener(eventName, handler) {
-  console.log(`Event-Listener wird registriert für: ${eventName}`);
+  logger.log(`Event-Listener wird registriert für: ${eventName}`);
   document.addEventListener(eventName, handler);
   return handler; // Handler zurückgeben für mögliche Entfernung
 }
@@ -68,6 +70,6 @@ export function addEventListener(eventName, handler) {
  * @param {Function} handler - Zu entfernender Event-Handler
  */
 export function removeEventListener(eventName, handler) {
-  console.log(`Event-Listener wird entfernt für: ${eventName}`);
+  logger.log(`Event-Listener wird entfernt für: ${eventName}`);
   document.removeEventListener(eventName, handler);
 }

@@ -12,3 +12,4 @@ export { normalizeProjectData } from './projectNormalizer.js';
 export { normalizeAboutData } from './aboutNormalizer.js';
 export { normalizeClientsData } from './clientsNormalizer.js';
 export { normalizeFooterData } from './footerNormalizer.js';
+export { normalizeGlobalSettingsData } from './globalSettingsNormalizer.js';

@@ -12,6 +12,7 @@
  * @fires EVENT_TYPES.INITIAL_ANIMATION_COMPLETED - Bei Abschluss der initialen Animation
  */
 
+import logger from '@core/logger';
 import {EVENT_TYPES, dispatchCustomEvent} from '@core/state/events.js';
 import { getValidatedElements } from '@utils';
 
@@ -65,7 +66,7 @@ export function animateElementTransition({
   const validElements = elementsArray.filter((el) => el instanceof HTMLElement);
 
   if (validElements.length === 0) {
-    console.warn(
+    logger.warn(
       "animateElementTransition: Keine gültigen Elemente für Animation gefunden"
     );
     return Promise.resolve();
@@ -130,29 +131,29 @@ export function animateElementTransition({
  */
 export function initialAppearAnimation() {
   const uiElements = Array.from(getValidatedElements(".initial-hidden") || []);
-  console.log("initialAppearAnimation wird aufgerufen mit:", uiElements);
+  logger.log("initialAppearAnimation wird aufgerufen mit:", uiElements);
   
   // Prüfen, ob Elemente existieren und initial-hidden haben
   uiElements.forEach(el => {
     if (el) {
-      console.log("Element:", el, "hat initial-hidden:", el.classList.contains('initial-hidden'));
+      logger.log("Element:", el, "hat initial-hidden:", el.classList.contains('initial-hidden'));
     }
   });
   
   // Event auslösen, dass Animation startet
   dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_STARTED);
-  console.log("INITIAL_ANIMATION_STARTED ausgelöst");
+  logger.log("INITIAL_ANIMATION_STARTED ausgelöst");
   
   // Lese Dauer und Delay aus den CSS-Variablen
   const duration = getCSSTimeVariable("--title-initial-duration", 300);
   const delay = getCSSTimeVariable("--title-initial-delay", 6000);
-  console.log("INITIAL APPEAR: duration:", duration, "delay:", delay);
+  logger.log("INITIAL APPEAR: duration:", duration, "delay:", delay);
   
   // Stelle sicher, dass uiElements ein Array ist
   const elementsArray = Array.isArray(uiElements) ? uiElements : [uiElements];
-  console.log("INITIAL APPEAR: elementsArray:", elementsArray);
+  logger.log("INITIAL APPEAR: elementsArray:", elementsArray);
   const validElements = elementsArray.filter(el => el && el instanceof HTMLElement);
-  console.log("INITIAL APPEAR: validElements:", validElements);
+  logger.log("INITIAL APPEAR: validElements:", validElements);
   
   if (validElements.length === 0) return Promise.resolve();
   
@@ -162,17 +163,17 @@ export function initialAppearAnimation() {
       validElements.forEach(el => {
         el.classList.remove('initial-hidden');
         el.classList.add('initial-appear');
-        console.log("initial-appear wird hinzugefügt zu:", el);
+        logger.log("initial-appear wird hinzugefügt zu:", el);
       });
   
       // Gesamtdauer (Delay + Animationsdauer + Puffer) abwarten
       const totalTime = duration + delay + 50;
-      console.log("initialAppearAnimation wird Promise auflösen nach", totalTime, "ms");
+      logger.log("initialAppearAnimation wird Promise auflösen nach", totalTime, "ms");
       
       setTimeout(() => {
         // Aufräumen: Entferne initial-appear-Klasse, damit der Endzustand übernommen wird
         validElements.forEach(el => el.classList.remove('initial-appear'));
-        console.log("INITIAL_ANIMATION_COMPLETED wird jetzt ausgelöst");
+        logger.log("INITIAL_ANIMATION_COMPLETED wird jetzt ausgelöst");
   
         // Event auslösen, dass Animation abgeschlossen ist
         dispatchCustomEvent(EVENT_TYPES.INITIAL_ANIMATION_COMPLETED);

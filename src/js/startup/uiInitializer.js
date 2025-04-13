@@ -11,6 +11,7 @@
  * @fires EVENT_TYPES.UI_COMPONENTS_READY - Signalisiert abgeschlossene UI-Initialisierung
  */
 
+import logger from '@core/logger';
 import {
   EVENT_TYPES,
   dispatchCustomEvent,
@@ -31,29 +32,29 @@ import interactionInitializer from '@startup/interactionInitializer.js';
 function init() {
   // Auf DOM-Struktur reagieren
   addEventListener(EVENT_TYPES.DOM_STRUCTURE_READY, async () => {
-    console.log(
+    logger.log(
       "uiInitializer: DOM-Struktur bereit - initialisiere UI-Komponenten"
     );
 
     // UI-State mit den DOM-Elementen aktualisieren
     uiState.updateProjects();
-    console.log(
+    logger.log(
       `uiInitializer: ${uiState.projects.length} Projekte im DOM gefunden`
     );
 
     // Interaction Initialisierung starten
     interactionInitializer.init();
-    console.log("uiInitializer: Interaktionen initialisiert");
+    logger.log("uiInitializer: Interaktionen initialisiert");
 
     try {
       // UI-Komponenten initialisieren
       await initializeUIComponents();
-      console.log("uiInitializer: UI-Komponenten initialisiert");
+      logger.log("uiInitializer: UI-Komponenten initialisiert");
 
       // Nächste Phase signalisieren: UI-Komponenten bereit
       dispatchCustomEvent(EVENT_TYPES.UI_COMPONENTS_READY);
     } catch (error) {
-      console.error("uiInitializer: Fehler bei der Initialisierung:", error);
+      logger.error("uiInitializer: Fehler bei der Initialisierung:", error);
     }
   });
 }
@@ -63,31 +64,31 @@ function init() {
  * @returns {Promise<boolean>} Promise, das nach erfolgreicher Initialisierung erfüllt wird
  */
 async function initializeUIComponents() {
-  console.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");
+  logger.log("uiInitializer: Starte sequenzielle Komponenten-Initialisierung");
 
   // 1. Zentrale Animation für Titel, Description, etc.
   uiAnimationManager.init();
-  console.log("uiInitializer: UI-Animation initialisiert");
+  logger.log("uiInitializer: UI-Animation initialisiert");
 
   // 2. Content-Manager für Texte etc. in Titel, Description, etc.
   contentManager.init();
-  console.log("uiInitializer: Content-Manager initialisiert");
+  logger.log("uiInitializer: Content-Manager initialisiert");
 
   // 2. Projekt-Indikator einrichten
   projectIndicator.init();
-  console.log("uiInitializer: Projekt-Indikator initialisiert");
+  logger.log("uiInitializer: Projekt-Indikator initialisiert");
 
   // 3. Swiper für Bildergalerien initialisieren
   await swiperInitializer.init();
-  console.log("uiInitializer: Swiper initialisiert");
+  logger.log("uiInitializer: Swiper initialisiert");
 
   // 4. Pagination für die Bilder einrichten
   customPagination.init();
-  console.log("uiInitializer: Pagination initialisiert");
+  logger.log("uiInitializer: Pagination initialisiert");
 
   // 5. Weitere UI-Komponenten
   imageColorHandler.init();
-  console.log("uiInitializer: Alle UI-Komponenten initialisiert");
+  logger.log("uiInitializer: Alle UI-Komponenten initialisiert");
 
   return true;
 }

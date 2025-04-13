@@ -12,6 +12,7 @@
  * @listens click - Navigiert zwischen Bildern basierend auf Klickposition
  */
 
+import logger from '@core/logger';
 import { getValidatedElement } from '@utils';
 import swiperInitializer from '@media/viewer/swiperController.js';
 
@@ -22,11 +23,11 @@ function init() {
   const container = getValidatedElement(".project-container", "Fehler: Project-Container nicht gefunden");
 
   if (!container) {
-    console.error("Fehler: Project-Container nicht gefunden");
+    logger.error("Fehler: Project-Container nicht gefunden");
     return;
   }
   
-  console.log("SetupImageNavigation gestartet");
+  logger.log("SetupImageNavigation gestartet");
   
   // Variablen für die letzte Mausposition
   let lastX = 0;

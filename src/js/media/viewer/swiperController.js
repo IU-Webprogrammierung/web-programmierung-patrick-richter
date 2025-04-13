@@ -12,6 +12,8 @@
  * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Aktualisiert Swiper bei Projektwechseln
  */
 
+import logger from '@core/logger';
+import { isMobileDevice, getResponsiveValue } from '@utils';
 import Swiper from 'swiper';
 import uiState from '@core/state/uiState.js';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
@@ -26,16 +28,16 @@ const swiperInstances = [];
  * @returns {Promise<Array>} Promise mit allen erstellten Swiper-Instanzen
  */
 export async function init() {
-  console.log("SwiperJS: Initialisierung beginnt");
+  logger.log("SwiperJS: Initialisierung beginnt");
   
   // Alle Swiper-Container finden
   const swiperContainers = document.querySelectorAll('.swiper');
-  console.log(`SwiperJS: ${swiperContainers.length} Swiper-Container gefunden`);
+  logger.log(`SwiperJS: ${swiperContainers.length} Swiper-Container gefunden`);
   
   // Erstelle ein Array von Promises für jeden Swiper-Container
   const swiperPromises = Array.from(swiperContainers).map((container, index) => {
     return new Promise((resolve, reject) => {
-      console.log(`SwiperJS: Initialisiere Swiper #${index}`);
+      logger.log(`SwiperJS: Initialisiere Swiper #${index}`);
       
       // Projekt-Element und -Index finden
       const projectElement = container.closest('.project');
@@ -54,17 +56,19 @@ export async function init() {
       // Swiper mit gewünschten Optionen initialisieren
       const swiper = new Swiper(container, {
         slidesPerView: 1,
-        speed: 1000,
+        speed: getResponsiveValue(750, 1200),
         direction: 'horizontal',
         loop: true,
         loopedSlides: 1,
         navigation: { enabled: false },
         grabCursor: false,
         simulateTouch: true,
-        touchRatio: 1,
+        touchRatio: 0.5,
+        resistance: true,
+        resistanceRatio: 1,
         on: {
           init: function () {
-            console.log("SwiperJS: Swiper initialisiert für Container:", container);
+            logger.log("SwiperJS: Swiper initialisiert für Container:", container);
             resolve(this);
           },
           slideChange: function () {
@@ -85,7 +89,7 @@ export async function init() {
         projectIndex: projectIndex
       };
       
-      console.log(`SwiperJS: Swiper #${index} für Projekt ${projectIndex} initialisiert`);
+      logger.log(`SwiperJS: Swiper #${index} für Projekt ${projectIndex} initialisiert`);
     });
   });
   
@@ -103,7 +107,7 @@ function setupProjectChangeHandler() {
     if (!event || !event.detail) return;
     
     const { projectIndex } = event.detail;
-    console.log(`SwiperJS: Projektwechsel zu ${projectIndex} erkannt`);
+    logger.log(`SwiperJS: Projektwechsel zu ${projectIndex} erkannt`);
     
     // Footer oder ungültigen Index prüfen
     const isFooter = projectIndex >= 0 &&
@@ -111,13 +115,13 @@ function setupProjectChangeHandler() {
                      uiState.projects[projectIndex].id === "site-footer";
     
     if (isFooter || projectIndex < 0 || projectIndex >= uiState.projects.length) {
-      console.log("SwiperJS: Footer oder ungültiger Index erkannt, keine Aktualisierung");
+      logger.log("SwiperJS: Footer oder ungültiger Index erkannt, keine Aktualisierung");
       return;
     }
     
     const matchingSwiperInfo = swiperInstances.find(info => info && info.projectIndex === projectIndex);
     if (!matchingSwiperInfo) {
-      console.warn(`SwiperJS: Keine Swiper-Instanz für Projekt ${projectIndex} gefunden`);
+      logger.warn(`SwiperJS: Keine Swiper-Instanz für Projekt ${projectIndex} gefunden`);
       return;
     }
     
@@ -125,14 +129,14 @@ function setupProjectChangeHandler() {
     const swiper = swiperInfo.swiper;
     const activeSlide = swiper.slides[swiper.activeIndex];
     if (!activeSlide) {
-      console.warn(`SwiperJS: Kein aktiver Slide in Projekt ${projectIndex} gefunden`);
+      logger.warn(`SwiperJS: Kein aktiver Slide in Projekt ${projectIndex} gefunden`);
       return;
     }
     
     const imageId = parseInt(activeSlide.getAttribute('data-id'));
     const textColor = activeSlide.getAttribute('data-text-color') || 'black';
     
-    console.log(`SwiperJS: Nach Projektwechsel ist Bild ${imageId} aktiv, Farbe: ${textColor}`);
+    logger.log(`SwiperJS: Nach Projektwechsel ist Bild ${imageId} aktiv, Farbe: ${textColor}`);
     
     if (TransitionController && TransitionController.isActive()) {
       uiState.activeImageIndex = imageId;
@@ -140,7 +144,7 @@ function setupProjectChangeHandler() {
       if (swiper.activeIndex >= 0) {
         uiState.activeSlideIndices[projectIndex] = swiper.activeIndex;
       }
-      console.log(`SwiperJS: Stiller Update während Transition - Farbe: ${textColor}`);
+      logger.log(`SwiperJS: Stiller Update während Transition - Farbe: ${textColor}`);
       return;
     }
     

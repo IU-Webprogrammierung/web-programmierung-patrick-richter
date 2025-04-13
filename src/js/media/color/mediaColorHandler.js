@@ -16,6 +16,7 @@
  */
 
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
+import logger from '@core/logger';
 import { getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import TransitionController from '@core/state/transitionController.js';
@@ -40,7 +41,7 @@ addEventListener(
     handleTransitionPhase
   );
   
-  console.log("ImageColorHandler: Setup abgeschlossen, auf Events wartend");
+  logger.log("ImageColorHandler: Setup abgeschlossen, auf Events wartend");
 }
 
 /**
@@ -57,7 +58,7 @@ export function handleColorChange(textColor) {
   // Cursor-Stil aktualisieren
   updateCursorStyle(textColor);
   
-  console.log(`Farbe geändert zu: ${textColor}`);
+  logger.log(`Farbe geändert zu: ${textColor}`);
 }
 
 /**
@@ -73,7 +74,7 @@ export function coordinateVisualUpdates(event) {
 
   // Bei aktivem Transition keine Updates durchführen
   if (TransitionController.isActive()) {
-    console.log(`Visuelle Updates während Transition aufgeschoben`);
+    logger.log(`Visuelle Updates während Transition aufgeschoben`);
     return; // Updates werden in handleTransitionPhase in der BETWEEN-Phase durchgeführt
   }
 
@@ -118,7 +119,7 @@ function handleTransitionPhase(event) {
     // Aktuelle Farbe aus dem uiState über die zentrale Funktion anwenden
     handleColorChange(uiState.activeTextColor);
     
-    console.log(`Farbwechsel in BETWEEN-Phase zu: ${uiState.activeTextColor}`);
+    logger.log(`Farbwechsel in BETWEEN-Phase zu: ${uiState.activeTextColor}`);
   }
 }
 

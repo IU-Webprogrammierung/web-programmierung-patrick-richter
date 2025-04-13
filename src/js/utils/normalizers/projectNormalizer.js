@@ -86,12 +86,13 @@ export function normalizeProjectData(data) {
       id: project.id || 0,
       name: project.name || 'Unnamed Project',
       description: ensureValue(project.description, []),
+      seo_description: project.seo_description || '',
+      seo_image: project.seo_image ? normalizeImageData(project.seo_image) : null,
       rank: project.rank || 999,
       createdAt: project.createdAt,
       updatedAt: project.updatedAt,
       publishedAt: project.publishedAt,
       documentId: project.documentId,
-      // Projektbilder normalisieren
       project_images: Array.isArray(project.project_images)
         ? project.project_images.map(img => normalizeProjectImage(img))
         : []

@@ -10,6 +10,7 @@
  * @listens EVENT_TYPES.APP_INIT_COMPLETE - Startet initiale Animation
  */
 
+import logger from '@core/logger';
 import { addEventListener, EVENT_TYPES } from '@core/state/events.js';
 import { getValidatedElement, initialAppearAnimation } from '@utils';
 import TransitionController from '@core/state/transitionController.js';
@@ -51,10 +52,10 @@ function init() {
       
       if (phase === TransitionController.phases.FADE_OUT || 
           phase === TransitionController.phases.BETWEEN) {
-        console.log("uiAnimationManager: fade-out wird gesetzt");
+        logger.log("uiAnimationManager: fade-out wird gesetzt");
         element.classList.add('fade-out');
       } else if (phase === TransitionController.phases.FADE_IN) {
-        console.log("uiAnimationManager: fade-out wird entfernt");
+        logger.log("uiAnimationManager: fade-out wird entfernt");
         element.classList.remove('fade-out');
       }
     });
@@ -62,7 +63,7 @@ function init() {
 
   // Event-Listener für Projektänderungen
   addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, () => {
-    console.log("uiAnimationManager: Event activeProjectChanged empfangen");
+    logger.log("uiAnimationManager: Event activeProjectChanged empfangen");
     
     // Nur Transition starten, wenn die Initialisierungsphase abgeschlossen ist
     if (isInitialized && !TransitionController.isActive()) {
@@ -72,17 +73,17 @@ function init() {
   
   // Finale Initialisierung nach App-Bereitschaft
   addEventListener(EVENT_TYPES.APP_INIT_COMPLETE, async () => {
-    console.log("UI-Animation wird gestartet nach App-Initialisierung");
+    logger.log("UI-Animation wird gestartet nach App-Initialisierung");
 
     try {
       // Animation starten und auf Abschluss warten
       await initialAppearAnimation();
-      console.log("Initial-Animation abgeschlossen");
+      logger.log("Initial-Animation abgeschlossen");
       
       // Erst jetzt Initialisierung als abgeschlossen markieren
       isInitialized = true;
     } catch (error) {
-      console.error("Fehler bei Initial-Animation:", error);
+      logger.error("Fehler bei Initial-Animation:", error);
       // Sicherheits-Fallback: trotzdem als initialisiert markieren
       isInitialized = true;
     }

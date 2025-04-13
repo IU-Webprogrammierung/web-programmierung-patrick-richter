@@ -12,6 +12,7 @@
  * @listens TransitionController.events.PHASE_CHANGED - Pagination bei Projektwechsel aktualisieren
  */
 
+import logger from '@core/logger';
 import { checkFooter, getValidatedElement } from '@utils';
 import uiState from '@core/state/uiState.js';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
@@ -28,13 +29,13 @@ export function init() {
   // Container für die Pagination finden
   paginationContainer = getValidatedElement('.pagination');
   if (!paginationContainer) {
-    console.error('Pagination-Container nicht gefunden');
+    logger.error('Pagination-Container nicht gefunden');
     return;
   }
 
-  console.log("CHECK OB INITIAL_PROJECT_SET schon versendet wurde");
+  logger.log("CHECK OB INITIAL_PROJECT_SET schon versendet wurde");
    addEventListener(EVENT_TYPES.INITIAL_PROJECT_SET, () => { 
-    console.log("customPagination: Pagination initial aktualisiert");  
+    logger.log("customPagination: Pagination initial aktualisiert");  
     updatePaginationForProject(uiState.activeProjectIndex);
     updateActiveBullet(0);
    }); 
@@ -77,7 +78,7 @@ export function init() {
  * @param {number} projectIndex - Index des Projekts
  */
 function updatePaginationForProject(projectIndex) {
-  console.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
+  logger.log(`updatePaginationForProject: Erstelle Pagination für Projekt ${projectIndex}`);
   
   // Prüfen, ob der Footer aktiv ist
   if (checkFooter(projectIndex, uiState.projects)) {
@@ -91,14 +92,14 @@ function updatePaginationForProject(projectIndex) {
   // Projekt im DOM finden
   const project = uiState.projects[projectIndex];
   if (!project) {
-    console.warn(`Projekt mit Index ${projectIndex} nicht gefunden`);
+    logger.warn(`Projekt mit Index ${projectIndex} nicht gefunden`);
     return;
   }
 
   // Swiper-Element für dieses Projekt finden
   const swiperElement = project.querySelector('.swiper');
   if (!swiperElement) {
-    console.warn(`Kein Swiper für Projekt ${projectIndex} gefunden`);
+    logger.warn(`Kein Swiper für Projekt ${projectIndex} gefunden`);
     return;
   }
 
@@ -106,7 +107,7 @@ function updatePaginationForProject(projectIndex) {
   const swiperIndex = Array.from(document.querySelectorAll('.swiper')).indexOf(swiperElement);
   const swiper = swiperInitializer.getInstance(swiperIndex);
   if (!swiper) {
-    console.warn(`Keine Swiper-Instanz für Index ${swiperIndex}`);
+    logger.warn(`Keine Swiper-Instanz für Index ${swiperIndex}`);
     return;
   }
 
@@ -145,7 +146,7 @@ function updatePaginationForProject(projectIndex) {
   
   paginationContainer.appendChild(bulletList);
   
-  console.log(`Pagination erstellt: ${slideCount} Bullets für Projekt ${projectIndex}`);
+  logger.log(`Pagination erstellt: ${slideCount} Bullets für Projekt ${projectIndex}`);
 }
 
 /**
@@ -153,7 +154,7 @@ function updatePaginationForProject(projectIndex) {
  * @param {number} slideIndex - Index des aktiven Slides
  */
 export function updateActiveBullet(slideIndex) {
-  console.log(`updateActiveBullet: Aktiviere Slide ${slideIndex}`);
+  logger.log(`updateActiveBullet: Aktiviere Slide ${slideIndex}`);
 
   // Für Loop Modus den Index anpassen (kann negativ sein)
   if (slideIndex < 0) {
@@ -161,14 +162,14 @@ export function updateActiveBullet(slideIndex) {
   }
   
   if (!paginationContainer) {
-    console.warn('Pagination-Container nicht gefunden');
+    logger.warn('Pagination-Container nicht gefunden');
     return;
   }
   
   // Bullets finden - jetzt mit span statt button
   const bullets = paginationContainer.querySelectorAll('.custom-pagination-bullet');
   if (bullets.length === 0) {
-    console.warn('Keine Bullets gefunden');
+    logger.warn('Keine Bullets gefunden');
     return;
   }
   
@@ -182,7 +183,7 @@ export function updateActiveBullet(slideIndex) {
     // Kein aria-selected mehr nötig, da keine Tab-Rolle mehr
   });
   
-  console.log(`Bullet ${validIndex} von ${bullets.length} aktiviert`);
+  logger.log(`Bullet ${validIndex} von ${bullets.length} aktiviert`);
 }
 
 export default {
