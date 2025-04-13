@@ -4,12 +4,14 @@
  * Aktualisiert dynamisch Meta-Tags, Canonical URLs und strukturierte Daten.
  * 
  * @listens EVENT_TYPES.ACTIVE_PROJECT_CHANGED - Aktualisiert Meta-Tags bei Projektwechsel
+ * @listens EVENT_TYPES.ALL_DATA_LOADED - Lädt Globale Einstellungen aus dataStore
  */
 
 import logger from '@core/logger';
 import { EVENT_TYPES, addEventListener } from '@core/state/events.js';
 import uiState from '@core/state/uiState.js';
-import { checkFooter } from '@utils';
+import { checkFooter, fixImagePath } from '@utils';
+import dataStore from '@core/dataStore.js';
 
 // Cache für DOM-Elemente
 const metaElements = {
@@ -21,8 +23,12 @@ const metaElements = {
     ogUrl: null,
     twitterTitle: null,
     twitterDescription: null,
+    twitterImage: null,
     canonical: null
 };
+
+// Zwischenspeicher für Globale Einstellungen
+let globalSettings = null;
 
 /**
  * Initialisiert den SEO-Manager
@@ -39,6 +45,7 @@ function init() {
     metaElements.ogUrl = document.querySelector('meta[property="og:url"]');
     metaElements.twitterTitle = document.querySelector('meta[name="twitter:title"]');
     metaElements.twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    metaElements.twitterImage = document.querySelector('meta[name="twitter:image"]');
     
     // Canonical Link erstellen, falls nicht vorhanden
     metaElements.canonical = document.querySelector('link[rel="canonical"]');
@@ -48,14 +55,26 @@ function init() {
         document.head.appendChild(metaElements.canonical);
     }
     
+    // Globale Einstellungen laden, sobald alle Daten verfügbar sind
+    addEventListener(EVENT_TYPES.ALL_DATA_LOADED, () => {
+        // Globale Einstellungen aus dem dataStore laden
+        globalSettings = dataStore.getGlobalSettings()?.data;
+        
+        if (globalSettings) {
+            logger.log("SEO-Manager: Globale Einstellungen geladen");
+        } else {
+            logger.warn("SEO-Manager: Keine globalen Einstellungen gefunden");
+        }
+        
+        // Initiale Aktualisierung basierend auf URL
+        handleInitialURL();
+    });
+    
     // Event-Listener für Projektwechsel
     addEventListener(EVENT_TYPES.ACTIVE_PROJECT_CHANGED, (event) => {
         const { projectIndex } = event.detail;
         updateMetaForProject(projectIndex);
     });
-    
-    // Initiale Aktualisierung basierend auf URL
-    handleInitialURL();
     
     logger.log("SEO-Manager: Initialisierung abgeschlossen");
 }
@@ -74,6 +93,9 @@ function handleInitialURL() {
         // Standard oder projektspezifisch
         if (uiState.activeProjectIndex >= 0) {
             updateMetaForProject(uiState.activeProjectIndex);
+        } else {
+            // Fallback: Default-SEO für Startseite
+            updateDefaultMeta();
         }
     }
 }
@@ -92,8 +114,9 @@ function updateMetaForProject(projectIndex) {
     const projectName = project.getAttribute('data-project-name') || '';
     const projectDesc = project.getAttribute('data-project-description') || '';
     
-    // Begrenzte Beschreibung für Meta-Tags
-    const shortDesc = projectDesc.substring(0, 150) + (projectDesc.length > 150 ? '...' : '');
+    // SEO-spezifische Beschreibung verwenden, falls vorhanden
+    const seoDesc = project.getAttribute('data-seo-description');
+    const shortDesc = seoDesc || projectDesc.substring(0, 160) + (projectDesc.length > 160 ? '...' : '');
     
     // URL und Kanonischer Link
     const projectId = project.getAttribute('data-project-id');
@@ -106,8 +129,22 @@ function updateMetaForProject(projectIndex) {
     if (metaElements.ogTitle) metaElements.ogTitle.setAttribute('content', `${projectName} - Brenda Büttner Portfolio`);
     if (metaElements.ogDescription) metaElements.ogDescription.setAttribute('content', shortDesc);
     if (metaElements.ogUrl) metaElements.ogUrl.setAttribute('content', fullUrl);
+    
+    // OG-Bild aus Projekt verwenden oder fallback auf globales Bild
+    const projectImage = getFirstProjectImage(projectIndex);
+    if (metaElements.ogImage) {
+        metaElements.ogImage.setAttribute('content', 
+            projectImage || getDefaultSeoImage());
+    }
+    
+    // Twitter-Karten aktualisieren
     if (metaElements.twitterTitle) metaElements.twitterTitle.setAttribute('content', `${projectName} - Brenda Büttner Portfolio`);
     if (metaElements.twitterDescription) metaElements.twitterDescription.setAttribute('content', shortDesc);
+    if (metaElements.twitterImage) {
+        metaElements.twitterImage.setAttribute('content', 
+            projectImage || getDefaultSeoImage());
+    }
+    
     if (metaElements.canonical) metaElements.canonical.setAttribute('href', fullUrl);
     
     // Strukturierte Daten aktualisieren
@@ -122,10 +159,12 @@ function updateMetaForProject(projectIndex) {
  */
 function updateMetaForSection(section) {
     const isAbout = section === 'about';
+    
+    // Dynamische Beschreibungen aus globalSettings
     const title = isAbout ? 'About - Brenda Büttner Portfolio' : 'Impressum - Brenda Büttner Portfolio';
     const desc = isAbout 
-        ? 'Über Brenda Büttner, Art Directorin und Grafikdesignerin aus Hamburg spezialisiert auf Editorial Design und Branding.'
-        : 'Impressum und rechtliche Informationen - Brenda Büttner Portfolio';
+        ? (globalSettings?.about_description || 'Über Brenda Büttner, Art Directorin und Grafikdesignerin aus Hamburg.')
+        : (globalSettings?.imprint_description || 'Impressum und rechtliche Informationen - Brenda Büttner Portfolio');
     const fullUrl = `https://brendabuettner.de/${section}`;
     
     // META TAGS AKTUALISIEREN
@@ -134,31 +173,71 @@ function updateMetaForSection(section) {
     if (metaElements.ogTitle) metaElements.ogTitle.setAttribute('content', title);
     if (metaElements.ogDescription) metaElements.ogDescription.setAttribute('content', desc);
     if (metaElements.ogUrl) metaElements.ogUrl.setAttribute('content', fullUrl);
+    if (metaElements.ogImage) metaElements.ogImage.setAttribute('content', getDefaultSeoImage());
     if (metaElements.twitterTitle) metaElements.twitterTitle.setAttribute('content', title);
     if (metaElements.twitterDescription) metaElements.twitterDescription.setAttribute('content', desc);
+    if (metaElements.twitterImage) metaElements.twitterImage.setAttribute('content', getDefaultSeoImage());
     if (metaElements.canonical) metaElements.canonical.setAttribute('href', fullUrl);
+    
+    // Strukturierte Daten für About/Imprint
+    updateStructuredData(null, null, fullUrl);
     
     logger.log(`SEO-Manager: Meta-Tags aktualisiert für Sektion "${section}"`);
 }
 
 /**
+ * Aktualisiert Standard-Meta-Tags für die Startseite
+ */
+function updateDefaultMeta() {
+    // Standard-SEO-Einstellungen aus globalSettings
+    const defaultDesc = globalSettings?.default_seo_description || 
+        'Brenda Büttner, Art Directorin und Grafikdesignerin aus Hamburg spezialisiert auf Editorial Design, UI/UX Design und Branding.';
+    const fullUrl = 'https://brendabuettner.de/';
+    
+    // META TAGS AKTUALISIEREN
+    if (metaElements.title) metaElements.title.textContent = 'Brenda Büttner - Portfolio';
+    if (metaElements.description) metaElements.description.setAttribute('content', defaultDesc);
+    if (metaElements.ogTitle) metaElements.ogTitle.setAttribute('content', 'Brenda Büttner - Portfolio');
+    if (metaElements.ogDescription) metaElements.ogDescription.setAttribute('content', defaultDesc);
+    if (metaElements.ogUrl) metaElements.ogUrl.setAttribute('content', fullUrl);
+    if (metaElements.ogImage) metaElements.ogImage.setAttribute('content', getDefaultSeoImage());
+    if (metaElements.twitterTitle) metaElements.twitterTitle.setAttribute('content', 'Brenda Büttner - Portfolio');
+    if (metaElements.twitterDescription) metaElements.twitterDescription.setAttribute('content', defaultDesc);
+    if (metaElements.twitterImage) metaElements.twitterImage.setAttribute('content', getDefaultSeoImage());
+    if (metaElements.canonical) metaElements.canonical.setAttribute('href', fullUrl);
+    
+    // Standard strukturierte Daten
+    updateStructuredData(null, null, fullUrl);
+    
+    logger.log("SEO-Manager: Standard-Meta-Tags aktualisiert");
+}
+
+/**
  * Aktualisiert strukturierte Daten (Schema.org)
+ * @param {string|null} projectName - Der Projektname (oder null für About/Imprint/Startseite)
+ * @param {string|null} projectDesc - Die Projektbeschreibung (oder null für About/Imprint/Startseite)
+ * @param {string} projectUrl - Die URL der aktuellen Seite
  */
 function updateStructuredData(projectName, projectDesc, projectUrl) {
     // Bestehende Schema-Daten entfernen
     const existingSchemas = document.querySelectorAll('script[type="application/ld+json"]');
     existingSchemas.forEach(schema => schema.remove());
     
+    // Daten aus globalSettings verwenden
+    const personName = globalSettings?.person_name || "Brenda Büttner";
+    const jobTitle = globalSettings?.person_job_title || "Art Directorin und Grafikdesignerin";
+    const socialLink = globalSettings?.social_link || "https://www.instagram.com/buettner.brenda/";
+    
     // Person-Schema (immer vorhanden)
     const personSchema = {
         "@context": "https://schema.org",
         "@type": "Person",
-        "name": "Brenda Büttner",
+        "name": personName,
         "url": "https://brendabuettner.de",
-        "jobTitle": "Art Directorin Grafikdesign",
-        "knowsAbout": ["Art Direction", "Editorial Design", "Grafikdesign", "Branding", "Typographie", "UI Design", "UX Design"],
-        "image": "https://brendabuettner.de/images/brenda-buettner.jpg",
-        "sameAs": ["https://www.instagram.com/buettner.brenda/"]
+        "jobTitle": jobTitle,
+        "knowsAbout": ["Editorial Design", "Grafikdesign", "Branding", "Typographie", "UI/UX Design"],
+        "image": getDefaultSeoImage(),
+        "sameAs": [socialLink]
     };
     
     // Projekt-Schema (nur wenn ein Projekt aktiv ist)
@@ -170,7 +249,7 @@ function updateStructuredData(projectName, projectDesc, projectUrl) {
         "url": projectUrl,
         "creator": {
             "@type": "Person",
-            "name": "Brenda Büttner"
+            "name": personName
         }
     } : null;
     
@@ -183,6 +262,48 @@ function updateStructuredData(projectName, projectDesc, projectUrl) {
     });
     
     logger.log("SEO-Manager: Strukturierte Daten aktualisiert");
+}
+
+/**
+ * Hilfsfunktion: Ermittelt ein Bild aus dem aktuellen Projekt
+ * @param {number} projectIndex - Der Index des Projekts
+ * @returns {string|null} URL zum ersten Projektbild oder null
+ */
+function getFirstProjectImage(projectIndex) {
+    try {
+        if (projectIndex < 0 || projectIndex >= uiState.projects.length) return null;
+        
+        const project = uiState.projects[projectIndex];
+        const firstSlide = project.querySelector('.swiper-slide');
+        if (!firstSlide) return null;
+        
+        // Bild-Element im Slide finden
+        const imgElement = firstSlide.querySelector('img');
+        if (!imgElement || !imgElement.src) return null;
+        
+        return imgElement.src;
+    } catch (error) {
+        logger.error("Fehler beim Ermitteln des Projektbildes:", error);
+        return null;
+    }
+}
+
+/**
+ * Hilfsfunktion: Ermittelt das Standard-SEO-Bild aus globalen Einstellungen
+ * @returns {string} URL zum Standard-SEO-Bild
+ */
+function getDefaultSeoImage() {
+    // Bild-URL aus globalen Einstellungen
+    if (globalSettings?.default_seo_image?.url) {
+        const imageUrl = globalSettings.default_seo_image.url;
+        // Prüfen, ob es eine absolute oder relative URL ist
+        return imageUrl.startsWith('http') 
+            ? imageUrl 
+            : `https://brendabuettner.de${fixImagePath(imageUrl)}`;
+    }
+    
+    // Fallback-Bild
+    return 'https://brendabuettner.de/uploads/brenda_buettner_9866744c8b.jpg';
 }
 
 export default {

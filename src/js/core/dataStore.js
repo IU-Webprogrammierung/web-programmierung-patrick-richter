@@ -10,26 +10,28 @@
  * - getFooter()
  * - fetchDataWithFallback()
  * - loadData()
- * 
+ *
  * @fires EVENT_TYPES.PROJECT_DATA_LOADED - Nach erfolgreicher Projektdatenladung
  * @fires EVENT_TYPES.ALL_DATA_LOADED - Nach vollständiger Ladung aller Daten
  */
 
-import { API_ENDPOINTS, FALLBACK_DATA } from '@core/config.js';
-import logger from '@core/logger';
+import { API_ENDPOINTS, FALLBACK_DATA } from "@core/config.js";
+import logger from "@core/logger";
 import {
   normalizeProjectData,
   normalizeAboutData,
   normalizeClientsData,
   normalizeFooterData,
-} from '@utils/normalizers/normalizerIndex.js';
-import { EVENT_TYPES, dispatchCustomEvent } from '@core/state/events.js';
+  normalizeGlobalSettingsData,
+} from "@utils/normalizers/normalizerIndex.js";
+import { EVENT_TYPES, dispatchCustomEvent } from "@core/state/events.js";
 
 const dataStore = {
   projectsData: null,
   aboutImprintData: null,
   clientsData: null,
   footerData: null,
+  globalSettingsData: null,
 
   /**
    * Initialisiert den Datenspeicher und startet den Ladevorgang
@@ -69,6 +71,14 @@ const dataStore = {
    */
   getFooter: function () {
     return this.footerData;
+  },
+
+  /**
+   * Gibt die Global-Settings-Daten zurück
+   * @returns {Object|null} Die Global-Settings-Daten oder null wenn nicht geladen
+   */
+  getGlobalSettings: function () {
+    return this.globalSettingsData;
   },
 
   /**
@@ -138,28 +148,35 @@ const dataStore = {
 
       // Paralleles Laden der weniger kritischen Daten NACH dem Event
       logger.log(
-        "dataStore: Lade zusätzliche Daten (About, Clients, Footer) im Hintergrund..."
+        "dataStore: Lade zusätzliche Daten (About, Clients, Footer, Globale Einstellungen) im Hintergrund..."
       );
-      const [aboutData, clientsData, footerData] = await Promise.allSettled([
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.about,
-          "About",
-          normalizeAboutData,
-          FALLBACK_DATA.about
-        ),
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.clients,
-          "Clients",
-          normalizeClientsData,
-          FALLBACK_DATA.clients
-        ),
-        this.fetchDataWithFallback(
-          API_ENDPOINTS.footer,
-          "Footer",
-          normalizeFooterData,
-          FALLBACK_DATA.footer
-        ),
-      ]);
+      const [aboutData, clientsData, footerData, globalSettingsData] =
+        await Promise.allSettled([
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.about,
+            "About",
+            normalizeAboutData,
+            FALLBACK_DATA.about
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.clients,
+            "Clients",
+            normalizeClientsData,
+            FALLBACK_DATA.clients
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.footer,
+            "Footer",
+            normalizeFooterData,
+            FALLBACK_DATA.footer
+          ),
+          this.fetchDataWithFallback(
+            API_ENDPOINTS.globalSettings,
+            "Globale Einstellungen",
+            normalizeGlobalSettingsData,
+            FALLBACK_DATA.globalSettings
+          ),
+        ]);
 
       // Ergebnisse verarbeiten
       this.aboutImprintData =
@@ -174,6 +191,10 @@ const dataStore = {
         footerData.status === "fulfilled"
           ? footerData.value
           : normalizeFooterData(FALLBACK_DATA.footer);
+      this.globalSettingsData =
+        globalSettingsData.status === "fulfilled"
+          ? globalSettingsData.value
+          : normalizeGlobalSettingsData(FALLBACK_DATA.globalSettings);
 
       // Status-Übersicht ausgeben
       logger.log("dataStore: Hintergrundladung abgeschlossen mit Status:", {
