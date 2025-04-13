@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
   about: `${API_URL}/about`,
   clients: `${API_URL}/clients?populate=projects&sort=name:asc`,
   footer: `${API_URL}/footer`,
-  globalSettings: `${API_URL}/global-setting?populate=default_seo_image`,
+  globalSettings: `${API_URL}/global-setting?populate=*`,
 };
 
 // Fallback-Daten für robustere Fehlerbehandlung
@@ -72,7 +72,10 @@ export const FALLBACK_DATA = {
     data: {
       person_name: "Brenda Büttner",
       person_job_title: "Art Directorin und Grafikdesignerin",
-      social_link: "https://www.instagram.com/buettner.brenda/",
+      // Statt einzelnem social_link jetzt ein Array
+      social_links: [
+        { id: 1, link: "https://www.instagram.com/buettner.brenda/" },
+      ],
       about_description:
         "Über Brenda Büttner, Art Directorin und Grafikdesignerin aus Hamburg spezialisiert auf Editorial Design, UI / UX Design und Branding.",
       imprint_description:
@@ -80,6 +83,19 @@ export const FALLBACK_DATA = {
       default_seo_description:
         "Brenda Büttner, Art Directorin und Grafikdesignerin aus Hamburg",
       default_seo_image: null,
+      // Neue Felder
+      contact_email: "hello@brendabuettner.de",
+      address_locality: "Hamburg",
+      address_country: "DE",
+      skills: [
+        { id: 1, name: "Art Direction" },
+        { id: 2, name: "Editorial Design" },
+        { id: 3, name: "Grafikdesign" },
+        { id: 4, name: "Branding" },
+        { id: 5, name: "Typographie" },
+        { id: 6, name: "UI Design" },
+        { id: 7, name: "UX Design" },
+      ],
     },
   },
 };

@@ -226,7 +226,16 @@ function updateStructuredData(projectName, projectDesc, projectUrl) {
     // Daten aus globalSettings verwenden
     const personName = globalSettings?.person_name || "Brenda Büttner";
     const jobTitle = globalSettings?.person_job_title || "Art Directorin und Grafikdesignerin";
-    const socialLink = globalSettings?.social_link || "https://www.instagram.com/buettner.brenda/";
+    
+    // Social Links aus dem Array extrahieren
+    const socialLinks = Array.isArray(globalSettings?.social_links) && globalSettings.social_links.length > 0
+        ? globalSettings.social_links.map(item => item.link)
+        : ["https://www.instagram.com/buettner.brenda/"];
+    
+    // Skills aus globalSettings extrahieren oder Fallback verwenden
+    const skills = Array.isArray(globalSettings?.skills) && globalSettings.skills.length > 0
+        ? globalSettings.skills.map(skill => skill.name)
+        : ["Art Direction", "Editorial Design", "Grafikdesign", "Branding", "Typographie", "UI Design", "UX Design"];
     
     // Person-Schema (immer vorhanden)
     const personSchema = {
@@ -235,10 +244,24 @@ function updateStructuredData(projectName, projectDesc, projectUrl) {
         "name": personName,
         "url": "https://brendabuettner.de",
         "jobTitle": jobTitle,
-        "knowsAbout": ["Editorial Design", "Grafikdesign", "Branding", "Typographie", "UI/UX Design"],
+        "knowsAbout": skills,
         "image": getDefaultSeoImage(),
-        "sameAs": [socialLink]
+        "sameAs": socialLinks
     };
+    
+    // E-Mail-Adresse hinzufügen, falls vorhanden
+    if (globalSettings?.contact_email) {
+        personSchema.email = `mailto:${globalSettings.contact_email}`;
+    }
+    
+    // Adresse hinzufügen, falls Stadt vorhanden
+    if (globalSettings?.address_locality) {
+        personSchema.address = {
+            "@type": "PostalAddress",
+            "addressLocality": globalSettings.address_locality,
+            "addressCountry": globalSettings?.address_country || "DE"
+        };
+    }
     
     // Projekt-Schema (nur wenn ein Projekt aktiv ist)
     const projectSchema = projectName ? {
@@ -299,7 +322,7 @@ function getDefaultSeoImage() {
         // Prüfen, ob es eine absolute oder relative URL ist
         return imageUrl.startsWith('http') 
             ? imageUrl 
-            : `https://brendabuettner.de${fixImagePath(imageUrl)}`;
+            : fixImagePath(imageUrl);
     }
     
     // Fallback-Bild
