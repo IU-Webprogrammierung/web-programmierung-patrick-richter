@@ -376,38 +376,6 @@ class CustomRouter {
     );
   }
 
-  // Ergänze diese Methode:
-  updateMetaTags(projectData) {
-    // Dynamische Anpassung der Meta-Tags basierend auf dem aktuellen Projekt
-    document.title = `${projectData.name} - Brenda Büttner Portfolio`;
-
-    // Meta-Description aktualisieren
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        `${projectData.name}: ${projectData.description.substring(0, 150)}...`
-      );
-    }
-
-    // OG-Tags aktualisieren
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute(
-        "content",
-        `${projectData.name} - Brenda Büttner Portfolio`
-      );
-    }
-
-    // Canonical URL setzen
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (!canonicalLink) {
-      canonicalLink = document.createElement("link");
-      canonicalLink.setAttribute("rel", "canonical");
-      document.head.appendChild(canonicalLink);
-    }
-    canonicalLink.setAttribute("href", window.location.href);
-  }
 }
 
 // Singleton-Instanz exportieren

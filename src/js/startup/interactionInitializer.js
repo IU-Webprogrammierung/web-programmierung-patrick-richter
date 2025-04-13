@@ -12,6 +12,7 @@
  */
 
 import logger from '@core/logger';
+import seoManager from '@core/seoManager.js';
 import { EVENT_TYPES, dispatchCustomEvent, addEventListener } from '@core/state/events.js';
 import imageNavigation from '@media/viewer/mediaNavigation.js';
 import projectNavigator from '@portfolio/navigation/projectNavigator.js';
@@ -58,16 +59,20 @@ function initializeInteraktionen() {
   // 3. Router initialisieren (mit Zugriff auf Projekt-Navigation)
   CustomRouter.init(navigatorAPI);
   logger.log("interactionManager: Router initialisiert");
+
+  // 4. SEO-Manager initialisieren
+  seoManager.init();
+  logger.log("interactionManager: SEO-Manager initialisiert");
   
-  // 4. HoverImage (Project Indicator & About Overlay)
+  // 5. HoverImage (Project Indicator & About Overlay)
   hoverPreview.init();
   logger.log("interactionManager: Hover-Interaktionen initialisiert");
 
-  // 5. Overlay-Controller
+  // 6. Overlay-Controller
   overlayController.init();
   logger.log("interactionManager: Overlay-Interaktionen initialisiert");
 
-  // 6. Mobile-Interaktionen
+  // 7. Mobile-Interaktionen
   mobileDescription.init();
   logger.log("interactionManager: Mobile Interaktionen initialisiert");
 }
