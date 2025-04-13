@@ -14,7 +14,7 @@ export const API_URL = `${BASE_URL}/api`;
 
 // API-Endpunkte zentral definiert
 export const API_ENDPOINTS = {
-  projects: `${API_URL}/projects?populate[project_images][populate]=image&sort=rank:asc`,
+  projects: `${API_URL}/projects?populate[project_images][populate]=image&populate=seo_image&sort=rank:asc`,
   about: `${API_URL}/about`,
   clients: `${API_URL}/clients?populate=projects&sort=name:asc`,
   footer: `${API_URL}/footer`,

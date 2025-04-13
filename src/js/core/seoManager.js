@@ -110,45 +110,47 @@ function updateMetaForProject(projectIndex) {
     // Wenn Footer, nicht ändern
     if (checkFooter(projectIndex, uiState.projects)) return;
     
+    // Projekt-DOM-Element und seine ID ermitteln
     const project = uiState.projects[projectIndex];
+    const projectId = project.getAttribute('data-project-id');
+    
+    // Projekt-Daten aus dem dataStore laden
+    const projectsData = dataStore.getProjects();
+    const projectData = projectsData?.data?.find(p => p.id.toString() === projectId);
+    
+    // Standard-Metadaten aus dem DOM-Element
     const projectName = project.getAttribute('data-project-name') || '';
     const projectDesc = project.getAttribute('data-project-description') || '';
     
     // SEO-spezifische Beschreibung verwenden, falls vorhanden
-    const seoDesc = project.getAttribute('data-seo-description');
+    const seoDesc = projectData?.seo_description || '';
+    // Beschreibung mit Priorität: 1. SEO-Beschreibung, 2. Standard-Beschreibung (gekürzt)
     const shortDesc = seoDesc || projectDesc.substring(0, 160) + (projectDesc.length > 160 ? '...' : '');
     
     // URL und Kanonischer Link
-    const projectId = project.getAttribute('data-project-id');
     const slug = uiState.getProjectSlug(projectId);
     const fullUrl = `https://brendabuettner.de${slug ? `/${slug}` : ''}`;
     
-    // META TAGS AKTUALISIEREN - HIER PASSIEREN DIE SICHTBAREN ÄNDERUNGEN
+    // META TAGS AKTUALISIEREN
     if (metaElements.title) metaElements.title.textContent = `${projectName} - Brenda Büttner Portfolio`;
     if (metaElements.description) metaElements.description.setAttribute('content', shortDesc);
     if (metaElements.ogTitle) metaElements.ogTitle.setAttribute('content', `${projectName} - Brenda Büttner Portfolio`);
     if (metaElements.ogDescription) metaElements.ogDescription.setAttribute('content', shortDesc);
     if (metaElements.ogUrl) metaElements.ogUrl.setAttribute('content', fullUrl);
     
-    // OG-Bild aus Projekt verwenden oder fallback auf globales Bild
+    // SEO-Bild mit Priorität: 1. Projekt-SEO-Bild, 2. Erstes Projektbild, 3. Globales Default-Bild
+    const projectSeoImage = projectData?.seo_image?.url ? fixImagePath(projectData.seo_image.url) : null;
     const projectImage = getFirstProjectImage(projectIndex);
-    if (metaElements.ogImage) {
-        metaElements.ogImage.setAttribute('content', 
-            projectImage || getDefaultSeoImage());
-    }
+    const imageUrl = projectSeoImage || projectImage || getDefaultSeoImage();
     
-    // Twitter-Karten aktualisieren
+    if (metaElements.ogImage) metaElements.ogImage.setAttribute('content', imageUrl);
     if (metaElements.twitterTitle) metaElements.twitterTitle.setAttribute('content', `${projectName} - Brenda Büttner Portfolio`);
     if (metaElements.twitterDescription) metaElements.twitterDescription.setAttribute('content', shortDesc);
-    if (metaElements.twitterImage) {
-        metaElements.twitterImage.setAttribute('content', 
-            projectImage || getDefaultSeoImage());
-    }
-    
+    if (metaElements.twitterImage) metaElements.twitterImage.setAttribute('content', imageUrl);
     if (metaElements.canonical) metaElements.canonical.setAttribute('href', fullUrl);
     
     // Strukturierte Daten aktualisieren
-    updateStructuredData(projectName, projectDesc, fullUrl);
+    updateStructuredData(projectName, shortDesc, fullUrl);
     
     logger.log(`SEO-Manager: Meta-Tags aktualisiert für Projekt "${projectName}"`);
 }
