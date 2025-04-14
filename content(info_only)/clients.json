@@ -1,0 +1,75 @@
+{
+    "data": [
+      {
+        "id": 41,
+        "name": "MARTHA HERFORD Museum",
+        "rank": null,
+        "createdAt": "2025-04-14T19:17:08.103Z",
+        "updatedAt": "2025-04-14T19:17:08.103Z",
+        "publishedAt": "2025-04-14T19:17:08.120Z",
+        "documentId": "sizqcral2okdlnbuza7qv1zr"
+      },
+      {
+        "id": 42,
+        "name": "Nicole Reese Yoga Studio",
+        "rank": null,
+        "createdAt": "2025-04-14T04:56:06.339Z",
+        "updatedAt": "2025-04-14T04:56:06.339Z",
+        "publishedAt": "2025-04-14T19:17:38.659Z",
+        "documentId": "m5s5zzkcv2p6wc94uuzl49ln"
+      },
+      {
+        "id": 43,
+        "name": "OBJECTS Exhibition Catalogue",
+        "rank": null,
+        "createdAt": "2025-04-14T04:56:26.157Z",
+        "updatedAt": "2025-04-14T04:56:26.157Z",
+        "publishedAt": "2025-04-14T19:17:38.661Z",
+        "documentId": "qozk1rmytoxpa00p8z1mu3jz"
+      },
+      {
+        "id": 44,
+        "name": "Anne Fischer",
+        "rank": null,
+        "createdAt": "2025-04-14T04:56:58.043Z",
+        "updatedAt": "2025-04-14T04:56:58.043Z",
+        "publishedAt": "2025-04-14T19:17:38.657Z",
+        "documentId": "algnadezwdvi3ei3gr3vk7nj"
+      },
+      {
+        "id": 45,
+        "name": "DUMMY Magazine",
+        "rank": null,
+        "createdAt": "2025-04-14T04:55:50.997Z",
+        "updatedAt": "2025-04-14T04:55:50.997Z",
+        "publishedAt": "2025-04-14T19:17:38.657Z",
+        "documentId": "qd9vba5eopr26ihkk7l7yjun"
+      },
+      {
+        "id": 46,
+        "name": "Emotion Magazine",
+        "rank": null,
+        "createdAt": "2025-04-14T04:53:30.153Z",
+        "updatedAt": "2025-04-14T04:53:30.153Z",
+        "publishedAt": "2025-04-14T19:17:38.658Z",
+        "documentId": "gl7e9s7funff1fja1yhvl01a"
+      },
+      {
+        "id": 47,
+        "name": "WORKING WOMEN Magazine",
+        "rank": null,
+        "createdAt": "2025-04-14T04:55:25.274Z",
+        "updatedAt": "2025-04-14T04:55:25.274Z",
+        "publishedAt": "2025-04-14T19:17:38.664Z",
+        "documentId": "cmfcv1mbdgrvqwgslci0p21d"
+      }
+    ],
+    "meta": {
+      "pagination": {
+        "page": 1,
+        "pageSize": 25,
+        "pageCount": 1,
+        "total": 7
+      }
+    }
+  }
