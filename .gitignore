@@ -34,3 +34,7 @@ package.json
 js/.DS_Store
 js/.DS_Store
 js/features/.DS_Store
+
+#content
+content_info_only/
+
