@@ -1,0 +1,35 @@
+{
+  "name": "web-programmierung-patrick-richter",
+  "version": "1.0.0",
+  "description": "Portfolio-Webseite mit Vite",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "gsap": "^3.12.7",
+    "navigo": "^8.11.1",
+    "swiper": "^11.2.6"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.6.0",
+    "@eslint/js": "^9.24.0",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "vite": "^6.2.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "portfolio",
+    "vite",
+    "webprogrammierung"
+  ],
+  "author": "Patrick Richter",
+  "license": "ISC"
+}

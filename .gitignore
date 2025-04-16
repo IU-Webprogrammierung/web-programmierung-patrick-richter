@@ -5,7 +5,7 @@ git commands
 script.js
 script copy.js
 *copy*.js     # Schließt alle Dateien mit "copy" im Namen aus
-*backup*.js   # Optional: Schließt alle Dateien mit "backup" im Namen aus
+*backup*.js   # Schließt alle Dateien mit "backup" im Namen aus
 .dump/
 
 # Betriebssystem-Dateien
@@ -30,8 +30,3 @@ strapi-cms/build/
 strapi-cms/public/uploads/
 strapi-cms/.env
 strapi-cms/
-package-lock.json
-package.json
-js/.DS_Store
-js/.DS_Store
-js/features/.DS_Store

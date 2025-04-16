@@ -78,6 +78,8 @@ Die Architektur folgt einem modularen Ansatz mit klarer Trennung der Verantwortl
 
 4. Die Anwendung läuft nun auf `http://localhost:3000`
 
+Wichtig: IS_DEVELOPMENT in config.js muss "true" sein.
+
 ## Projektstruktur
 
 ```
